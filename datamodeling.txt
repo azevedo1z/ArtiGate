@@ -1,0 +1,37 @@
+Participant {
+string id,
+string name,
+string address,
+string phone,
+string email,
+string jobLocation,
+string badgeUrl,,
+Role role // we're going with enum for this badboy
+}
+
+Article {
+string id,
+string summary,
+float scoreAvg,
+bool isTopArticle,
+}
+
+ArticleParticipant {
+string id
+string articleId,
+string participantId
+}
+
+Review {
+string id,
+string articleId,
+string reviewerId,
+float score,
+string commentary
+}
+
+Payment {
+string id,
+string participantId
+// we gon mock this for now, call a fake API or service for it
+}

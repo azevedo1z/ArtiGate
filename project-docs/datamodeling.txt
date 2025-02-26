@@ -1,4 +1,4 @@
-Participant {
+User {
 string id,
 string name,
 string address,
@@ -16,10 +16,10 @@ float scoreAvg,
 bool isTopArticle,
 }
 
-ArticleParticipant {
+ArticleAuthor {
 string id
 string articleId,
-string participantId
+string userId
 }
 
 Review {
@@ -32,6 +32,6 @@ string commentary
 
 Payment {
 string id,
-string participantId
+string userId
 // we gon mock this for now, call a fake API or service for it
 }

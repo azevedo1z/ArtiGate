@@ -1,11 +1,11 @@
 User {
 string id,
 string name,
-string address,
+string homeAddressId,
 string phone,
 string email,
-string jobLocation,
-string badgeUrl,,
+string jobAddressId,
+string badgeUrl,
 Role role // we're going with enum for this badboy
 }
 
@@ -34,4 +34,17 @@ Payment {
 string id,
 string userId
 // we gon mock this for now, call a fake API or service for it
+}
+
+Address {
+string id,
+string zipCode
+string street,
+string? complement,
+string neighborhood,
+string city,
+string state,
+string country, //const: Brazil
+// ViaCEP here
+// Brazil only
 }

@@ -7,6 +7,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model MigrationInitializer {
-  id Int @id @default(autoincrement())
+enum Role {
+  AUTHOR
+  REVIEWER  
+}
+
+model User {
+  id String @id @default(uuid())
+  name String
+  homeAddressId String
+  jobAddressId String 
+  phone String
+  email String @unique
+  badgeUrl String
+  role Role
+
+  articles ArticleAuthor[]
+  reviews Review[]
+  payments Payment[]
+
+  homeAddress Address @relation("Home", fields: [homeAddressId], references: [id])
+  jobAddress Address @relation("Job", fields: [jobAddressId], references: [id])
+}
+
+model Address {
+  id String @id @default(uuid())
+  zipCode String
+  street String
+  complement String?
+  neighborhood String
+  city String
+  state String
+  country String @default("Brazil")
+
+  homeUsers User[] @relation("Home")
+  jobUsers User[] @relation("Job")
+}
+
+model Article {
+  id String @id @default(uuid())
+  summary String
+  scoreAvg Float @default(0)
+  isTopArticle Boolean @default(false)
+
+  authors ArticleAuthor[]
+  reviews Review[]
+}
+
+model ArticleAuthor {
+  id String @id @default(uuid())
+  articleId String
+  userId String
+
+  article Article @relation(fields: [articleId], references: [id])
+  user User @relation(fields: [userId], references: [id])  
+}
+
+model Review {
+  id String @id @default(uuid())
+  articleId String
+  reviewerId String
+  score Float @default(0)
+  commentary String
+
+  reviewer User @relation(fields: [reviewerId], references: [id])
+  article Article @relation(fields: [articleId], references: [id])
+}
+
+model Payment {
+  id String @id @default(uuid())
+  userId String
+
+  user User @relation(fields: [userId], references: [id])
 }

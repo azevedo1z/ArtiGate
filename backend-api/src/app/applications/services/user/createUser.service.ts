@@ -10,7 +10,7 @@ constructor(private readonly repository: UserRepository) {}
     const userExists = await this.repository.findByEmail(data.email);
 
     if (userExists)
-      throw new Error("There already is a user with this e-mail.");
+      throw new Error("There is already a user with this e-mail.");
 
     return this.repository.create(data);    
  }

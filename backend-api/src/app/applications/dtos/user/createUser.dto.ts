@@ -6,5 +6,5 @@ export interface CreateUserDTO {
   homeAddressId: string;
   jobAddressId: string;
   badgeUrl: string;
-  roles: string[];
+  roleIds: string[];
 }

@@ -5,19 +5,16 @@ string homeAddressId,
 string phone,
 string email,
 string jobAddressId,
-string badgeUrl,
-Role role // we're going with enum for this badboy
+string badgeUrl
 }
 
 Article {
 string id,
 string summary,
-float scoreAvg,
-bool isTopArticle,
+float scoreAvg
 }
 
 ArticleAuthor {
-string id
 string articleId,
 string userId
 }
@@ -44,7 +41,17 @@ string? complement,
 string neighborhood,
 string city,
 string state,
-string country, //const: Brazil
+string country //const: Brazil
 // ViaCEP here
 // Brazil only
+}
+
+Role {
+string id,
+enum name
+}
+
+UserRole {
+string userId,
+string roleId
 }

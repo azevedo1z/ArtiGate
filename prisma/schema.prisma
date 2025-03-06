@@ -7,9 +7,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  AUTHOR
-  REVIEWER  
+model Role {
+  id String @id @default(uuid())
+  name String @unique
+
+  userRoles UserRole[]
+}
+
+model UserRole {
+  id String @id @default(uuid())
+  userId String
+  roleId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
 }
 
 model User {
@@ -20,11 +33,11 @@ model User {
   phone String
   email String @unique
   badgeUrl String
-  role Role
 
   articles ArticleAuthor[]
   reviews Review[]
   payments Payment[]
+  userRoles UserRole[]
 
   homeAddress Address @relation("Home", fields: [homeAddressId], references: [id])
   jobAddress Address @relation("Job", fields: [jobAddressId], references: [id])
@@ -59,8 +72,8 @@ model ArticleAuthor {
   articleId String
   userId String
 
-  article Article @relation(fields: [articleId], references: [id])
-  user User @relation(fields: [userId], references: [id])  
+  article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)  
 }
 
 model Review {

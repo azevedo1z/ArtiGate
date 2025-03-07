@@ -1,7 +1,9 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { UserRepository } from '../../../domain/repositories/user.repository'
 import { User } from '../../../domain/models/user.model'
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class CreateUserService {
 
 constructor(private readonly repository: UserRepository) {}

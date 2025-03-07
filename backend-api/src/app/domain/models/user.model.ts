@@ -1,20 +1,42 @@
 export class User {
-    id: string;
-    name: string;
-    email: string;
-    phone: string;
-    badgeUrl: string;
-    homeAddressId: string;
-    jobAddressId: string;
-  
-    constructor(id: string, name: string, email: string, phone: string, badgeUrl: string,
-      homeAddressId: string, jobAddressId: string) {
-      this.id = id;
-      this.name = name;
-      this.email = email;
-      this.phone = phone;
-      this.badgeUrl = badgeUrl;
-      this.homeAddressId = homeAddressId;
-      this.jobAddressId = jobAddressId;
-    }
+
+  private _id: string;
+  private _name: string;
+  private _email: string;
+  private _phone: string;
+
+  constructor(id: string, name: string, email: string, phone: string) {
+    this._id = id;
+    this._name = name;
+    this._email = email;
+    this._phone = phone;
+  }
+
+  get id(): string {
+    return this._id;
+  }
+
+  get name(): string {
+    return this._name;
+  }
+
+  set name(value: string) {
+    this._name = value;
+  }
+
+  get email(): string {
+    return this._email;
+  }
+
+  set email(value: string) {
+    this._email = value;
+  }
+
+  get phone(): string {
+    return this._phone;
+  }
+
+  set phone(value: string) {
+    this._phone = value;
+  }
 }

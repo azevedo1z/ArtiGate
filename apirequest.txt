@@ -1,0 +1,11 @@
+{
+  "name": "Gab",
+  "email": "gab@gmail.com",
+  "phone": "719",
+  "homeAddressId": "guid",
+  "jobAddressId": "guid",
+  "badgeUrl": "google.com",
+  "roles": [
+    "guid"
+  ]
+}

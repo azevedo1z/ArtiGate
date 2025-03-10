@@ -6,7 +6,9 @@ import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class AddressRepositoryImplementation implements AddressRepository {
+
   constructor(private readonly prisma: PrismaService) {}
+
   async create(data: CreateAddressDTO): Promise<Address> {
     return this.prisma.address.create({ data });
   }

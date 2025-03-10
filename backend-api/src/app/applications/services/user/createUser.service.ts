@@ -1,20 +1,44 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { UserRepository } from '../../../domain/repositories/user.repository'
+import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model'
 import { Injectable } from '@nestjs/common';
+import { CreateAddressService } from '../address/createAddress.service';
 
 @Injectable()
 export class CreateUserService {
+  constructor(
+    private readonly repository: UserRepository,
+    private readonly createAddressService: CreateAddressService
+  ) {}
 
-constructor(private readonly repository: UserRepository) {}
-
- async execute(data:CreateUserDTO): Promise<User> {
-    const userExists = await this.repository.findByEmail(data.email);
+  async execute(
+    userData: CreateUserDTO,
+    homeAddressData: CreateAddressDTO,
+    jobAddressData: CreateAddressDTO
+  ): Promise<User> {
+    const userExists = await this.repository.findByEmail(userData.email);
 
     if (userExists)
-      throw new Error("There is already a user with this e-mail.");
+      throw new Error('There is already a user with this e-mail.');
 
-    return this.repository.create(data);    
- }
+    const homeAddressId = await this.createAddressService.execute(
+      homeAddressData
+    );
+    const jobAddressId = await this.createAddressService.execute(
+      jobAddressData
+    );
 
+    const createdUser = await this.repository.create(userData, homeAddressId, jobAddressId);
+
+    return User.create(
+      createdUser.id,
+      createdUser.name,
+      createdUser.email,
+      createdUser.phone,
+      createdUser.homeAddressId,
+      createdUser.jobAddressId,
+      createdUser.badgeUrl
+    );
+  }
 }

@@ -1,5 +1,5 @@
 export class Address {
-    static readonly COUNTRY = 'Brazil';
+    static readonly COUNTRY = 'Brasil';
   
     private _id: string;
     private _zipCode: string;
@@ -17,14 +17,9 @@ export class Address {
       neighborhood: string,
       city: string,
       state: string,
-      country: string,
+      country: string = Address.COUNTRY,
       complement?: string
     ) {
-
-      if (country !== Address.COUNTRY) {
-        throw new Error('Country must be Brazil.');
-      }
-  
       this._id = id;
       this._zipCode = zipCode;
       this._street = street;

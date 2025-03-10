@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateAddressDTO } from '../address/createAddress.dto';
 
 export class CreateUserDTO {
   @ApiProperty()
@@ -11,32 +12,32 @@ export class CreateUserDTO {
   phone: string;
 
   @ApiProperty()
-  homeAddressId: string;
+  homeAddress: CreateAddressDTO;
 
   @ApiProperty()
-  jobAddressId: string;
+  jobAddress: CreateAddressDTO;
 
   @ApiProperty()
   badgeUrl: string;
 
-  @ApiProperty()
-  roleIds: string[];
+  // @ApiProperty()
+  // _userRoles: UserRoleDTO[];
 
   constructor(
     name: string,
     email: string,
     phone: string,
     badgeUrl: string,
-    homeAddressId: string,
-    jobAddressId: string,
-    roleIds: string[]
+    homeAddress: CreateAddressDTO,
+    jobAddress: CreateAddressDTO
+    // userRoles: UserRoleDTO[]
   ) {
     this.name = name;
     this.email = email;
     this.phone = phone;
     this.badgeUrl = badgeUrl;
-    this.homeAddressId = homeAddressId;
-    this.jobAddressId = jobAddressId;
-    this.roleIds = roleIds;
+    this.homeAddress = homeAddress;
+    this.jobAddress = jobAddress;
+    // this._userRoles = userRoles;
   }
 }

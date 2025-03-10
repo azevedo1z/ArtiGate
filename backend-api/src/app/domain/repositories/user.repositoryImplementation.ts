@@ -14,7 +14,21 @@ export class UserRepositoryImplementation implements UserRepository {
     });
   }
 
-  async create(data: CreateUserDTO): Promise<User> {
+  async create(
+    userData: CreateUserDTO,
+    homeAddressId: string,
+    jobAddressId: string
+  ): Promise<User> {
+
+    const data = {
+      name: userData.name,
+      phone: userData.phone,
+      email: userData.email,
+      badgeUrl: userData.badgeUrl,
+      homeAddressId,
+      jobAddressId,
+    };
+
     return this.prisma.user.create({ data });
   }
 }

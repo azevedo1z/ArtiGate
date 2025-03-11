@@ -29,16 +29,16 @@ export class CreateUserService {
       jobAddressData
     );
 
-    const createdUser = await this.repository.create(userData, homeAddressId, jobAddressId);
+    const userRecord = await this.repository.create(userData, homeAddressId, jobAddressId);
 
     return User.create(
-      createdUser.id,
-      createdUser.name,
-      createdUser.email,
-      createdUser.phone,
-      createdUser.homeAddressId,
-      createdUser.jobAddressId,
-      createdUser.badgeUrl
+      userRecord.id,
+      userRecord.name,
+      userRecord.email,
+      userRecord.phone,
+      userRecord.homeAddressId,
+      userRecord.jobAddressId,
+      userRecord.badgeUrl
     );
   }
 }

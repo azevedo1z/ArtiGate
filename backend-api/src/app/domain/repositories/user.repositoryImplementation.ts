@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import { User } from "@prisma/client";
 import { PrismaService } from "../../infrastructure/prisma.service";
 import { CreateUserDTO } from "../../applications/dtos/user/createUser.dto";
 import { UserRepository } from "./user.repository";
@@ -9,9 +9,11 @@ export class UserRepositoryImplementation implements UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
+
     return this.prisma.user.findUnique({
       where: { email },
     });
+    
   }
 
   async create(

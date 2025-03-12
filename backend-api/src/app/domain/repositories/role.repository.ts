@@ -1,5 +1,5 @@
 import { CreateRoleDTO } from "../../applications/dtos/roles/createRole.dto";
-import { Role } from "../models/role.model";
+import { Role } from "@prisma/client";
 
 export abstract class RoleRepository {
   abstract findByName(name: string): Promise<Role | null>;

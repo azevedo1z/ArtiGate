@@ -1,4 +1,4 @@
-import { User } from "../models/user.model";
+import { User } from "@prisma/client";
 import { CreateUserDTO } from "../../applications/dtos/user/createUser.dto";
 
 export abstract class UserRepository {

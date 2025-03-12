@@ -1,5 +1,5 @@
 export class Address {
-  static readonly COUNTRY = 'Brasil';
+  static readonly COUNTRY = 'Brazil';
 
   private _id: string;
   private _zipCode: string;

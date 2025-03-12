@@ -1,4 +1,4 @@
-import { Address } from "@prisma/client";
+import { Address } from "../models/address.model";
 import { CreateAddressDTO } from "../../applications/dtos/address/createAddress.dto";
 
 export abstract class AddressRepository {

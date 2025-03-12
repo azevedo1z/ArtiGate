@@ -1,4 +1,4 @@
-import { Address } from "@prisma/client";
+import { Address } from "../models/address.model";
 import { CreateAddressDTO } from "../../applications/dtos/address/createAddress.dto";
 import { AddressRepository } from "./address.repository";
 import { PrismaService } from "../../infrastructure/prisma.service";

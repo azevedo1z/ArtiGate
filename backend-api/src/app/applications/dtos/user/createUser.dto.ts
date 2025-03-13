@@ -12,16 +12,16 @@ export class CreateUserDTO {
   phone: string;
 
   @ApiProperty()
-  homeAddress: CreateAddressDTO;
-
-  @ApiProperty()
-  jobAddress: CreateAddressDTO;
-
-  @ApiProperty()
   badgeUrl: string;
 
   @ApiProperty()
   roleIds: string[];
+
+  @ApiProperty()
+  homeAddress: CreateAddressDTO;
+
+  @ApiProperty()
+  jobAddress: CreateAddressDTO;
 
   constructor(
     name: string,

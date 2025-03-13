@@ -8,14 +8,19 @@ import { AddressRepository } from './domain/repositories/address.repository';
 import { AddressRepositoryImplementation } from './domain/repositories/address.repositoryImplementation';
 import { AddressController } from './presentations/address.controller';
 import { CreateAddressService } from './applications/services/address/createAddress.service';
+import { RoleController } from './presentations/role.controller';
+import { CreateRoleService } from './applications/services/role/createRole.service';
+import { RoleRepository } from './domain/repositories/role.repository';
+import { RoleRepositoryImplementation } from './domain/repositories/role.repositoryImplementation';
 
 @Module({
   imports: [],
-  controllers: [UserController, AddressController],
+  controllers: [UserController, AddressController, RoleController],
   providers: [
     PrismaService,
     CreateUserService,
     CreateAddressService,
+    CreateRoleService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,
@@ -23,6 +28,10 @@ import { CreateAddressService } from './applications/services/address/createAddr
     {
       provide: AddressRepository,
       useClass: AddressRepositoryImplementation,
+    },
+    {
+      provide: RoleRepository,
+      useClass: RoleRepositoryImplementation,
     },
   ],
 })

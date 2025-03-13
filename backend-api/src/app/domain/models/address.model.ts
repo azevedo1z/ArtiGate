@@ -10,7 +10,7 @@ export class Address {
   private _state: string;
   private _country: string;
 
-  constructor(
+  private constructor(
     id: string,
     zipCode: string,
     street: string,
@@ -28,6 +28,28 @@ export class Address {
     this._state = state;
     this._country = country;
     this._complement = complement;
+  }
+
+  static factory(
+    id: string,
+    zipCode: string,
+    street: string,
+    neighborhood: string,
+    city: string,
+    state: string,
+    country: string = Address.COUNTRY,
+    complement?: string
+  ): Address {
+    return new Address(
+      id,
+      zipCode,
+      street,
+      neighborhood,
+      city,
+      state,
+      country,
+      complement
+    );
   }
 
   get id(): string {

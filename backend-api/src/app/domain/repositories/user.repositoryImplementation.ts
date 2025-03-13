@@ -9,9 +9,11 @@ export class UserRepositoryImplementation implements UserRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {
+
     return this.prisma.user.findUnique({
       where: { email },
     });
+    
   }
 
   async create(

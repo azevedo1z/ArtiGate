@@ -22,16 +22,16 @@ export class CreateUserService {
     if (userExists)
       throw new Error('There is already a user with this e-mail.');
 
-    const homeAddressId = await this.createAddressService.execute(
+    const { id: homeAddressId } = await this.createAddressService.execute(
       homeAddressData
     );
-    const jobAddressId = await this.createAddressService.execute(
+    const {id: jobAddressId } = await this.createAddressService.execute(
       jobAddressData
     );
 
     const userRecord = await this.repository.create(userData, homeAddressId, jobAddressId);
 
-    return User.create(
+    return User.factory(
       userRecord.id,
       userRecord.name,
       userRecord.email,

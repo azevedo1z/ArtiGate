@@ -28,7 +28,7 @@ export class User {
     // this._userRoles = UserRole;
   }
 
-  static create(
+  static factory(
     id: string,
     name: string,
     email: string,

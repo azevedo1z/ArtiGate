@@ -20,8 +20,8 @@ export class CreateUserDTO {
   @ApiProperty()
   badgeUrl: string;
 
-  // @ApiProperty()
-  // _userRoles: UserRoleDTO[];
+  @ApiProperty()
+  roleIds: string[];
 
   constructor(
     name: string,
@@ -29,8 +29,8 @@ export class CreateUserDTO {
     phone: string,
     badgeUrl: string,
     homeAddress: CreateAddressDTO,
-    jobAddress: CreateAddressDTO
-    // userRoles: UserRoleDTO[]
+    jobAddress: CreateAddressDTO,
+    roleIds: string[]
   ) {
     this.name = name;
     this.email = email;
@@ -38,6 +38,6 @@ export class CreateUserDTO {
     this.badgeUrl = badgeUrl;
     this.homeAddress = homeAddress;
     this.jobAddress = jobAddress;
-    // this._userRoles = userRoles;
+    this.roleIds = roleIds;
   }
 }

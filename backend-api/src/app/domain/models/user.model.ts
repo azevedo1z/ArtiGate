@@ -7,7 +7,6 @@ export class User {
   private _homeAddressId: string;
   private _jobAddressId: string;
   private _badgeUrl: string;
-  // private _userRoles: UserRole[];
 
   private constructor(
     id: string,
@@ -16,7 +15,7 @@ export class User {
     phone: string,
     homeAddressId: string,
     jobAddressId: string,
-    badgeUrl: string /*, userRole: UserRole*/
+    badgeUrl: string
   ) {
     this._id = id;
     this._name = name;
@@ -25,7 +24,6 @@ export class User {
     this._homeAddressId = homeAddressId;
     this._jobAddressId = jobAddressId;
     this._badgeUrl = badgeUrl;
-    // this._userRoles = UserRole;
   }
 
   static factory(
@@ -99,12 +97,4 @@ export class User {
   private set badgeUrl(value: string) {
     this._badgeUrl = value;
   }
-
-  // get userRoles(): UserRole[] {
-  //   return this._userRoles;
-  // }
-
-  // private set userRoles(value: UserRole[]) {
-  //   this._userRoles = value;
-  // }
 }

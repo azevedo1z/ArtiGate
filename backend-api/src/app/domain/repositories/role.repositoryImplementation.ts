@@ -14,6 +14,13 @@ export class RoleRepositoryImplementation implements RoleRepository{
           where: { name },
         });
     }
+
+    async findById(id: string): Promise<Role | null> {
+        
+        return this.prisma.role.findUnique({
+          where: { id },
+        });
+    }
     
     async create(data: CreateRoleDTO): Promise<Role> {
 

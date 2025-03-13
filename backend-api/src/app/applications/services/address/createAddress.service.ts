@@ -9,17 +9,17 @@ export class CreateAddressService {
 
   async execute(data: CreateAddressDTO): Promise<Address> {
 
-    const addressRecord = await this.repository.create(data);
+    const address = await this.repository.create(data);
 
     return Address.factory(
-      addressRecord.id,
-      addressRecord.zipCode,
-      addressRecord.street,
-      addressRecord.neighborhood,
-      addressRecord.city,
-      addressRecord.state,
-      addressRecord.country,
-      addressRecord.complement ?? undefined
+      address.id,
+      address.zipCode,
+      address.street,
+      address.neighborhood,
+      address.city,
+      address.state,
+      address.country,
+      address.complement ?? undefined
     );
   }
 }

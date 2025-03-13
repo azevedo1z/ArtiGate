@@ -13,8 +13,8 @@ export class CreateRoleService {
     if (roleExists)
       throw new Error('There is already a role with this name.');
 
-    const role = await this.repository.create(data);
+    const roleRecord = await this.repository.create(data);
 
-    return Role.factory(role.id, role.name);
+    return Role.factory(roleRecord.id, roleRecord.name);
   }
 }

@@ -8,8 +8,9 @@ export class CreateRoleService {
   constructor(private readonly repository: RoleRepository) {}
 
   async execute(data: CreateRoleDTO): Promise<Role> {
-    const role = await this.repository.create(data);
 
-    return role;
+    const roleRecord = await this.repository.create(data);
+
+    return Role.factory(roleRecord.id, roleRecord.name);
   }
 }

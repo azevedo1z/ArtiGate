@@ -25,7 +25,7 @@ export class CreateUserService {
       const roleExists = await this.roleRepository.findById(roleId);
 
       if (!roleExists) {
-        throw new Error(`Role with ID ${roleId} does not exist.`);
+        throw new Error(`Role with ID "${roleId}" does not exist.`);
       }
     }
 

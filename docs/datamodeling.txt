@@ -48,7 +48,7 @@ string country //const: Brazil
 
 Role {
 string id,
-enum name
+string name
 }
 
 UserRole {

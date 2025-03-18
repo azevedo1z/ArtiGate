@@ -1,21 +1,14 @@
-
 export class Role {
   private _id: string;
   private _name: string;
 
- private constructor(id: string, name: string) {
+  private constructor(id: string, name: string) {
     this._id = id;
     this._name = name;
   }
 
-  static factory(
-    id: string,
-    name: string
-  ): Role {
-    return new Role(
-      id,
-      name
-    )
+  static factory(id: string, name: string): Role {
+    return new Role(id, name);
   }
 
   get id(): string {

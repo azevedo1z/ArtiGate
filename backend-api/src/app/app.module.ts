@@ -12,15 +12,25 @@ import { RoleController } from './presentations/role.controller';
 import { CreateRoleService } from './applications/services/role/createRole.service';
 import { RoleRepository } from './domain/repositories/role.repository';
 import { RoleRepositoryImplementation } from './domain/repositories/role.repositoryImplementation';
+import { ArticleController } from './presentations/article.controller';
+import { CreateArticleService } from './applications/services/article/createArticle.service';
+import { ArticleRepository } from './domain/repositories/article.repository';
+import { ArticleRepositoryImplementation } from './domain/repositories/article.repositoryImplementation';
 
 @Module({
   imports: [],
-  controllers: [UserController, AddressController, RoleController],
+  controllers: [
+    UserController,
+    AddressController,
+    RoleController,
+    ArticleController,
+  ],
   providers: [
     PrismaService,
     CreateUserService,
     CreateAddressService,
     CreateRoleService,
+    CreateArticleService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,
@@ -32,6 +42,10 @@ import { RoleRepositoryImplementation } from './domain/repositories/role.reposit
     {
       provide: RoleRepository,
       useClass: RoleRepositoryImplementation,
+    },
+    {
+      provide: ArticleRepository,
+      useClass: ArticleRepositoryImplementation,
     },
   ],
 })

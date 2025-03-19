@@ -8,4 +8,5 @@ export abstract class UserRepository {
     homeAddressId: string,
     jobAddressId: string
   ): Promise<User>;
+  abstract findById(id: string): Promise<User | null>;
 }

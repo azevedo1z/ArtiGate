@@ -19,17 +19,17 @@ export class CreateUserService {
     homeAddressData: CreateAddressDTO,
     jobAddressData: CreateAddressDTO
   ): Promise<User> {
-    const userExists = await this.repository.findByEmail(data.email);
+    const existingUser = await this.repository.findByEmail(data.email);
 
     for (const roleId of data.roleIds) {
-      const roleExists = await this.roleRepository.findById(roleId);
+      const existingRole = await this.roleRepository.findById(roleId);
 
-      if (!roleExists) {
+      if (existingRole == null) {
         throw new Error(`Role with ID "${roleId}" does not exist.`);
       }
     }
 
-    if (userExists)
+    if (existingUser != null)
       throw new Error('There is already a user with this e-mail.');
 
     const { id: homeAddressId } = await this.createAddressService.execute(

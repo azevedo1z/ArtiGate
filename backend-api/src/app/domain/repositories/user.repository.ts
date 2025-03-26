@@ -9,4 +9,5 @@ export abstract class UserRepository {
     jobAddressId: string
   ): Promise<User>;
   abstract findById(id: string): Promise<User | null>;
+  abstract findAll(): Promise<Array<User>>;
 }

@@ -19,8 +19,13 @@ export class UserController {
     );
   }
 
+  @Get('allUsers')
+  async getAll() {
+    return this.getUserService.getAll();
+  }
+
   @Get(':id')
-  async get(@Param('id') id: string) {
-    return this.getUserService.execute(id);
+  async getById(@Param('id') id: string) {
+    return this.getUserService.getById(id);
   }
 }

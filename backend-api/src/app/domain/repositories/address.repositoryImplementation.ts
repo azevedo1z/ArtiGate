@@ -19,4 +19,14 @@ export class AddressRepositoryImplementation implements AddressRepository {
     };
     return this.prisma.address.create({ data: address });
   }
+
+  async getById(id: string): Promise<Address | null> {
+    return this.prisma.address.findUnique({
+      where: { id },
+    });
+  }
+
+  async getAll(): Promise<Array<Address>> {
+    return this.prisma.address.findMany();
+  }
 }

@@ -6,7 +6,7 @@ import { User } from '../../../domain/models/user.model';
 export class GetUserService {
   constructor(private readonly repository: UserRepository) {}
 
-  async execute(id: string): Promise<User | null> {
+  async getById(id: string): Promise<User | null> {
     const existingUser = await this.repository.findById(id);
 
     if (existingUser == null)
@@ -20,6 +20,22 @@ export class GetUserService {
       existingUser.homeAddressId,
       existingUser.jobAddressId,
       existingUser.badgeUrl
+    );
+  }
+
+  async getAll(): Promise<Array<User>> {
+    const users = await this.repository.findAll();
+
+    return users.map((existingUser) =>
+      User.factory(
+        existingUser.id,
+        existingUser.name,
+        existingUser.email,
+        existingUser.phone,
+        existingUser.homeAddressId,
+        existingUser.jobAddressId,
+        existingUser.badgeUrl
+      )
     );
   }
 }

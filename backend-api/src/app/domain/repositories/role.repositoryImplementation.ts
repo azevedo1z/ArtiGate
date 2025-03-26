@@ -23,4 +23,8 @@ export class RoleRepositoryImplementation implements RoleRepository {
   async create(data: CreateRoleDTO): Promise<Role> {
     return this.prisma.role.create({ data });
   }
+
+  async findAll(): Promise<Array<Role>> {
+    return this.prisma.role.findMany();
+  }
 }

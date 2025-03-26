@@ -17,6 +17,7 @@ import { CreateArticleService } from './applications/services/article/createArti
 import { ArticleRepository } from './domain/repositories/article.repository';
 import { ArticleRepositoryImplementation } from './domain/repositories/article.repositoryImplementation';
 import { GetUserService } from './applications/services/user/getUser.service';
+import { GetRoleService } from './applications/services/role/getRole.service';
 
 @Module({
   imports: [],
@@ -33,6 +34,7 @@ import { GetUserService } from './applications/services/user/getUser.service';
     CreateRoleService,
     CreateArticleService,
     GetUserService,
+    GetRoleService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

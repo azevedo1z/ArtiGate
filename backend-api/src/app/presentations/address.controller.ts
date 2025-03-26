@@ -5,7 +5,8 @@ import { GetAddressService } from '../applications/services/address/getAddress.s
 
 @Controller('address')
 export class AddressController {
-  constructor(private readonly createAddressService: CreateAddressService,
+  constructor(
+    private readonly createAddressService: CreateAddressService,
     private readonly getAddressService: GetAddressService
   ) {}
 
@@ -14,8 +15,13 @@ export class AddressController {
     return this.createAddressService.execute(data);
   }
 
+  @Get('allAddresses')
+  async getAll() {
+    return this.getAddressService.getAll();
+  }
+
   @Get(':id')
-  async getById(@Param('id') id: string){
+  async getById(@Param('id') id: string) {
     return this.getAddressService.getById(id);
   }
 }

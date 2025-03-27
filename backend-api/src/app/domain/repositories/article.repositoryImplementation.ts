@@ -1,5 +1,5 @@
 import { Article } from '@prisma/client';
-import { CreateArticleDTO } from '../../applications/dtos/article/createArticle.dto';
+import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
 import { ArticleRepository } from './article.repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/prisma.service';

@@ -7,7 +7,7 @@ export class GetAddressService {
   constructor(private readonly repository: AddressRepository) {}
 
   async getById(id: string): Promise<Address | null> {
-    const existingAddress = await this.repository.getById(id);
+    const existingAddress = await this.repository.findById(id);
 
     if (existingAddress == null)
       throw new Error(`There is no address with the ID "${id}".`);
@@ -25,7 +25,7 @@ export class GetAddressService {
   }
 
   async getAll(): Promise<Array<Address>> {
-    const addresses = await this.repository.getAll();
+    const addresses = await this.repository.findAll();
 
     return addresses.map((existingAddress) =>
       Address.factory(

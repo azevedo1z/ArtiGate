@@ -1,5 +1,5 @@
 import { Address } from '@prisma/client';
-import { CreateAddressDTO } from '../../applications/dtos/address/createAddress.dto';
+import { CreateAddressDTO } from '../../application/dtos/address/createAddress.dto';
 import { AddressRepository } from './address.repository';
 import { PrismaService } from '../../infrastructure/prisma.service';
 import { Injectable } from '@nestjs/common';
@@ -20,13 +20,13 @@ export class AddressRepositoryImplementation implements AddressRepository {
     return this.prisma.address.create({ data: address });
   }
 
-  async getById(id: string): Promise<Address | null> {
+  async findById(id: string): Promise<Address | null> {
     return this.prisma.address.findUnique({
       where: { id },
     });
   }
 
-  async getAll(): Promise<Array<Address>> {
+  async findAll(): Promise<Array<Address>> {
     return this.prisma.address.findMany();
   }
 }

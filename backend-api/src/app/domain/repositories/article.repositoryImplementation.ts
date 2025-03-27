@@ -1,5 +1,5 @@
 import { Article } from '@prisma/client';
-import { CreateArticleDTO } from '../../applications/dtos/article/createArticle.dto';
+import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
 import { ArticleRepository } from './article.repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/prisma.service';
@@ -15,5 +15,13 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
     };
 
     return this.prisma.article.create({ data: article });
+  }
+
+  async findById(id: string): Promise<Article | null> {
+    return this.prisma.article.findUnique({ where: { id } });
+  }
+
+  async findAll(): Promise<Array<Article>> {
+    return this.prisma.article.findMany();
   }
 }

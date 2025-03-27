@@ -1,0 +1,33 @@
+import { Injectable } from '@nestjs/common';
+import { ArticleRepository } from '../../../domain/repositories/article.repository';
+import { Article } from '../../../domain/models/article.model';
+
+@Injectable()
+export class GetArticleService {
+  constructor(private readonly repository: ArticleRepository) {}
+
+  async getById(id: string): Promise<Article | null> {
+    const existingArticle = await this.repository.findById(id);
+
+    if (existingArticle == null)
+      throw new Error(`There is no article with the ID "${id}".`);
+
+    return Article.factory(
+      existingArticle.id,
+      existingArticle.summary,
+      existingArticle.scoreAvg
+    );
+  }
+
+  async getAll(): Promise<Array<Article>> {
+    const articles = await this.repository.findAll();
+
+    return articles.map((existingArticle) =>
+      Article.factory(
+        existingArticle.id,
+        existingArticle.summary,
+        existingArticle.scoreAvg
+      )
+    );
+  }
+}

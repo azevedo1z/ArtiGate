@@ -19,6 +19,7 @@ import { ArticleRepositoryImplementation } from './domain/repositories/article.r
 import { GetUserService } from './applications/services/user/getUser.service';
 import { GetRoleService } from './applications/services/role/getRole.service';
 import { GetAddressService } from './applications/services/address/getAddress.service';
+import { GetArticleService } from './applications/services/article/getArticle.service';
 
 @Module({
   imports: [],
@@ -37,6 +38,7 @@ import { GetAddressService } from './applications/services/address/getAddress.se
     GetUserService,
     GetRoleService,
     GetAddressService,
+    GetArticleService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

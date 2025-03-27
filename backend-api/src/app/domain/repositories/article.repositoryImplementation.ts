@@ -16,4 +16,12 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
 
     return this.prisma.article.create({ data: article });
   }
+
+  async findById(id: string): Promise<Article | null> {
+    return this.prisma.article.findUnique({ where: { id } });
+  }
+
+  async findAll(): Promise<Array<Article>> {
+    return this.prisma.article.findMany();
+  }
 }

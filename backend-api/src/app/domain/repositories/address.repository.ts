@@ -4,5 +4,5 @@ import { CreateAddressDTO } from '../../application/dtos/address/createAddress.d
 export abstract class AddressRepository {
   abstract create(data: CreateAddressDTO): Promise<Address>;
   abstract findById(id: string): Promise<Address | null>;
-  abstract findAll(): Promise<Array<Address>>;
+  abstract findAll(): Promise<Address[]>;
 }

@@ -16,7 +16,7 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
     return this.prisma.review.findUnique({ where: { id } });
   }
 
-  async findAll(): Promise<Array<Review>> {
+  async findAll(): Promise<Review[]> {
     return this.prisma.review.findMany();
   }
 }

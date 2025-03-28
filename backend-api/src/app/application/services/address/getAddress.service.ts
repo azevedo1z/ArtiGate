@@ -24,7 +24,7 @@ export class GetAddressService {
     );
   }
 
-  async getAll(): Promise<Array<Address>> {
+  async getAll(): Promise<Address[]> {
     const addresses = await this.repository.findAll();
 
     return addresses.map((existingAddress) =>

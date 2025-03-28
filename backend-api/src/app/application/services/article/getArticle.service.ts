@@ -19,7 +19,7 @@ export class GetArticleService {
     );
   }
 
-  async getAll(): Promise<Array<Article>> {
+  async getAll(): Promise<Article[]> {
     const articles = await this.repository.findAll();
 
     return articles.map((existingArticle) =>

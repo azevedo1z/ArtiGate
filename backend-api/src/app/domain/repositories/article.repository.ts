@@ -4,5 +4,5 @@ import { CreateArticleDTO } from '../../application/dtos/article/createArticle.d
 export abstract class ArticleRepository {
   abstract create(data: CreateArticleDTO): Promise<Article>;
   abstract findById(id: string): Promise<Article | null>;
-  abstract findAll(): Promise <Array<Article>>;
+  abstract findAll(): Promise <Article[]>;
 }

@@ -23,7 +23,7 @@ export class GetUserService {
     );
   }
 
-  async getAll(): Promise<Array<User>> {
+  async getAll(): Promise<User[]> {
     const users = await this.repository.findAll();
 
     return users.map((existingUser) =>

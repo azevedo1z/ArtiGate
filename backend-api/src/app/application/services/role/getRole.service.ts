@@ -15,7 +15,7 @@ export class GetRoleService {
     return Role.factory(existingRole.id, existingRole.name);
   }
 
-  async getAll(): Promise<Array<Role>> {
+  async getAll(): Promise<Role[]> {
     const roles = await this.repository.findAll();
 
     return roles.map((existingRole) =>

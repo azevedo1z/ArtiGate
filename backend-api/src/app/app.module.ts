@@ -24,6 +24,7 @@ import { ReviewController } from './presentation/review.controller';
 import { ReviewRepository } from './domain/repositories/review.repository';
 import { ReviewRepositoryImplementation } from './domain/repositories/review.repositoryImplementation';
 import { GetReviewService } from './application/services/review/getReview.service';
+import { CreateReviewService } from './application/services/review/createReview.service';
 
 @Module({
   imports: [],
@@ -40,6 +41,7 @@ import { GetReviewService } from './application/services/review/getReview.servic
     CreateAddressService,
     CreateRoleService,
     CreateArticleService,
+    CreateReviewService,
     GetUserService,
     GetRoleService,
     GetAddressService,

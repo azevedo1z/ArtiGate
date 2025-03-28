@@ -18,7 +18,7 @@ export class AddressRepositoryImplementation implements AddressRepository {
     });
   }
 
-  async findAll(): Promise<Array<Address>> {
+  async findAll(): Promise<Address[]> {
     return this.prisma.address.findMany();
   }
 }

@@ -11,4 +11,12 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
   async create(data: CreateReviewDTO): Promise<Review> {
     return this.prisma.review.create({ data });
   }
+
+  async findById(id: string): Promise<Review | null> {
+    return this.prisma.review.findUnique({ where: { id } });
+  }
+
+  async findAll(): Promise<Array<Review>> {
+    return this.prisma.review.findMany();
+  }
 }

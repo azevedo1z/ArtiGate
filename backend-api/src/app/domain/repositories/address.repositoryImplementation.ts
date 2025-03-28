@@ -9,15 +9,7 @@ export class AddressRepositoryImplementation implements AddressRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateAddressDTO): Promise<Address> {
-    const address = {
-      city: data.city,
-      neighborhood: data.neighborhood,
-      state: data.state,
-      street: data.street,
-      zipCode: data.zipCode,
-      complement: data.complement ?? undefined,
-    };
-    return this.prisma.address.create({ data: address });
+    return this.prisma.address.create({ data });
   }
 
   async findById(id: string): Promise<Address | null> {

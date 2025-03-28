@@ -9,13 +9,6 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateReviewDTO): Promise<Review> {
-    const review = {
-      articleId: data.articleId,
-      reviewerId: data.reviewerId,
-      score: data.score,
-      commentary: data.commentary,
-    };
-
-    return this.prisma.review.create({ data: review });
+    return this.prisma.review.create({ data });
   }
 }

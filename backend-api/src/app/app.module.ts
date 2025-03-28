@@ -21,9 +21,9 @@ import { GetRoleService } from './application/services/role/getRole.service';
 import { GetAddressService } from './application/services/address/getAddress.service';
 import { GetArticleService } from './application/services/article/getArticle.service';
 import { ReviewController } from './presentation/review.controller';
-import { CreateReviewDTO } from './application/dtos/review/createReview.dto';
 import { ReviewRepository } from './domain/repositories/review.repository';
 import { ReviewRepositoryImplementation } from './domain/repositories/review.repositoryImplementation';
+import { GetReviewService } from './application/services/review/getReview.service';
 
 @Module({
   imports: [],
@@ -40,11 +40,11 @@ import { ReviewRepositoryImplementation } from './domain/repositories/review.rep
     CreateAddressService,
     CreateRoleService,
     CreateArticleService,
-    CreateReviewDTO,
     GetUserService,
     GetRoleService,
     GetAddressService,
     GetArticleService,
+    GetReviewService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

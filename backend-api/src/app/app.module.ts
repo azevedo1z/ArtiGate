@@ -20,6 +20,10 @@ import { GetUserService } from './application/services/user/getUser.service';
 import { GetRoleService } from './application/services/role/getRole.service';
 import { GetAddressService } from './application/services/address/getAddress.service';
 import { GetArticleService } from './application/services/article/getArticle.service';
+import { ReviewController } from './presentation/review.controller';
+import { ReviewRepository } from './domain/repositories/review.repository';
+import { ReviewRepositoryImplementation } from './domain/repositories/review.repositoryImplementation';
+import { GetReviewService } from './application/services/review/getReview.service';
 
 @Module({
   imports: [],
@@ -28,6 +32,7 @@ import { GetArticleService } from './application/services/article/getArticle.ser
     AddressController,
     RoleController,
     ArticleController,
+    ReviewController,
   ],
   providers: [
     PrismaService,
@@ -39,6 +44,7 @@ import { GetArticleService } from './application/services/article/getArticle.ser
     GetRoleService,
     GetAddressService,
     GetArticleService,
+    GetReviewService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,
@@ -54,6 +60,10 @@ import { GetArticleService } from './application/services/article/getArticle.ser
     {
       provide: ArticleRepository,
       useClass: ArticleRepositoryImplementation,
+    },
+    {
+      provide: ReviewRepository,
+      useClass: ReviewRepositoryImplementation,
     },
   ],
 })

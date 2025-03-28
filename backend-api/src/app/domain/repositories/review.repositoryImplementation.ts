@@ -10,7 +10,7 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
 
   async create(data: CreateReviewDTO): Promise<Review> {
     const review = {
-      articleid: data.articleId,
+      articleId: data.articleId,
       reviewerId: data.reviewerId,
       score: data.score,
       commentary: data.commentary,

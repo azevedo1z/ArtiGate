@@ -9,7 +9,11 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateArticleDTO): Promise<Article> {
-    const articleRecord = await this.prisma.article.create({ data });
+    const article = {
+      summary: data.summary,
+    };
+
+    const articleRecord = await this.prisma.article.create({ data: article });
 
     for (const userId of data.authorIds) {
       await this.prisma.articleAuthor.create({

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ArticleRepository } from '../../../domain/repositories/article.repository';
 import { Article } from '../../../domain/models/article.model';
+import { ArticleAuthor } from '@prisma/client';
 
 @Injectable()
 export class GetArticleService {
@@ -29,5 +30,19 @@ export class GetArticleService {
         existingArticle.scoreAvg
       )
     );
+  }
+
+  async getAllAuthors(): Promise<ArticleAuthor[]> {
+    const articleAuthors = await this.repository.findAllAuthors();
+
+    return [...articleAuthors];
+  }
+
+  async getByAuthorId(articleId: string): Promise<ArticleAuthor[]> {
+    const existingArticleAuthor = await this.repository.findAuthorsByArticleId(
+      articleId
+    );
+
+    return [...existingArticleAuthor];
   }
 }

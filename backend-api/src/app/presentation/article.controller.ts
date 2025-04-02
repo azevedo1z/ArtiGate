@@ -20,8 +20,18 @@ export class ArticleController {
     return this.getArticleService.getAll();
   }
 
+  @Get('allAuthors')
+  async getAllAuthors() {
+    return this.getArticleService.getAllAuthors();
+  }
+
   @Get(':id')
   async getById(@Param('id') id: string) {
     return this.getArticleService.getById(id);
+  }
+
+  @Get('authorsBy/:articleId')
+  async getAuthorByArticleId(@Param('articleId') articleId: string) {
+    return this.getArticleService.getByAuthorId(articleId);
   }
 }

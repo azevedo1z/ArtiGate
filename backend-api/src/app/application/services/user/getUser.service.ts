@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UserRepository } from '../../../domain/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
+import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class GetUserService {
@@ -37,5 +38,17 @@ export class GetUserService {
         existingUser.badgeUrl
       )
     );
+  }
+
+  async getAllRoles(): Promise<UserRole[]> {
+    const userRoles = await this.repository.findAllRoles();
+
+    return [...userRoles];
+  }
+
+  async getRolesByUserId(userId: string): Promise<UserRole[]> {
+    const userRoles = await this.repository.findRolesByAuthorId(userId);
+
+    return [...userRoles];
   }
 }

@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 
 export abstract class UserRepository {
@@ -10,4 +10,6 @@ export abstract class UserRepository {
   ): Promise<User>;
   abstract findById(id: string): Promise<User | null>;
   abstract findAll(): Promise<User[]>;
+  abstract findAllRoles(): Promise<UserRole[]>;
+  abstract findRolesByAuthorId(userId: string): Promise<UserRole[]>;
 }

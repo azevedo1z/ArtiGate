@@ -29,5 +29,13 @@ export class UserController {
     return this.getUserService.getById(id);
   }
 
-  //TODO: Get UserRole
+  @Get('allRoles')
+  async getAllRoles() {
+    return this.getUserService.getAllRoles();
+  }
+
+  @Get('rolesBy/{userId}')
+  async getRolesByUserId(@Param('userId') userId: string) {
+    return this.getUserService.getRolesByUserId(userId);
+  }
 }

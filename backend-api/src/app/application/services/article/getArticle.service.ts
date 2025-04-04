@@ -39,10 +39,10 @@ export class GetArticleService {
   }
 
   async getByAuthorId(articleId: string): Promise<ArticleAuthor[]> {
-    const existingArticleAuthor = await this.repository.findAuthorsByArticleId(
+    const articleAuthors = await this.repository.findAuthorsByArticleId(
       articleId
     );
 
-    return [...existingArticleAuthor];
+    return [...articleAuthors];
   }
 }

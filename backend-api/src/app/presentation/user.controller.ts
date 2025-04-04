@@ -28,4 +28,6 @@ export class UserController {
   async getById(@Param('id') id: string) {
     return this.getUserService.getById(id);
   }
+
+  //TODO: Get UserRole
 }

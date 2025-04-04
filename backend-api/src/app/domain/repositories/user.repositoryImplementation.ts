@@ -1,4 +1,4 @@
-import { User } from '@prisma/client';
+import { User, UserRole } from '@prisma/client';
 import { PrismaService } from '../../infrastructure/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { UserRepository } from './user.repository';
@@ -47,5 +47,13 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async findAll(): Promise<User[]> {
     return this.prisma.user.findMany();
+  }
+
+  async findAllRoles(): Promise<UserRole[]> {
+    return this.prisma.userRole.findMany();
+  }
+
+  async findRolesByAuthorId(userId: string): Promise<UserRole[]> {
+    return this.prisma.userRole.findMany({ where: { userId } });
   }
 }

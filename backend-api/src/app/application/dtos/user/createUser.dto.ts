@@ -23,6 +23,9 @@ export class CreateUserDTO {
   @ApiProperty()
   jobAddress: CreateAddressDTO;
 
+  @ApiProperty()
+  password: string;
+
   constructor(
     name: string,
     email: string,
@@ -30,7 +33,8 @@ export class CreateUserDTO {
     badgeUrl: string,
     homeAddress: CreateAddressDTO,
     jobAddress: CreateAddressDTO,
-    roleIds: string[]
+    roleIds: string[],
+    password: string
   ) {
     this.name = name;
     this.email = email;
@@ -39,5 +43,6 @@ export class CreateUserDTO {
     this.homeAddress = homeAddress;
     this.jobAddress = jobAddress;
     this.roleIds = roleIds;
+    this.password = password;
   }
 }

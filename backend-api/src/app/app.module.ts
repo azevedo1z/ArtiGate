@@ -25,9 +25,16 @@ import { ReviewRepository } from './domain/repositories/review.repository';
 import { ReviewRepositoryImplementation } from './domain/repositories/review.repositoryImplementation';
 import { GetReviewService } from './application/services/review/getReview.service';
 import { CreateReviewService } from './application/services/review/createReview.service';
+import { AuthService } from './infrastructure/auth.service';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
-  imports: [],
+  imports: [
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: '1d' },
+    }),
+  ],
   controllers: [
     UserController,
     AddressController,
@@ -47,6 +54,7 @@ import { CreateReviewService } from './application/services/review/createReview.
     GetAddressService,
     GetArticleService,
     GetReviewService,
+    AuthService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

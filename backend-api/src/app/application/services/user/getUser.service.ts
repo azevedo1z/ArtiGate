@@ -20,7 +20,8 @@ export class GetUserService {
       existingUser.phone,
       existingUser.homeAddressId,
       existingUser.jobAddressId,
-      existingUser.badgeUrl
+      existingUser.badgeUrl,
+      existingUser.passwordHash
     );
   }
 
@@ -35,7 +36,8 @@ export class GetUserService {
         existingUser.phone,
         existingUser.homeAddressId,
         existingUser.jobAddressId,
-        existingUser.badgeUrl
+        existingUser.badgeUrl,
+        existingUser.passwordHash
       )
     );
   }
@@ -50,5 +52,23 @@ export class GetUserService {
     const userRoles = await this.repository.findRolesByAuthorId(userId);
 
     return [...userRoles];
+  }
+
+  async getByEmail(email: string): Promise<User> {
+    const existingUser = await this.repository.findByEmail(email);
+
+    if (existingUser == null)
+      throw new Error(`There is no user with the E-mail "${email}".`);
+
+    return User.factory(
+      existingUser.id,
+      existingUser.name,
+      existingUser.email,
+      existingUser.phone,
+      existingUser.homeAddressId,
+      existingUser.jobAddressId,
+      existingUser.badgeUrl,
+      existingUser.passwordHash
+    );
   }
 }

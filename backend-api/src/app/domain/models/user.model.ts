@@ -6,6 +6,7 @@ export class User {
   private _homeAddressId: string;
   private _jobAddressId: string;
   private _badgeUrl: string;
+  private _passwordHash: string;
 
   private constructor(
     id: string,
@@ -14,7 +15,8 @@ export class User {
     phone: string,
     homeAddressId: string,
     jobAddressId: string,
-    badgeUrl: string
+    badgeUrl: string,
+    passwordHash: string
   ) {
     this._id = id;
     this._name = name;
@@ -23,6 +25,7 @@ export class User {
     this._homeAddressId = homeAddressId;
     this._jobAddressId = jobAddressId;
     this._badgeUrl = badgeUrl;
+    this._passwordHash = passwordHash;
   }
 
   static factory(
@@ -32,7 +35,8 @@ export class User {
     phone: string,
     homeAddressId: string,
     jobAddressId: string,
-    badgeUrl: string
+    badgeUrl: string,
+    passwordHash: string
   ): User {
     return new User(
       id,
@@ -41,7 +45,8 @@ export class User {
       phone,
       homeAddressId,
       jobAddressId,
-      badgeUrl
+      badgeUrl,
+      passwordHash
     );
   }
 
@@ -95,5 +100,13 @@ export class User {
 
   private set badgeUrl(value: string) {
     this._badgeUrl = value;
+  }
+
+  get passwordHash(): string {
+    return this._passwordHash;
+  }
+
+  private set passwordHash(value: string) {
+    this._passwordHash = value;
   }
 }

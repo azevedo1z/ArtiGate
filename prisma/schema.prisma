@@ -33,6 +33,7 @@ model User {
   phone String
   email String @unique
   badgeUrl String
+  passwordHash String
 
   articles ArticleAuthor[]
   reviews Review[]

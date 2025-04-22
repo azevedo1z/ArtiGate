@@ -51,4 +51,21 @@ export class GetUserService {
 
     return [...userRoles];
   }
+
+  async getByEmail(email: string): Promise<User> {
+    const existingUser = await this.repository.findByEmail(email);
+
+    if (existingUser == null)
+      throw new Error(`There is no user with the E-mail "${email}".`);
+
+    return User.factory(
+      existingUser.id,
+      existingUser.name,
+      existingUser.email,
+      existingUser.phone,
+      existingUser.homeAddressId,
+      existingUser.jobAddressId,
+      existingUser.badgeUrl
+    );
+  }
 }

@@ -26,6 +26,7 @@ export class UserRepositoryImplementation implements UserRepository {
       badgeUrl: data.badgeUrl,
       homeAddressId,
       jobAddressId,
+      passwordHash: data.password,
     };
 
     const userRecord = await this.prisma.user.create({ data: user });

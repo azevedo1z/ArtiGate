@@ -5,6 +5,7 @@ import { User } from '../../../domain/models/user.model';
 import { Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
 import { RoleRepository } from '../../../domain/repositories/role.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class CreateUserService {
@@ -19,6 +20,9 @@ export class CreateUserService {
     homeAddressData: CreateAddressDTO,
     jobAddressData: CreateAddressDTO
   ): Promise<User> {
+    const saltOrRounds = 10;
+    data.password = await bcrypt.hash(data.password, saltOrRounds);
+
     const existingUser = await this.repository.findByEmail(data.email);
 
     for (const roleId of data.roleIds) {

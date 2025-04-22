@@ -20,7 +20,8 @@ export class GetUserService {
       existingUser.phone,
       existingUser.homeAddressId,
       existingUser.jobAddressId,
-      existingUser.badgeUrl
+      existingUser.badgeUrl,
+      existingUser.passwordHash
     );
   }
 
@@ -35,7 +36,8 @@ export class GetUserService {
         existingUser.phone,
         existingUser.homeAddressId,
         existingUser.jobAddressId,
-        existingUser.badgeUrl
+        existingUser.badgeUrl,
+        existingUser.passwordHash
       )
     );
   }
@@ -65,7 +67,8 @@ export class GetUserService {
       existingUser.phone,
       existingUser.homeAddressId,
       existingUser.jobAddressId,
-      existingUser.badgeUrl
+      existingUser.badgeUrl,
+      existingUser.passwordHash
     );
   }
 }

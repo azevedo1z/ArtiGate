@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateRoleService } from '../application/services/role/createRole.service';
 import { CreateRoleDTO } from '../application/dtos/role/createRole.dto';
 import { GetRoleService } from '../application/services/role/getRole.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('role')
 export class RoleController {
@@ -11,6 +12,7 @@ export class RoleController {
   ) {}
 
   @Post('create')
+  @ApiBearerAuth()
   async create(@Body() data: CreateRoleDTO) {
     return this.createRoleService.execute(data);
   }

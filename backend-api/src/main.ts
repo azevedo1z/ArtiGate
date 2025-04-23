@@ -19,6 +19,7 @@ async function bootstrap() {
     .setTitle('ArtiGate API')
     .setDescription('API documentation')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const options: SwaggerDocumentOptions = {

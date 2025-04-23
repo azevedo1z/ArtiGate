@@ -2,15 +2,19 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { CreateUserService } from '../application/services/user/createUser.service';
 import { CreateUserDTO } from '../application/dtos/user/createUser.dto';
 import { GetUserService } from '../application/services/user/getUser.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthService } from '../infrastructure/auth.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly createUserService: CreateUserService,
-    private readonly getUserService: GetUserService
+    private readonly getUserService: GetUserService,
+    private readonly authService: AuthService
   ) {}
 
   @Post('create')
+  @ApiBearerAuth()
   async create(@Body() data: CreateUserDTO) {
     return this.createUserService.execute(
       data,
@@ -37,5 +41,11 @@ export class UserController {
   @Get('rolesBy/{userId}')
   async getRolesByUserId(@Param('userId') userId: string) {
     return this.getUserService.getRolesByUserId(userId);
+  }
+
+  @Post('signIn')
+  @ApiBearerAuth()
+  async signIn(@Body() email: string, password: string) {
+    return this.authService.signIn(email, password);
   }
 }

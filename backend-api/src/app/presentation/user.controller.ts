@@ -2,6 +2,7 @@ import { Controller, Post, Body, Get, Param } from '@nestjs/common';
 import { CreateUserService } from '../application/services/user/createUser.service';
 import { CreateUserDTO } from '../application/dtos/user/createUser.dto';
 import { GetUserService } from '../application/services/user/getUser.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('user')
 export class UserController {
@@ -11,6 +12,7 @@ export class UserController {
   ) {}
 
   @Post('create')
+  @ApiBearerAuth()
   async create(@Body() data: CreateUserDTO) {
     return this.createUserService.execute(
       data,

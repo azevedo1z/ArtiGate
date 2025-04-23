@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreateReviewService } from '../application/services/review/createReview.service';
 import { CreateReviewDTO } from '../application/dtos/review/createReview.dto';
 import { GetReviewService } from '../application/services/review/getReview.service';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('review')
 export class ReviewController {
@@ -11,6 +12,7 @@ export class ReviewController {
   ) {}
 
   @Post('create')
+  @ApiBearerAuth()
   async create(@Body() data: CreateReviewDTO) {
     return this.createReviewService.execute(data);
   }

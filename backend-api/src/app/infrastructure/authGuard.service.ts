@@ -23,9 +23,12 @@ export class AuthGuardService implements CanActivate {
   private async validateRequest(request: Request): Promise<boolean> {
     const authHeader = request.headers['authorization'];
 
-    if (authHeader == null) throw new Error('AuthHeader is empty.');
+    if (authHeader == null)
+      throw new UnauthorizedException(
+        'Missing or badly formatted Bearer token.'
+      );
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.replace('Bearer ', '').trim();
 
     try {
       const secretKey = process.env.SECRET_KEY;

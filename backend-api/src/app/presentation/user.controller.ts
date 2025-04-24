@@ -4,6 +4,8 @@ import { CreateUserDTO } from '../application/dtos/user/createUser.dto';
 import { GetUserService } from '../application/services/user/getUser.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from '../infrastructure/auth.service';
+import { AuthUserDTO } from '../application/dtos/user/authUser.dto';
+import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('user')
 export class UserController {
@@ -22,38 +24,36 @@ export class UserController {
     );
   }
 
+  @Post('signIn')
+  async signIn(@Body() data: AuthUserDTO) {
+    return this.authService.signIn(data);
+  }
+
   @Get('allUsers')
   @ApiBearerAuth()
-  @UseGuards()
+  @UseGuards(AuthGuardService)
   async getAll() {
     return this.getUserService.getAll();
   }
 
   @Get(':id')
   @ApiBearerAuth()
-  @UseGuards()
+  @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
     return this.getUserService.getById(id);
   }
 
   @Get('allRoles')
   @ApiBearerAuth()
-  @UseGuards()
+  @UseGuards(AuthGuardService)
   async getAllRoles() {
     return this.getUserService.getAllRoles();
   }
 
   @Get('rolesBy/{userId}')
   @ApiBearerAuth()
-  @UseGuards()
+  @UseGuards(AuthGuardService)
   async getRolesByUserId(@Param('userId') userId: string) {
     return this.getUserService.getRolesByUserId(userId);
-  }
-
-  @Post('signIn')
-  @ApiBearerAuth()
-  @UseGuards()
-  async signIn(@Body() email: string, password: string) {
-    return this.authService.signIn(email, password);
   }
 }

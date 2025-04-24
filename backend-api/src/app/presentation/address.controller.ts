@@ -12,17 +12,18 @@ export class AddressController {
   ) {}
 
   @Post('create')
-  @ApiBearerAuth()
   async create(@Body() data: CreateAddressDTO) {
     return this.createAddressService.execute(data);
   }
 
   @Get('allAddresses')
+  @ApiBearerAuth()
   async getAll() {
     return this.getAddressService.getAll();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   async getById(@Param('id') id: string) {
     return this.getAddressService.getById(id);
   }

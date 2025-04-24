@@ -18,21 +18,25 @@ export class ArticleController {
   }
 
   @Get('allArticles')
+  @ApiBearerAuth()
   async getAll() {
     return this.getArticleService.getAll();
   }
 
   @Get('allAuthors')
+  @ApiBearerAuth()
   async getAllAuthors() {
     return this.getArticleService.getAllAuthors();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   async getById(@Param('id') id: string) {
     return this.getArticleService.getById(id);
   }
 
   @Get('authorsBy/:articleId')
+  @ApiBearerAuth()
   async getAuthorByArticleId(@Param('articleId') articleId: string) {
     return this.getArticleService.getByAuthorId(articleId);
   }

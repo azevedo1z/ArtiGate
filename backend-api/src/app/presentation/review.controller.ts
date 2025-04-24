@@ -18,11 +18,13 @@ export class ReviewController {
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   async getById(@Param('id') id: string) {
     return this.getReviewService.getBydId(id);
   }
 
   @Get('allReviews')
+  @ApiBearerAuth()
   async getAll() {
     return this.getReviewService.getAll();
   }

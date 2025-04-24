@@ -14,7 +14,6 @@ export class UserController {
   ) {}
 
   @Post('create')
-  @ApiBearerAuth()
   async create(@Body() data: CreateUserDTO) {
     return this.createUserService.execute(
       data,
@@ -24,21 +23,25 @@ export class UserController {
   }
 
   @Get('allUsers')
+  @ApiBearerAuth()
   async getAll() {
     return this.getUserService.getAll();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   async getById(@Param('id') id: string) {
     return this.getUserService.getById(id);
   }
 
   @Get('allRoles')
+  @ApiBearerAuth()
   async getAllRoles() {
     return this.getUserService.getAllRoles();
   }
 
   @Get('rolesBy/{userId}')
+  @ApiBearerAuth()
   async getRolesByUserId(@Param('userId') userId: string) {
     return this.getUserService.getRolesByUserId(userId);
   }

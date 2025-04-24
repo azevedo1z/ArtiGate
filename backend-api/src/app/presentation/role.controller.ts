@@ -18,11 +18,13 @@ export class RoleController {
   }
 
   @Get('allRoles')
+  @ApiBearerAuth()
   async getAll() {
     return this.getRoleService.getAll();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
   async getById(@Param('id') id: string) {
     return this.getRoleService.getById(id);
   }

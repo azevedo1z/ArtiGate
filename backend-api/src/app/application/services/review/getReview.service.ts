@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ReviewRepository } from '../../../domain/repositories/review.repository';
 import { Review } from '../../../domain/models/review.model';
 
@@ -10,7 +10,7 @@ export class GetReviewService {
     const existingReview = await this.repository.findById(id);
 
     if (existingReview == null) {
-      throw new Error(`There is no review with the ID "${id}".`);
+      throw new BadRequestException(`There is no review with the ID "${id}".`);
     }
 
     return existingReview;

@@ -1,10 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateArticleService } from '../application/services/article/createArticle.service';
 import { CreateArticleDTO } from '../application/dtos/article/createArticle.dto';
 import { GetArticleService } from '../application/services/article/getArticle.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('article')
+@ApiBearerAuth()
+@UseGuards(AuthGuardService)
 export class ArticleController {
   constructor(
     private readonly createArticleService: CreateArticleService,
@@ -12,7 +15,6 @@ export class ArticleController {
   ) {}
 
   @Post('create')
-  @ApiBearerAuth()
   async create(@Body() data: CreateArticleDTO) {
     return this.createArticleService.execute(data);
   }

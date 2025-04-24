@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from '../../../domain/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
 import { UserRole } from '@prisma/client';
@@ -11,7 +11,7 @@ export class GetUserService {
     const existingUser = await this.repository.findById(id);
 
     if (existingUser == null)
-      throw new Error(`There is no user with the ID "${id}".`);
+      throw new BadRequestException(`There is no user with the ID "${id}".`);
 
     return User.factory(
       existingUser.id,
@@ -58,7 +58,9 @@ export class GetUserService {
     const existingUser = await this.repository.findByEmail(email);
 
     if (existingUser == null)
-      throw new Error(`There is no user with the E-mail "${email}".`);
+      throw new BadRequestException(
+        `There is no user with the E-mail "${email}".`
+      );
 
     return User.factory(
       existingUser.id,

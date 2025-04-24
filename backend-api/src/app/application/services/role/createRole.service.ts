@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRoleDTO } from '../../dtos/role/createRole.dto';
 import { Role } from '../../../domain/models/role.model';
 import { RoleRepository } from '../../../domain/repositories/role.repository';
@@ -10,7 +10,7 @@ export class CreateRoleService {
   async execute(data: CreateRoleDTO): Promise<Role> {
     const roleExists = await this.repository.findByName(data.name);
 
-    if (roleExists) throw new Error('There is already a role with this name.');
+    if (roleExists) throw new BadRequestException('There is already a role with this name.');
 
     const roleRecord = await this.repository.create(data);
 

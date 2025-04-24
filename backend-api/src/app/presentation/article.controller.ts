@@ -3,8 +3,11 @@ import { CreateArticleService } from '../application/services/article/createArti
 import { CreateArticleDTO } from '../application/dtos/article/createArticle.dto';
 import { GetArticleService } from '../application/services/article/getArticle.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('article')
+@ApiBearerAuth()
+@UseGuards(AuthGuardService)
 export class ArticleController {
   constructor(
     private readonly createArticleService: CreateArticleService,
@@ -12,36 +15,26 @@ export class ArticleController {
   ) {}
 
   @Post('create')
-  @ApiBearerAuth()
-  @UseGuards()
   async create(@Body() data: CreateArticleDTO) {
     return this.createArticleService.execute(data);
   }
 
   @Get('allArticles')
-  @ApiBearerAuth()
-  @UseGuards()
   async getAll() {
     return this.getArticleService.getAll();
   }
 
   @Get('allAuthors')
-  @ApiBearerAuth()
-  @UseGuards()
   async getAllAuthors() {
     return this.getArticleService.getAllAuthors();
   }
 
   @Get(':id')
-  @ApiBearerAuth()
-  @UseGuards()
   async getById(@Param('id') id: string) {
     return this.getArticleService.getById(id);
   }
 
   @Get('authorsBy/:articleId')
-  @ApiBearerAuth()
-  @UseGuards()
   async getAuthorByArticleId(@Param('articleId') articleId: string) {
     return this.getArticleService.getByAuthorId(articleId);
   }

@@ -3,8 +3,11 @@ import { CreateReviewService } from '../application/services/review/createReview
 import { CreateReviewDTO } from '../application/dtos/review/createReview.dto';
 import { GetReviewService } from '../application/services/review/getReview.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('review')
+@ApiBearerAuth()
+@UseGuards(AuthGuardService)
 export class ReviewController {
   constructor(
     private readonly createReviewService: CreateReviewService,
@@ -12,22 +15,16 @@ export class ReviewController {
   ) {}
 
   @Post('create')
-  @ApiBearerAuth()
-  @UseGuards()
   async create(@Body() data: CreateReviewDTO) {
     return this.createReviewService.execute(data);
   }
 
   @Get(':id')
-  @ApiBearerAuth()
-  @UseGuards()
   async getById(@Param('id') id: string) {
     return this.getReviewService.getBydId(id);
   }
 
   @Get('allReviews')
-  @ApiBearerAuth()
-  @UseGuards()
   async getAll() {
     return this.getReviewService.getAll();
   }

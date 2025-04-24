@@ -3,6 +3,7 @@ import { CreateAddressDTO } from '../application/dtos/address/createAddress.dto'
 import { CreateAddressService } from '../application/services/address/createAddress.service';
 import { GetAddressService } from '../application/services/address/getAddress.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('address')
 export class AddressController {
@@ -18,14 +19,14 @@ export class AddressController {
 
   @Get('allAddresses')
   @ApiBearerAuth()
-  @UseGuards()
+  @UseGuards(AuthGuardService)
   async getAll() {
     return this.getAddressService.getAll();
   }
 
   @Get(':id')
   @ApiBearerAuth()
-  @UseGuards()
+  @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
     return this.getAddressService.getById(id);
   }

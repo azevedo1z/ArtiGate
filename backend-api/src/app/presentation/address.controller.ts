@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateAddressDTO } from '../application/dtos/address/createAddress.dto';
 import { CreateAddressService } from '../application/services/address/createAddress.service';
 import { GetAddressService } from '../application/services/address/getAddress.service';
@@ -18,12 +18,14 @@ export class AddressController {
 
   @Get('allAddresses')
   @ApiBearerAuth()
+  @UseGuards()
   async getAll() {
     return this.getAddressService.getAll();
   }
 
   @Get(':id')
   @ApiBearerAuth()
+  @UseGuards()
   async getById(@Param('id') id: string) {
     return this.getAddressService.getById(id);
   }

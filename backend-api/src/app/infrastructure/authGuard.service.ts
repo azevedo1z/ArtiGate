@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { Request } from 'express';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuardService implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   canActivate(
@@ -29,11 +29,6 @@ export class AuthGuard implements CanActivate {
 
     try {
       const secretKey = process.env.SECRET_KEY;
-
-      if (secretKey == null)
-        throw new Error(
-          'SECRET_KEY is not defined in the environment variables'
-        );
 
       await this.jwtService.verify(token, { secret: secretKey });
 

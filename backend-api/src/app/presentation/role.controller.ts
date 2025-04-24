@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CreateRoleService } from '../application/services/role/createRole.service';
 import { CreateRoleDTO } from '../application/dtos/role/createRole.dto';
 import { GetRoleService } from '../application/services/role/getRole.service';
@@ -13,18 +13,21 @@ export class RoleController {
 
   @Post('create')
   @ApiBearerAuth()
+  @UseGuards()
   async create(@Body() data: CreateRoleDTO) {
     return this.createRoleService.execute(data);
   }
 
   @Get('allRoles')
   @ApiBearerAuth()
+  @UseGuards()
   async getAll() {
     return this.getRoleService.getAll();
   }
 
   @Get(':id')
   @ApiBearerAuth()
+  @UseGuards()
   async getById(@Param('id') id: string) {
     return this.getRoleService.getById(id);
   }

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
 import { CreateUserService } from '../application/services/user/createUser.service';
 import { CreateUserDTO } from '../application/dtos/user/createUser.dto';
 import { GetUserService } from '../application/services/user/getUser.service';
@@ -24,30 +24,35 @@ export class UserController {
 
   @Get('allUsers')
   @ApiBearerAuth()
+  @UseGuards()
   async getAll() {
     return this.getUserService.getAll();
   }
 
   @Get(':id')
   @ApiBearerAuth()
+  @UseGuards()
   async getById(@Param('id') id: string) {
     return this.getUserService.getById(id);
   }
 
   @Get('allRoles')
   @ApiBearerAuth()
+  @UseGuards()
   async getAllRoles() {
     return this.getUserService.getAllRoles();
   }
 
   @Get('rolesBy/{userId}')
   @ApiBearerAuth()
+  @UseGuards()
   async getRolesByUserId(@Param('userId') userId: string) {
     return this.getUserService.getRolesByUserId(userId);
   }
 
   @Post('signIn')
   @ApiBearerAuth()
+  @UseGuards()
   async signIn(@Body() email: string, password: string) {
     return this.authService.signIn(email, password);
   }

@@ -3,8 +3,11 @@ import { CreateRoleService } from '../application/services/role/createRole.servi
 import { CreateRoleDTO } from '../application/dtos/role/createRole.dto';
 import { GetRoleService } from '../application/services/role/getRole.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('role')
+@ApiBearerAuth()
+@UseGuards(AuthGuardService)
 export class RoleController {
   constructor(
     private readonly createRoleService: CreateRoleService,
@@ -12,22 +15,16 @@ export class RoleController {
   ) {}
 
   @Post('create')
-  @ApiBearerAuth()
-  @UseGuards()
   async create(@Body() data: CreateRoleDTO) {
     return this.createRoleService.execute(data);
   }
 
   @Get('allRoles')
-  @ApiBearerAuth()
-  @UseGuards()
   async getAll() {
     return this.getRoleService.getAll();
   }
 
   @Get(':id')
-  @ApiBearerAuth()
-  @UseGuards()
   async getById(@Param('id') id: string) {
     return this.getRoleService.getById(id);
   }

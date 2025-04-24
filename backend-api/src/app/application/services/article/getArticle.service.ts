@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { ArticleRepository } from '../../../domain/repositories/article.repository';
 import { Article } from '../../../domain/models/article.model';
 import { ArticleAuthor } from '@prisma/client';
@@ -11,7 +11,7 @@ export class GetArticleService {
     const existingArticle = await this.repository.findById(id);
 
     if (existingArticle == null)
-      throw new Error(`There is no article with the ID "${id}".`);
+      throw new BadRequestException(`There is no article with the ID "${id}".`);
 
     return Article.factory(
       existingArticle.id,

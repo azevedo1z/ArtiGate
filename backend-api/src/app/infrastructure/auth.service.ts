@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetUserService } from '../application/services/user/getUser.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -14,14 +14,14 @@ export class AuthService {
   async signIn(data: AuthUserDTO): Promise<{ access_token: string }> {
     const existingUser = await this.getUserService.getByEmail(data.email);
 
-    if (existingUser == null) throw new Error('User not found.');
+    if (existingUser == null) throw new BadRequestException('User not found.');
 
     const isPasswordValid = await bcrypt.compare(
       data.password,
       existingUser.passwordHash
     );
 
-    if (!isPasswordValid) throw new Error('Invalid password.');
+    if (!isPasswordValid) throw new BadRequestException('Invalid password.');
 
     const payload = { sub: existingUser.id };
 

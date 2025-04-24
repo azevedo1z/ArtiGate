@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { AddressRepository } from '../../../domain/repositories/address.repository';
 import { Address } from '../../../domain/models/address.model';
 
@@ -10,7 +10,7 @@ export class GetAddressService {
     const existingAddress = await this.repository.findById(id);
 
     if (existingAddress == null)
-      throw new Error(`There is no address with the ID "${id}".`);
+      throw new BadRequestException(`There is no address with the ID "${id}".`);
 
     return Address.factory(
       existingAddress.id,

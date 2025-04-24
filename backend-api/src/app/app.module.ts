@@ -27,6 +27,7 @@ import { GetReviewService } from './application/services/review/getReview.servic
 import { CreateReviewService } from './application/services/review/createReview.service';
 import { AuthService } from './infrastructure/auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthGuardService } from './infrastructure/authGuard.service';
 
 @Module({
   imports: [
@@ -55,6 +56,7 @@ import { JwtModule } from '@nestjs/jwt';
     GetArticleService,
     GetReviewService,
     AuthService,
+    AuthGuardService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

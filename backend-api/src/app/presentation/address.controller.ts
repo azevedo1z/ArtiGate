@@ -26,7 +26,11 @@ export class AddressController {
 
   @Post('create')
   async create(@Body() data: CreateAddressDTO) {
-    return await this.createAddressService.execute(data);
+    try {
+      return await this.createAddressService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Put('update')

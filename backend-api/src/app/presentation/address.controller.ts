@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -29,10 +30,14 @@ export class AddressController {
   }
 
   @Put('update')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateAddressDTO) {
-    const address = await this.getAddressService.getById(data.id);
-
-    return this.updateAdressService.execute(data);
+    try {
+      return await this.updateAddressService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('allAddresses')

@@ -41,20 +41,20 @@ export class UserRepositoryImplementation implements UserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
+    return await this.prisma.user.findUnique({
       where: { id },
     });
   }
 
   async findAll(): Promise<User[]> {
-    return this.prisma.user.findMany();
+    return await this.prisma.user.findMany();
   }
 
   async findAllRoles(): Promise<UserRole[]> {
-    return this.prisma.userRole.findMany();
+    return await this.prisma.userRole.findMany();
   }
 
   async findRolesByAuthorId(userId: string): Promise<UserRole[]> {
-    return this.prisma.userRole.findMany({ where: { userId } });
+    return await this.prisma.userRole.findMany({ where: { userId } });
   }
 }

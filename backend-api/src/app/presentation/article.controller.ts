@@ -16,26 +16,26 @@ export class ArticleController {
 
   @Post('create')
   async create(@Body() data: CreateArticleDTO) {
-    return this.createArticleService.execute(data);
+    return await this.createArticleService.execute(data);
   }
 
   @Get('allArticles')
   async getAll() {
-    return this.getArticleService.getAll();
+    return await this.getArticleService.getAll();
   }
 
   @Get('allAuthors')
   async getAllAuthors() {
-    return this.getArticleService.getAllAuthors();
+    return await this.getArticleService.getAllAuthors();
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return this.getArticleService.getById(id);
+    return await this.getArticleService.getById(id);
   }
 
   @Get('authorsBy/:articleId')
   async getAuthorByArticleId(@Param('articleId') articleId: string) {
-    return this.getArticleService.getByAuthorId(articleId);
+    return await this.getArticleService.getByAuthorId(articleId);
   }
 }

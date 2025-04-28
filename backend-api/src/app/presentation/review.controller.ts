@@ -16,16 +16,16 @@ export class ReviewController {
 
   @Post('create')
   async create(@Body() data: CreateReviewDTO) {
-    return this.createReviewService.execute(data);
+    return await this.createReviewService.execute(data);
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return this.getReviewService.getBydId(id);
+    return await this.getReviewService.getBydId(id);
   }
 
   @Get('allReviews')
   async getAll() {
-    return this.getReviewService.getAll();
+    return await this.getReviewService.getAll();
   }
 }

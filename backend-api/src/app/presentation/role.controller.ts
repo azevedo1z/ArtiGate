@@ -6,8 +6,6 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
 
 @Controller('role')
-@ApiBearerAuth()
-@UseGuards(AuthGuardService)
 export class RoleController {
   constructor(
     private readonly createRoleService: CreateRoleService,
@@ -20,11 +18,15 @@ export class RoleController {
   }
 
   @Get('allRoles')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
   async getAll() {
     return await this.getRoleService.getAll();
   }
 
   @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
     return await this.getRoleService.getById(id);
   }

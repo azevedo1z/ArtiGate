@@ -16,16 +16,16 @@ export class RoleController {
 
   @Post('create')
   async create(@Body() data: CreateRoleDTO) {
-    return this.createRoleService.execute(data);
+    return await this.createRoleService.execute(data);
   }
 
   @Get('allRoles')
   async getAll() {
-    return this.getRoleService.getAll();
+    return await this.getRoleService.getAll();
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return this.getRoleService.getById(id);
+    return await this.getRoleService.getById(id);
   }
 }

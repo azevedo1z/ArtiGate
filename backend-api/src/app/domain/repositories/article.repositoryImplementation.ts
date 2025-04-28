@@ -25,18 +25,18 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
   }
 
   async findById(id: string): Promise<Article | null> {
-    return this.prisma.article.findUnique({ where: { id } });
+    return await this.prisma.article.findUnique({ where: { id } });
   }
 
   async findAll(): Promise<Article[]> {
-    return this.prisma.article.findMany();
+    return await this.prisma.article.findMany();
   }
 
   async findAllAuthors(): Promise<ArticleAuthor[]> {
-    return this.prisma.articleAuthor.findMany();
+    return await this.prisma.articleAuthor.findMany();
   }
 
   async findAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    return this.prisma.articleAuthor.findMany({ where: { articleId } });
+    return await this.prisma.articleAuthor.findMany({ where: { articleId } });
   }
 }

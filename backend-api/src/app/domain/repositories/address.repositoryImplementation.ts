@@ -29,4 +29,12 @@ export class AddressRepositoryImplementation implements AddressRepository {
       data: { ...data, id: undefined },
     });
   }
+
+  async delete(id: string): Promise<boolean> {
+    await this.prisma.address.update({
+      where: { id: id },
+      data: { deletedOn: new Date() },
+    });
+    return true;
+  }
 }

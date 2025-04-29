@@ -12,4 +12,5 @@ export abstract class UserRepository {
   abstract findAll(): Promise<User[]>;
   abstract findAllRoles(): Promise<UserRole[]>;
   abstract findRolesByAuthorId(userId: string): Promise<UserRole[]>;
+  abstract findByAddressId(addressId: string): Promise<User[]>;
 }

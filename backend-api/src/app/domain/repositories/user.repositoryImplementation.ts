@@ -57,4 +57,12 @@ export class UserRepositoryImplementation implements UserRepository {
   async findRolesByAuthorId(userId: string): Promise<UserRole[]> {
     return await this.prisma.userRole.findMany({ where: { userId } });
   }
+
+  async findByAddressId(addressId: string): Promise<User[]> {
+    return await this.prisma.user.findMany({
+      where: {
+        OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
+      },
+    });
+  }
 }

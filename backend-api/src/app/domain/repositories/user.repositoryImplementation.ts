@@ -1,4 +1,4 @@
-import { User, UserRole } from '@prisma/client';
+import { ArticleAuthor, User, UserRole } from '@prisma/client';
 import { PrismaService } from '../../infrastructure/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { UserRepository } from './user.repository';
@@ -63,6 +63,12 @@ export class UserRepositoryImplementation implements UserRepository {
       where: {
         OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
       },
+    });
+  }
+
+  async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+    return await this.prisma.articleAuthor.findMany({
+      where: { articleId: articleId },
     });
   }
 }

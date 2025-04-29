@@ -88,4 +88,15 @@ export class UserController {
       throw new BadRequestException(error);
     }
   }
+
+  @Get('usersBy/{articleId}')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async getByArticleId(@Param('articleId') articleId: string) {
+    try {
+      return await this.getUserService.getByArticleId(articleId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

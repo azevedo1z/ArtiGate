@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from '../../../domain/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
-import { UserRole } from '@prisma/client';
+import { ArticleAuthor, UserRole } from '@prisma/client';
 
 @Injectable()
 export class GetUserService {
@@ -89,5 +89,9 @@ export class GetUserService {
         existingUser.passwordHash
       )
     );
+  }
+
+  async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+    return await this.repository.findByArticleId(articleId);
   }
 }

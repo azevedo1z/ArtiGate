@@ -7,4 +7,5 @@ export abstract class AddressRepository {
   abstract findById(id: string): Promise<Address | null>;
   abstract findAll(): Promise<Address[]>;
   abstract update(data: UpdateAddressDTO): Promise<Address>;
+  abstract delete(id: string): Promise<boolean>;
 }

@@ -8,6 +8,29 @@ export class PrismaService
 {
   async onModuleInit() {
     await this.$connect();
+
+    // middleware for soft delete filtering using Prisma Client Extensions
+    this.$extends({
+      query: {
+        $allModels: {
+          async findUnique({ args, query }) {
+            if (!args.where) args.where = {} as typeof args.where;
+            args.where.deletedOn = null;
+            return query(args);
+          },
+          async findFirst({ args, query }) {
+            if (!args.where) args.where = {};
+            args.where.deletedOn = null;
+            return query(args);
+          },
+          async findMany({ args, query }) {
+            if (!args.where) args.where = {};
+            args.where.deletedOn = { equals: null };
+            return query(args);
+          },
+        },
+      },
+    });
   }
 
   async onModuleDestroy() {

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,13 +16,15 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
 import { UpdateAddressDTO } from '../application/dtos/address/updateAddress.dto';
 import { UpdateAddressService } from '../application/services/address/updateAddress.service';
+import { DeleteAddressService } from '../application/services/address/deleteAddress.service';
 
 @Controller('address')
 export class AddressController {
   constructor(
     private readonly createAddressService: CreateAddressService,
     private readonly getAddressService: GetAddressService,
-    private readonly updateAddressService: UpdateAddressService
+    private readonly updateAddressService: UpdateAddressService,
+    private readonly deleteAddressService: DeleteAddressService
   ) {}
 
   @Post('create')
@@ -44,17 +47,36 @@ export class AddressController {
     }
   }
 
+  @Delete('delete')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async delete(@Body() id: string) {
+    try {
+      return await this.deleteAddressService.execute(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   @Get('allAddresses')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAll() {
-    return await this.getAddressService.getAll();
+    try {
+      return await this.getAddressService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
-    return await this.getAddressService.getById(id);
+    try {
+      return await this.getAddressService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

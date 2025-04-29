@@ -78,19 +78,19 @@ export class User {
     this._phone = value;
   }
 
-  get homeAddress(): string {
+  get homeAddressId(): string {
     return this._homeAddressId;
   }
 
-  private set homeAddress(value: string) {
+  private set homeAddressId(value: string) {
     this._homeAddressId = value;
   }
 
-  get jobAddress(): string {
+  get jobAddressId(): string {
     return this._jobAddressId;
   }
 
-  private set jobAddress(value: string) {
+  private set jobAddressId(value: string) {
     this._jobAddressId = value;
   }
 

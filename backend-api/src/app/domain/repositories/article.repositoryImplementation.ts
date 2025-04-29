@@ -39,4 +39,12 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
   async findAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]> {
     return await this.prisma.articleAuthor.findMany({ where: { articleId } });
   }
+
+  async delete(id: string): Promise<boolean> {
+    await this.prisma.article.update({
+      where: { id: id },
+      data: { deletedOn: new Date() },
+    });
+    return true;
+  }
 }

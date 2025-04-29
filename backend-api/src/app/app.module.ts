@@ -30,6 +30,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthGuardService } from './infrastructure/authGuard.service';
 import { UpdateAddressService } from './application/services/address/updateAddress.service';
 import { DeleteAddressService } from './application/services/address/deleteAddress.service';
+import { DeleteArticleService } from './application/services/article/deleteArticle.service';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { DeleteAddressService } from './application/services/address/deleteAddre
     AuthGuardService,
     UpdateAddressService,
     DeleteAddressService,
+    DeleteArticleService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

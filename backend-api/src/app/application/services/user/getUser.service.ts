@@ -73,4 +73,21 @@ export class GetUserService {
       existingUser.passwordHash
     );
   }
+
+  async getByAddressId(addressId: string): Promise<User[]> {
+    const users = await this.repository.findByAddressId(addressId);
+
+    return users.map((existingUser) =>
+      User.factory(
+        existingUser.id,
+        existingUser.name,
+        existingUser.email,
+        existingUser.phone,
+        existingUser.homeAddressId,
+        existingUser.jobAddressId,
+        existingUser.badgeUrl,
+        existingUser.passwordHash
+      )
+    );
+  }
 }

@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -48,13 +49,21 @@ export class AddressController {
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAll() {
-    return await this.getAddressService.getAll();
+    try {
+      return await this.getAddressService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
-    return await this.getAddressService.getById(id);
+    try {
+      return await this.getAddressService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

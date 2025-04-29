@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateReviewService } from '../application/services/review/createReview.service';
 import { CreateReviewDTO } from '../application/dtos/review/createReview.dto';
 import { GetReviewService } from '../application/services/review/getReview.service';
@@ -16,16 +24,28 @@ export class ReviewController {
 
   @Post('create')
   async create(@Body() data: CreateReviewDTO) {
-    return await this.createReviewService.execute(data);
+    try {
+      return await this.createReviewService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return await this.getReviewService.getBydId(id);
+    try {
+      return await this.getReviewService.getBydId(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('allReviews')
   async getAll() {
-    return await this.getReviewService.getAll();
+    try {
+      return await this.getReviewService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

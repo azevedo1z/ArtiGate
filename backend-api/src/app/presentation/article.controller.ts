@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateArticleService } from '../application/services/article/createArticle.service';
 import { CreateArticleDTO } from '../application/dtos/article/createArticle.dto';
 import { GetArticleService } from '../application/services/article/getArticle.service';
@@ -16,26 +24,46 @@ export class ArticleController {
 
   @Post('create')
   async create(@Body() data: CreateArticleDTO) {
-    return await this.createArticleService.execute(data);
+    try {
+      return await this.createArticleService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('allArticles')
   async getAll() {
-    return await this.getArticleService.getAll();
+    try {
+      return await this.getArticleService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('allAuthors')
   async getAllAuthors() {
-    return await this.getArticleService.getAllAuthors();
+    try {
+      return await this.getArticleService.getAllAuthors();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    return await this.getArticleService.getById(id);
+    try {
+      return await this.getArticleService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('authorsBy/:articleId')
   async getAuthorByArticleId(@Param('articleId') articleId: string) {
-    return await this.getArticleService.getByAuthorId(articleId);
+    try {
+      return await this.getArticleService.getByAuthorId(articleId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

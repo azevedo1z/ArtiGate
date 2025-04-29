@@ -1,4 +1,12 @@
-import { Controller, Post, Body, Get, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  UseGuards,
+  BadRequestException,
+} from '@nestjs/common';
 import { CreateUserService } from '../application/services/user/createUser.service';
 import { CreateUserDTO } from '../application/dtos/user/createUser.dto';
 import { GetUserService } from '../application/services/user/getUser.service';
@@ -17,43 +25,67 @@ export class UserController {
 
   @Post('create')
   async create(@Body() data: CreateUserDTO) {
-    return await this.createUserService.execute(
-      data,
-      data.homeAddress,
-      data.jobAddress
-    );
+    try {
+      return await this.createUserService.execute(
+        data,
+        data.homeAddress,
+        data.jobAddress
+      );
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Post('signIn')
   async signIn(@Body() data: AuthUserDTO) {
-    return await this.authService.signIn(data);
+    try {
+      return await this.authService.signIn(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('allUsers')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAll() {
-    return await this.getUserService.getAll();
+    try {
+      return await this.getUserService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
-    return await this.getUserService.getById(id);
+    try {
+      return await this.getUserService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('allRoles')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAllRoles() {
-    return await this.getUserService.getAllRoles();
+    try {
+      return await this.getUserService.getAllRoles();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 
   @Get('rolesBy/{userId}')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getRolesByUserId(@Param('userId') userId: string) {
-    return await this.getUserService.getRolesByUserId(userId);
+    try {
+      return await this.getUserService.getRolesByUserId(userId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

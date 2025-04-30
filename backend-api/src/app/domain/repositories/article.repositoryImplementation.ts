@@ -3,6 +3,7 @@ import { CreateArticleDTO } from '../../application/dtos/article/createArticle.d
 import { ArticleRepository } from './article.repository';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../infrastructure/prisma.service';
+import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
 
 @Injectable()
 export class ArticleRepositoryImplementation implements ArticleRepository {
@@ -46,5 +47,17 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
       data: { deletedOn: new Date() },
     });
     return true;
+  }
+
+  async update(data: UpdateArticleDTO): Promise<Article> {
+    //TODO: Globalize this
+    const dataToUpdate = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    );
+
+    return await this.prisma.article.update({
+      where: { id: data.id },
+      data: dataToUpdate,
+    });
   }
 }

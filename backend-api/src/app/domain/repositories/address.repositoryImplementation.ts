@@ -23,18 +23,23 @@ export class AddressRepositoryImplementation implements AddressRepository {
     return await this.prisma.address.findMany();
   }
 
-  async update(data: UpdateAddressDTO): Promise<Address> {
-    return await this.prisma.address.update({
-      where: { id: data.id },
-      data: { ...data, id: undefined },
-    });
-  }
-
   async delete(id: string): Promise<boolean> {
     await this.prisma.address.update({
       where: { id: id },
       data: { deletedOn: new Date() },
     });
     return true;
+  }
+
+  async update(data: UpdateAddressDTO): Promise<Address> {
+    //TODO: Globalize this
+    const dataToUpdate = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    );
+
+    return await this.prisma.address.update({
+      where: { id: data.id },
+      data: { ...dataToUpdate, id: undefined },
+    });
   }
 }

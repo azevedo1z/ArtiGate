@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { CreateArticleService } from '../application/services/article/createArticle.service';
@@ -14,6 +15,8 @@ import { GetArticleService } from '../application/services/article/getArticle.se
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
 import { DeleteArticleService } from '../application/services/article/deleteArticle.service';
+import { UpdateArticleService } from '../application/services/article/updateArticle.service';
+import { UpdateArticleDTO } from '../application/dtos/article/updateArticle.dto';
 
 @Controller('article')
 @ApiBearerAuth()
@@ -22,13 +25,23 @@ export class ArticleController {
   constructor(
     private readonly createArticleService: CreateArticleService,
     private readonly getArticleService: GetArticleService,
-    private readonly deleteArticleService: DeleteArticleService
+    private readonly deleteArticleService: DeleteArticleService,
+    private readonly updateArticleService: UpdateArticleService
   ) {}
 
   @Post('create')
   async create(@Body() data: CreateArticleDTO) {
     try {
       return await this.createArticleService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Put('update')
+  async update(@Body() data: UpdateArticleDTO) {
+    try {
+      return await this.updateArticleService.execute(data);
     } catch (error) {
       throw new BadRequestException(error);
     }

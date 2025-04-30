@@ -31,6 +31,7 @@ import { AuthGuardService } from './infrastructure/authGuard.service';
 import { UpdateAddressService } from './application/services/address/updateAddress.service';
 import { DeleteAddressService } from './application/services/address/deleteAddress.service';
 import { DeleteArticleService } from './application/services/article/deleteArticle.service';
+import { UpdateArticleService } from './application/services/article/updateArticle.service';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { DeleteArticleService } from './application/services/article/deleteArtic
     UpdateAddressService,
     DeleteAddressService,
     DeleteArticleService,
+    UpdateArticleService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

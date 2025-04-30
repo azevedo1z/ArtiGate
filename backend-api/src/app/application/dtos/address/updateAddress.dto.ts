@@ -4,22 +4,22 @@ export class UpdateAddressDTO {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   zipCode: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   street: string;
 
   @ApiProperty({ required: false })
   complement?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   neighborhood: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   city: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   state: string;
 
   constructor(

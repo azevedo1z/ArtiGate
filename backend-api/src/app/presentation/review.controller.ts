@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { CreateReviewService } from '../application/services/review/createReview.service';
@@ -12,6 +13,8 @@ import { CreateReviewDTO } from '../application/dtos/review/createReview.dto';
 import { GetReviewService } from '../application/services/review/getReview.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
+import { UpdateReviewDTO } from '../application/dtos/review/updateReview.dto';
+import { UpdateReviewService } from '../application/services/review/updateReview.service';
 
 @Controller('review')
 @ApiBearerAuth()
@@ -19,13 +22,23 @@ import { AuthGuardService } from '../infrastructure/authGuard.service';
 export class ReviewController {
   constructor(
     private readonly createReviewService: CreateReviewService,
-    private readonly getReviewService: GetReviewService
+    private readonly getReviewService: GetReviewService,
+    private readonly updateReviewService: UpdateReviewService
   ) {}
 
   @Post('create')
   async create(@Body() data: CreateReviewDTO) {
     try {
       return await this.createReviewService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Put('update')
+  async update(@Body() data: UpdateReviewDTO) {
+    try {
+      return await this.updateReviewService.execute(data);
     } catch (error) {
       throw new BadRequestException(error);
     }

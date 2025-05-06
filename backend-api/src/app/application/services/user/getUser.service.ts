@@ -94,4 +94,21 @@ export class GetUserService {
   async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
     return await this.repository.findByArticleId(articleId);
   }
+
+  async getByReviewId(reviewId: string): Promise<User[]>{
+    const reviewers = await this.repository.findByReviewId(reviewId);
+
+    return reviewers.map((reviewer) =>
+      User.factory(
+        reviewer.id,
+        reviewer.name,
+        reviewer.email,
+        reviewer.phone,
+        reviewer.homeAddressId,
+        reviewer.jobAddressId,
+        reviewer.badgeUrl,
+        reviewer.passwordHash
+      )
+    );
+  }
 }

@@ -33,6 +33,7 @@ import { DeleteAddressService } from './application/services/address/deleteAddre
 import { DeleteArticleService } from './application/services/article/deleteArticle.service';
 import { UpdateArticleService } from './application/services/article/updateArticle.service';
 import { UpdateReviewService } from './application/services/review/updateReview.service';
+import { DeleteReviewService } from './application/services/review/deleteReview.service';
 
 @Module({
   imports: [
@@ -67,6 +68,7 @@ import { UpdateReviewService } from './application/services/review/updateReview.
     DeleteArticleService,
     UpdateArticleService,
     UpdateReviewService,
+    DeleteReviewService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

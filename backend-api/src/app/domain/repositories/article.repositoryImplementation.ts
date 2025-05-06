@@ -41,14 +41,6 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
     return await this.prisma.articleAuthor.findMany({ where: { articleId } });
   }
 
-  async delete(id: string): Promise<boolean> {
-    await this.prisma.article.update({
-      where: { id: id },
-      data: { deletedOn: new Date() },
-    });
-    return true;
-  }
-
   async update(data: UpdateArticleDTO): Promise<Article> {
     //TODO: Globalize this
     const dataToUpdate = Object.fromEntries(
@@ -59,5 +51,13 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
       where: { id: data.id },
       data: dataToUpdate,
     });
+  }
+
+  async delete(id: string): Promise<boolean> {
+    await this.prisma.article.update({
+      where: { id: id },
+      data: { deletedOn: new Date() },
+    });
+    return true;
   }
 }

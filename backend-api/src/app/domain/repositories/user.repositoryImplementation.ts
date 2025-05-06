@@ -71,4 +71,10 @@ export class UserRepositoryImplementation implements UserRepository {
       where: { articleId: articleId },
     });
   }
+
+  async findByReviewId(reviewId: string): Promise<User[]> {
+    return await this.prisma.user.findMany({
+      where: { reviews: { some: { id: reviewId } } },
+    });
+  }
 }

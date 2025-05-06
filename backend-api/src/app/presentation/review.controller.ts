@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,6 +16,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
 import { UpdateReviewDTO } from '../application/dtos/review/updateReview.dto';
 import { UpdateReviewService } from '../application/services/review/updateReview.service';
+import { DeleteReviewService } from '../application/services/review/deleteReview.service';
 
 @Controller('review')
 @ApiBearerAuth()
@@ -23,7 +25,8 @@ export class ReviewController {
   constructor(
     private readonly createReviewService: CreateReviewService,
     private readonly getReviewService: GetReviewService,
-    private readonly updateReviewService: UpdateReviewService
+    private readonly updateReviewService: UpdateReviewService,
+    private readonly deleteReviewService: DeleteReviewService
   ) {}
 
   @Post('create')
@@ -39,6 +42,15 @@ export class ReviewController {
   async update(@Body() data: UpdateReviewDTO) {
     try {
       return await this.updateReviewService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Delete('delete')
+  async delete(@Body() id: string) {
+    try {
+      return await this.deleteReviewService.execute(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

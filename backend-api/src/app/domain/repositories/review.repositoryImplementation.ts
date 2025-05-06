@@ -32,4 +32,13 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
       data: dataToUpdate,
     });
   }
+
+  async delete(id: string): Promise<boolean> {
+    await this.prisma.review.update({
+      where: { id: id },
+      data: { deletedOn: new Date() },
+    });
+
+    return true;
+  }
 }

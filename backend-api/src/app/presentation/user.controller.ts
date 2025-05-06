@@ -99,4 +99,15 @@ export class UserController {
       throw new BadRequestException(error);
     }
   }
+
+  @Get('usersBy/{reviewId}')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async getByReviewId(@Param('reviewId') reviewId: string) {
+    try {
+      return await this.getUserService.getByReviewId(reviewId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { CreateRoleService } from '../application/services/role/createRole.service';
@@ -12,6 +13,8 @@ import { CreateRoleDTO } from '../application/dtos/role/createRole.dto';
 import { GetRoleService } from '../application/services/role/getRole.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
+import { UpdateRoleDTO } from '../application/dtos/role/updateRole.dto';
+import { UpdateRoleService } from '../application/services/role/updateRole.service';
 
 @Controller('role')
 @ApiBearerAuth()
@@ -19,13 +22,23 @@ import { AuthGuardService } from '../infrastructure/authGuard.service';
 export class RoleController {
   constructor(
     private readonly createRoleService: CreateRoleService,
-    private readonly getRoleService: GetRoleService
+    private readonly getRoleService: GetRoleService,
+    private readonly updateRoleService: UpdateRoleService
   ) {}
 
   @Post('create')
   async create(@Body() data: CreateRoleDTO) {
     try {
       return await this.createRoleService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Put('update')
+  async update(@Body() data: UpdateRoleDTO) {
+    try {
+      return await this.updateRoleService.execute(data);
     } catch (error) {
       throw new BadRequestException(error);
     }

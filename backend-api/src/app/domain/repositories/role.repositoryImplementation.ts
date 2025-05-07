@@ -3,6 +3,7 @@ import { CreateRoleDTO } from '../../application/dtos/role/createRole.dto';
 import { Role } from '@prisma/client';
 import { RoleRepository } from './role.repository';
 import { PrismaService } from '../../infrastructure/prisma.service';
+import { UpdateRoleDTO } from '../../application/dtos/role/updateRole.dto';
 
 @Injectable()
 export class RoleRepositoryImplementation implements RoleRepository {
@@ -22,6 +23,18 @@ export class RoleRepositoryImplementation implements RoleRepository {
 
   async create(data: CreateRoleDTO): Promise<Role> {
     return await this.prisma.role.create({ data });
+  }
+
+  async update(data: UpdateRoleDTO): Promise<Role> {
+    //TODO: Globalize this
+    const dataToUpdate = Object.fromEntries(
+      Object.entries(data).filter(([, value]) => value !== undefined)
+    );
+
+    return await this.prisma.role.update({
+      where: { id: data.id },
+      data: dataToUpdate,
+    });
   }
 
   async findAll(): Promise<Role[]> {

@@ -7,5 +7,6 @@ export abstract class RoleRepository {
   abstract findById(id: string): Promise<Role | null>;
   abstract create(data: CreateRoleDTO): Promise<Role>;
   abstract update(data: UpdateRoleDTO): Promise<Role>;
+  abstract delete(id: string): Promise<boolean>;
   abstract findAll(): Promise<Role[]>;
 }

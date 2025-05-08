@@ -37,6 +37,15 @@ export class RoleRepositoryImplementation implements RoleRepository {
     });
   }
 
+  async delete(id: string): Promise<boolean> {
+    await this.prisma.role.update({
+      where: { id: id },
+      data: { deletedOn: new Date() },
+    });
+
+    return true;
+  }
+
   async findAll(): Promise<Role[]> {
     return await this.prisma.role.findMany();
   }

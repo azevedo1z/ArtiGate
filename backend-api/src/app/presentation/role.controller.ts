@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -15,6 +16,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
 import { UpdateRoleDTO } from '../application/dtos/role/updateRole.dto';
 import { UpdateRoleService } from '../application/services/role/updateRole.service';
+import { DeleteRoleService } from '../application/services/role/deleteRole.service';
 
 @Controller('role')
 @ApiBearerAuth()
@@ -23,7 +25,8 @@ export class RoleController {
   constructor(
     private readonly createRoleService: CreateRoleService,
     private readonly getRoleService: GetRoleService,
-    private readonly updateRoleService: UpdateRoleService
+    private readonly updateRoleService: UpdateRoleService,
+    private readonly deleteRoleService: DeleteRoleService
   ) {}
 
   @Post('create')
@@ -39,6 +42,15 @@ export class RoleController {
   async update(@Body() data: UpdateRoleDTO) {
     try {
       return await this.updateRoleService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Delete('delete')
+  async delete(@Body() id: string) {
+    try {
+      return await this.deleteRoleService.execute(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

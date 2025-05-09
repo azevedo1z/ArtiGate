@@ -20,8 +20,7 @@ export class CreateUserService {
     homeAddressData: CreateAddressDTO,
     jobAddressData: CreateAddressDTO
   ): Promise<User> {
-    const saltOrRounds = 10;
-    data.password = await bcrypt.hash(data.password, saltOrRounds);
+    data.password = await bcrypt.hash(data.password, 10);
 
     const existingUser = await this.repository.findByEmail(data.email);
 

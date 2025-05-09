@@ -50,6 +50,7 @@ export class UpdateUserService {
       );
       homeAddressId = newHomeAddressId;
     }
+
     if (data.jobAddress != null) {
       const { id: newJobAddressId } = await this.createAddressService.execute(
         jobAddressData
@@ -65,14 +66,14 @@ export class UpdateUserService {
     );
 
     return User.factory(
-          userRecord.id,
-          userRecord.name,
-          userRecord.email,
-          userRecord.phone,
-          userRecord.homeAddressId,
-          userRecord.jobAddressId,
-          userRecord.badgeUrl,
-          userRecord.passwordHash
-        );
+      userRecord.id,
+      userRecord.name,
+      userRecord.email,
+      userRecord.phone,
+      userRecord.homeAddressId,
+      userRecord.jobAddressId,
+      userRecord.badgeUrl,
+      userRecord.passwordHash
+    );
   }
 }

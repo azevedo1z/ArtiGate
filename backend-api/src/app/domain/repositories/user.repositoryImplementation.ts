@@ -3,6 +3,7 @@ import { PrismaService } from '../../infrastructure/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { UserRepository } from './user.repository';
 import { Injectable } from '@nestjs/common';
+import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 
 @Injectable()
 export class UserRepositoryImplementation implements UserRepository {
@@ -38,6 +39,41 @@ export class UserRepositoryImplementation implements UserRepository {
     }
 
     return userRecord;
+  }
+
+  async update(
+    data: UpdateUserDTO,
+    homeAddressId: string | null,
+    jobAddressId: string | null,
+    roleChanged: boolean
+  ): Promise<User> {
+    const user = {
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      badgeUrl: data.badgeUrl,
+      homeAddressId,
+      jobAddressId,
+      passwordHash: data.password,
+    };
+    //TODO: Globalize this
+    const dataToUpdate = Object.fromEntries(
+      Object.entries(user).filter(([, value]) => value !== undefined)
+    );
+
+    if (roleChanged) {
+      for (const roleId of data.roleIds) {
+        await this.prisma.userRole.delete({ where: { id: data.id } });
+        await this.prisma.userRole.create({
+          data: { userId: data.id, roleId },
+        });
+      }
+    }
+
+    return await this.prisma.user.update({
+      where: { id: data.id },
+      data: { ...dataToUpdate, id: undefined },
+    });
   }
 
   async findById(id: string): Promise<User | null> {

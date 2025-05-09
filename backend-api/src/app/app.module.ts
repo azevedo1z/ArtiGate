@@ -36,6 +36,7 @@ import { UpdateReviewService } from './application/services/review/updateReview.
 import { DeleteReviewService } from './application/services/review/deleteReview.service';
 import { UpdateRoleService } from './application/services/role/updateRole.service';
 import { DeleteRoleService } from './application/services/role/deleteRole.service';
+import { UpdateUserService } from './application/services/user/updateUser.service';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { DeleteRoleService } from './application/services/role/deleteRole.servic
     DeleteReviewService,
     UpdateRoleService,
     DeleteRoleService,
+    UpdateUserService,
     {
       provide: UserRepository,
       useClass: UserRepositoryImplementation,

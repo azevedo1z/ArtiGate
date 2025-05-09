@@ -14,19 +14,35 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from '../infrastructure/auth.service';
 import { AuthUserDTO } from '../application/dtos/user/authUser.dto';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
+import { UpdateUserDTO } from '../application/dtos/user/updateUser.dto';
+import { UpdateUserService } from '../application/services/user/updateUser.service';
 
 @Controller('user')
 export class UserController {
   constructor(
     private readonly createUserService: CreateUserService,
     private readonly getUserService: GetUserService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly updateUserService: UpdateUserService
   ) {}
 
   @Post('create')
   async create(@Body() data: CreateUserDTO) {
     try {
       return await this.createUserService.execute(
+        data,
+        data.homeAddress,
+        data.jobAddress
+      );
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Post('update')
+  async update(@Body() data: UpdateUserDTO) {
+    try {
+      return await this.updateUserService.execute(
         data,
         data.homeAddress,
         data.jobAddress

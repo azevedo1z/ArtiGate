@@ -76,6 +76,15 @@ export class UserRepositoryImplementation implements UserRepository {
     });
   }
 
+  async delete(id: string): Promise<boolean> {
+    await this.prisma.user.update({
+      where: { id: id },
+      data: { deletedOn: new Date() },
+    });
+
+    return true;
+  }
+
   async findById(id: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { id },

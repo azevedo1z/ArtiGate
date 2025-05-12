@@ -17,46 +17,15 @@ export class UpdateUserService {
     private readonly roleRepository: RoleRepository
   ) {}
 
-  async execute(
-    data: UpdateUserDTO,
-    homeAddressData: CreateAddressDTO,
-    jobAddressData: CreateAddressDTO
-  ) {
-    let homeAddressId: string | null = null;
-    let jobAddressId: string | null = null;
-    let roleChanged = false;
-
+  async execute(data: UpdateUserDTO) {
     await this.getUserService.getById(data.id);
 
     if (data.password != null)
       data.password = await bcrypt.hash(data.password, 10);
 
-    if (data.roleIds != null) {
-      roleChanged = true;
-      for (const roleId of data.roleIds) {
-        const existingRole = await this.roleRepository.findById(roleId);
-
-        if (existingRole == null) {
-          throw new BadRequestException(
-            `Role with ID "${roleId}" does not exist.`
-          );
-        }
-      }
-    }
-
-    if (data.homeAddress != null) {
-      const { id: newHomeAddressId } = await this.createAddressService.execute(
-        homeAddressData
-      );
-      homeAddressId = newHomeAddressId;
-    }
-
-    if (data.jobAddress != null) {
-      const { id: newJobAddressId } = await this.createAddressService.execute(
-        jobAddressData
-      );
-      jobAddressId = newJobAddressId;
-    }
+    const homeAddressId = await this.handleNewAddressCreation(data.homeAddress);
+    const jobAddressId = await this.handleNewAddressCreation(data.jobAddress);
+    const roleChanged = await this.validateRoles(data.roleIds);
 
     const userRecord = await this.repository.update(
       data,
@@ -75,5 +44,30 @@ export class UpdateUserService {
       userRecord.badgeUrl,
       userRecord.passwordHash
     );
+  }
+
+  private async validateRoles(roleIds: string[]): Promise<boolean> {
+    if (roleIds != null) {
+      for (const roleId of roleIds) {
+        const existingRole = await this.roleRepository.findById(roleId);
+
+        if (existingRole == null)
+          throw new BadRequestException(
+            `Role with ID "${roleId}" does not exist.`
+          );
+      }
+      return true;
+    }
+    return false;
+  }
+
+  private async handleNewAddressCreation(address: CreateAddressDTO) {
+    if (address === null) return;
+
+    const { id: newAddressId } = await this.createAddressService.execute(
+      address
+    );
+
+    return newAddressId;
   }
 }

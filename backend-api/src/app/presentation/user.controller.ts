@@ -16,6 +16,7 @@ import { AuthUserDTO } from '../application/dtos/user/authUser.dto';
 import { AuthGuardService } from '../infrastructure/authGuard.service';
 import { UpdateUserDTO } from '../application/dtos/user/updateUser.dto';
 import { UpdateUserService } from '../application/services/user/updateUser.service';
+import { DeleteUserService } from '../application/services/user/deleteUser.service';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +24,8 @@ export class UserController {
     private readonly createUserService: CreateUserService,
     private readonly getUserService: GetUserService,
     private readonly authService: AuthService,
-    private readonly updateUserService: UpdateUserService
+    private readonly updateUserService: UpdateUserService,
+    private readonly deleteUserService: DeleteUserService
   ) {}
 
   @Post('create')
@@ -36,9 +38,22 @@ export class UserController {
   }
 
   @Post('update')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateUserDTO) {
     try {
       return await this.updateUserService.execute(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Post('delete')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async delete(@Body() id: string) {
+    try {
+      return await this.deleteUserService.execute(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

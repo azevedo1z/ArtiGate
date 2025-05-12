@@ -11,8 +11,8 @@ export abstract class UserRepository {
 
   abstract update(
     data: UpdateUserDTO,
-    homeAddressId: string | null,
-    jobAddressId: string | null,
+    homeAddressId: string | undefined,
+    jobAddressId: string | undefined,
     roleChanged: boolean
   ): Promise<User>;
 

@@ -35,6 +35,16 @@ export class GetReviewService {
   }
 
   async getByUserId(userId: string) {
-    throw new NotImplementedException('error');
+    const reviews = await this.repository.findByReviewerId(userId);
+
+    return reviews.map((existingReview) =>
+      Review.factory(
+        existingReview.id,
+        existingReview.articleId,
+        existingReview.reviewerId,
+        existingReview.score,
+        existingReview.commentary
+      )
+    );
   }
 }

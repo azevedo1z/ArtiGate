@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserRepository } from '../../../domain/repositories/user.repository';
 import { GetUserService } from './getUser.service';
 import { GetReviewService } from '../review/getReview.service';
@@ -21,6 +21,22 @@ export class DeleteUserService {
   }
 
   private async validateConstraints(id: string) {
-    const hasConstraint = false;
+    let hasConstraint = false;
+
+    const reviews = await this.getReviewService.getByUserId(id);
+    const articles = await this.getArticleService.getByAuthorId(id);
+
+    if (reviews?.some((review) => review.reviewerId === id))
+      hasConstraint = true;
+
+    if (articles?.some((article) => article.userId === id))
+      hasConstraint = true;
+
+    if (hasConstraint)
+      throw new BadRequestException(
+        'The user is associated with a review or an articles.'
+      );
+
+    return await this.repository.delete(id);
   }
 }

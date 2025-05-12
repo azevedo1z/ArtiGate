@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotImplementedException,
+} from '@nestjs/common';
 import { ReviewRepository } from '../../../domain/repositories/review.repository';
 import { Review } from '../../../domain/models/review.model';
 
@@ -28,5 +32,9 @@ export class GetReviewService {
         existingReview.commentary
       )
     );
+  }
+
+  async getByUserId(userId: string) {
+    throw new NotImplementedException('error');
   }
 }

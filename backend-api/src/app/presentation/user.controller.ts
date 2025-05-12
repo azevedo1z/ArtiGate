@@ -29,11 +29,7 @@ export class UserController {
   @Post('create')
   async create(@Body() data: CreateUserDTO) {
     try {
-      return await this.createUserService.execute(
-        data,
-        data.homeAddress,
-        data.jobAddress
-      );
+      return await this.createUserService.execute(data);
     } catch (error) {
       throw new BadRequestException(error);
     }

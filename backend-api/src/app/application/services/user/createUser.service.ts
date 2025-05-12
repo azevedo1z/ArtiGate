@@ -1,6 +1,5 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { UserRepository } from '../../../domain/repositories/user.repository';
-import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
@@ -15,24 +14,12 @@ export class CreateUserService {
     private readonly roleRepository: RoleRepository
   ) {}
 
-  async execute(
-    data: CreateUserDTO,
-    homeAddressData: CreateAddressDTO,
-    jobAddressData: CreateAddressDTO
-  ): Promise<User> {
+  async execute(data: CreateUserDTO): Promise<User> {
     data.password = await bcrypt.hash(data.password, 10);
 
     const existingUser = await this.repository.findByEmail(data.email);
 
-    for (const roleId of data.roleIds) {
-      const existingRole = await this.roleRepository.findById(roleId);
-
-      if (existingRole == null) {
-        throw new BadRequestException(
-          `Role with ID "${roleId}" does not exist.`
-        );
-      }
-    }
+    await this.validateRoles(data.roleIds);
 
     if (existingUser != null)
       throw new BadRequestException(
@@ -40,10 +27,10 @@ export class CreateUserService {
       );
 
     const { id: homeAddressId } = await this.createAddressService.execute(
-      homeAddressData
+      data.homeAddress
     );
     const { id: jobAddressId } = await this.createAddressService.execute(
-      jobAddressData
+      data.jobAddress
     );
 
     const userRecord = await this.repository.create(
@@ -62,5 +49,16 @@ export class CreateUserService {
       userRecord.badgeUrl,
       userRecord.passwordHash
     );
+  }
+
+  private async validateRoles(roleIds: string[]) {
+    for (const roleId of roleIds) {
+      const existingRole = await this.roleRepository.findById(roleId);
+
+      if (existingRole == null)
+        throw new BadRequestException(
+          `Role with ID "${roleId}" does not exist.`
+        );
+    }
   }
 }

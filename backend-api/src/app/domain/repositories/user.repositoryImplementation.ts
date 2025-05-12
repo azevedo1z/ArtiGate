@@ -43,8 +43,8 @@ export class UserRepositoryImplementation implements UserRepository {
 
   async update(
     data: UpdateUserDTO,
-    homeAddressId: string | null,
-    jobAddressId: string | null,
+    homeAddressId: string | undefined,
+    jobAddressId: string | undefined,
     roleChanged: boolean
   ): Promise<User> {
     const user = {

@@ -41,4 +41,10 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
 
     return true;
   }
+
+  async findByReviewerId(reviewerId: string): Promise<Review[]> {
+    return await this.prisma.review.findMany({
+      where: { reviewerId: reviewerId },
+    });
+  }
 }

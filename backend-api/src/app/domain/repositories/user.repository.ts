@@ -16,6 +16,8 @@ export abstract class UserRepository {
     roleChanged: boolean
   ): Promise<User>;
 
+  abstract delete(id: string): Promise<boolean>;
+
   abstract findByEmail(email: string): Promise<User | null>;
   abstract findById(id: string): Promise<User | null>;
   abstract findAll(): Promise<User[]>;

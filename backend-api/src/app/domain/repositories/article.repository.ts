@@ -7,7 +7,7 @@ export abstract class ArticleRepository {
   abstract findById(id: string): Promise<Article | null>;
   abstract findAll(): Promise<Article[]>;
   abstract findAllAuthors(): Promise<ArticleAuthor[]>;
-  abstract findAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]>;
+  abstract findByArticleId(articleId: string): Promise<ArticleAuthor[]>;
   abstract update(data: UpdateArticleDTO): Promise<Article>;
   abstract delete(id: string): Promise<boolean>;
 }

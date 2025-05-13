@@ -37,7 +37,7 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
     return await this.prisma.articleAuthor.findMany();
   }
 
-  async findAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+  async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
     return await this.prisma.articleAuthor.findMany({ where: { articleId } });
   }
 

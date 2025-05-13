@@ -55,7 +55,16 @@ export class ArticleController {
       throw new BadRequestException(error);
     }
   }
-
+  
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    try {
+      return await this.getArticleService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+  
   @Get('allArticles')
   async getAll() {
     try {
@@ -74,19 +83,11 @@ export class ArticleController {
     }
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: string) {
-    try {
-      return await this.getArticleService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
 
-  @Get('authorsBy/:articleId')
-  async getAuthorByArticleId(@Param('articleId') articleId: string) {
+  @Get('authorsBy/{articleId}')
+  async getByArticleId(@Param('articleId') articleId: string) {
     try {
-      return await this.getArticleService.getByAuthorId(articleId);
+      return await this.getArticleService.getByArticleId(articleId);
     } catch (error) {
       throw new BadRequestException(error);
     }

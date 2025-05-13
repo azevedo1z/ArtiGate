@@ -12,7 +12,7 @@ export class UpdateReviewService {
   ) {}
 
   async execute(data: UpdateReviewDTO): Promise<Review> {
-    await this.getReviewService.getBydId(data.id);
+    await this.getReviewService.getById(data.id);
 
     const reviewRecord = await this.repository.update(data);
 

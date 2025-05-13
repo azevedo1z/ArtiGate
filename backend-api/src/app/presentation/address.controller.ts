@@ -58,23 +58,23 @@ export class AddressController {
     }
   }
 
-  @Get('allAddresses')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getAll() {
-    try {
-      return await this.getAddressService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
     try {
       return await this.getAddressService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Get('allAddresses')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async getAll() {
+    try {
+      return await this.getAddressService.getAll();
     } catch (error) {
       throw new BadRequestException(error);
     }

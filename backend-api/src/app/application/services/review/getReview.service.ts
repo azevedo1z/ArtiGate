@@ -10,7 +10,7 @@ import { Review } from '../../../domain/models/review.model';
 export class GetReviewService {
   constructor(private readonly repository: ReviewRepository) {}
 
-  async getBydId(id: string) {
+  async getById(id: string) {
     const existingReview = await this.repository.findById(id);
 
     if (existingReview == null) {
@@ -36,6 +36,20 @@ export class GetReviewService {
 
   async getByUserId(userId: string) {
     const reviews = await this.repository.findByReviewerId(userId);
+
+    return reviews.map((existingReview) =>
+      Review.factory(
+        existingReview.id,
+        existingReview.articleId,
+        existingReview.reviewerId,
+        existingReview.score,
+        existingReview.commentary
+      )
+    );
+  }
+
+  async getByArticleId(articleId: string){
+    const reviews = await this.repository.findByArticleId(articleId);
 
     return reviews.map((existingReview) =>
       Review.factory(

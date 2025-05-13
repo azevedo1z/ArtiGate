@@ -7,6 +7,7 @@ export abstract class ReviewRepository {
   abstract findById(id: string): Promise<Review | null>;
   abstract findAll(): Promise<Review[]>;
   abstract findByReviewerId(reviewerId: string): Promise<Review[]>;
+  abstract findByArticleId(articleId: string): Promise<Review[]>;
   abstract update(data: UpdateReviewDTO): Promise<Review>;
   abstract delete(id: string): Promise<boolean>;
 }

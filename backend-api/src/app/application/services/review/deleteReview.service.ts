@@ -12,7 +12,7 @@ export class DeleteReviewService {
   ) {}
 
   async execute(id: string): Promise<boolean> {
-    await this.getReviewService.getBydId(id);
+    await this.getReviewService.getById(id);
 
     const reviewers = await this.getUserService.getByReviewId(id);
 

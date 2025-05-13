@@ -38,8 +38,8 @@ export class GetArticleService {
     return [...articleAuthors];
   }
 
-  async getByAuthorId(articleId: string): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.repository.findAuthorsByArticleId(
+  async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+    const articleAuthors = await this.repository.findByArticleId(
       articleId
     );
 

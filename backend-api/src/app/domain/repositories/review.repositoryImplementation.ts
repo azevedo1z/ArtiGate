@@ -22,14 +22,9 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
   }
 
   async update(data: UpdateReviewDTO): Promise<Review> {
-    //TODO: Globalize this
-    const dataToUpdate = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    );
-
     return await this.prisma.review.update({
       where: { id: data.id },
-      data: dataToUpdate,
+      data,
     });
   }
 
@@ -50,7 +45,7 @@ export class ReviewRepositoryImplementation implements ReviewRepository {
 
   async findByArticleId(articleId: string): Promise<Review[]> {
     return await this.prisma.review.findMany({
-      where: {articleId: articleId},
+      where: { articleId: articleId },
     });
   }
 }

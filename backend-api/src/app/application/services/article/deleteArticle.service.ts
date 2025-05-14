@@ -24,8 +24,13 @@ export class DeleteArticleService {
     if (authors?.some((author) => author.articleId === id))
       hasConstraint = true;
 
+    if (reviews?.some((reviewer) => reviewer.articleId === id))
+      hasConstraint = true;
+
     if (hasConstraint)
-      throw new BadRequestException('The article is associated with a user.');
+      throw new BadRequestException(
+        'The article is associated with a user or with a review.'
+      );
 
     return await this.articleRepository.delete(id);
   }

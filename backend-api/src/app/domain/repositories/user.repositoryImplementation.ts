@@ -56,10 +56,6 @@ export class UserRepositoryImplementation implements UserRepository {
       jobAddressId,
       passwordHash: data.password,
     };
-    //TODO: Globalize this
-    const dataToUpdate = Object.fromEntries(
-      Object.entries(user).filter(([, value]) => value !== undefined)
-    );
 
     if (roleChanged) {
       for (const roleId of data.roleIds) {
@@ -72,7 +68,7 @@ export class UserRepositoryImplementation implements UserRepository {
 
     return await this.prisma.user.update({
       where: { id: data.id },
-      data: { ...dataToUpdate, id: undefined },
+      data: user,
     });
   }
 

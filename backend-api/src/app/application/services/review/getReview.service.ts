@@ -48,7 +48,7 @@ export class GetReviewService {
     );
   }
 
-  async getByArticleId(articleId: string){
+  async getByArticleId(articleId: string) {
     const reviews = await this.repository.findByArticleId(articleId);
 
     return reviews.map((existingReview) =>

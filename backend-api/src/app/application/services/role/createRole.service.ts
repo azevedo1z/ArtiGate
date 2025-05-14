@@ -10,7 +10,8 @@ export class CreateRoleService {
   async execute(data: CreateRoleDTO): Promise<Role> {
     const roleExists = await this.repository.findByName(data.name);
 
-    if (roleExists) throw new BadRequestException('There is already a role with this name.');
+    if (roleExists)
+      throw new BadRequestException('There is already a role with this name.');
 
     const roleRecord = await this.repository.create(data);
 

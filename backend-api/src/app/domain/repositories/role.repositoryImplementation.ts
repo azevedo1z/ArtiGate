@@ -26,14 +26,9 @@ export class RoleRepositoryImplementation implements RoleRepository {
   }
 
   async update(data: UpdateRoleDTO): Promise<Role> {
-    //TODO: Globalize this
-    const dataToUpdate = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    );
-
     return await this.prisma.role.update({
       where: { id: data.id },
-      data: dataToUpdate,
+      data,
     });
   }
 

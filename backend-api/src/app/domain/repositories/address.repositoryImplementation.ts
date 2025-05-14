@@ -32,14 +32,9 @@ export class AddressRepositoryImplementation implements AddressRepository {
   }
 
   async update(data: UpdateAddressDTO): Promise<Address> {
-    //TODO: Globalize this
-    const dataToUpdate = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    );
-
     return await this.prisma.address.update({
       where: { id: data.id },
-      data: { ...dataToUpdate, id: undefined },
+      data,
     });
   }
 }

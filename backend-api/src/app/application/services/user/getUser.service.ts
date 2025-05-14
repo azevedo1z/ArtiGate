@@ -95,7 +95,7 @@ export class GetUserService {
     return await this.repository.findByArticleId(articleId);
   }
 
-  async getByReviewId(reviewId: string): Promise<User[]>{
+  async getByReviewId(reviewId: string): Promise<User[]> {
     const reviewers = await this.repository.findByReviewId(reviewId);
 
     return reviewers.map((reviewer) =>

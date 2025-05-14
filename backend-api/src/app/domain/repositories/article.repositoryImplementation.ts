@@ -42,14 +42,9 @@ export class ArticleRepositoryImplementation implements ArticleRepository {
   }
 
   async update(data: UpdateArticleDTO): Promise<Article> {
-    //TODO: Globalize this
-    const dataToUpdate = Object.fromEntries(
-      Object.entries(data).filter(([, value]) => value !== undefined)
-    );
-
     return await this.prisma.article.update({
       where: { id: data.id },
-      data: dataToUpdate,
+      data,
     });
   }
 

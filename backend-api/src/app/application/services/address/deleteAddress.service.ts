@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AddressRepository } from '../../../infrastructure/repositories/address.repository';
 import { GetAddressService } from './getAddress.service';
 import { GetUserService } from '../user/getUser.service';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Address } from '../../../domain/models/address.model';
 
 @Injectable()
 export class DeleteAddressService {
   constructor(
-    private readonly repository: AddressRepository,
+    private readonly adapter: DatabaseAdapter<Address>,
     private readonly getAddressService: GetAddressService,
     private readonly getUserService: GetUserService
   ) {}
@@ -23,6 +24,6 @@ export class DeleteAddressService {
     if (hasConstraint)
       throw new BadRequestException('The address is associated with a user.');
 
-    return await this.repository.delete(id);
+    return await this.adapter.delete(id);
   }
 }

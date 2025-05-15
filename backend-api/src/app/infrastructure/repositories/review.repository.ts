@@ -1,12 +1,12 @@
 import { Review } from '@prisma/client';
-import { PrismaService } from '../../infrastructure/prisma.service';
-import { ReviewRepository } from './review.repository';
+import { PrismaService } from '../services/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
 import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
+import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class ReviewRepositoryImplementation implements ReviewRepository {
+export class ReviewRepository implements DatabaseAdapter<Review> {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateReviewDTO): Promise<Review> {

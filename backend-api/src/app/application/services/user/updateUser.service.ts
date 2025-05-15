@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../../../domain/repositories/user.repository';
+import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { UpdateUserDTO } from '../../dtos/user/updateUser.dto';
 import { GetUserService } from './getUser.service';
 import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
-import { RoleRepository } from '../../../domain/repositories/role.repository';
+import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
 

@@ -1,9 +1,8 @@
 import {
   BadRequestException,
-  Injectable,
-  NotImplementedException,
+  Injectable
 } from '@nestjs/common';
-import { ReviewRepository } from '../../../domain/repositories/review.repository';
+import { ReviewRepository } from '../../../infrastructure/repositories/review.repository';
 import { Review } from '../../../domain/models/review.model';
 
 @Injectable()

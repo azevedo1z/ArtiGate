@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../../../domain/repositories/user.repository';
+import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
 import { ArticleAuthor, UserRole } from '@prisma/client';
 

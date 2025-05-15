@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AddressRepository } from '../../../domain/repositories/address.repository';
+import { AddressRepository } from '../../../infrastructure/repositories/address.repository';
 import { GetAddressService } from './getAddress.service';
 import { GetUserService } from '../user/getUser.service';
 

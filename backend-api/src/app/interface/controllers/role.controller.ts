@@ -9,14 +9,14 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateRoleService } from '../application/services/role/createRole.service';
-import { CreateRoleDTO } from '../application/dtos/role/createRole.dto';
-import { GetRoleService } from '../application/services/role/getRole.service';
+import { CreateRoleService } from '../../application/services/role/createRole.service';
+import { CreateRoleDTO } from '../../application/dtos/role/createRole.dto';
+import { GetRoleService } from '../../application/services/role/getRole.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuardService } from '../infrastructure/authGuard.service';
-import { UpdateRoleDTO } from '../application/dtos/role/updateRole.dto';
-import { UpdateRoleService } from '../application/services/role/updateRole.service';
-import { DeleteRoleService } from '../application/services/role/deleteRole.service';
+import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { UpdateRoleDTO } from '../../application/dtos/role/updateRole.dto';
+import { UpdateRoleService } from '../../application/services/role/updateRole.service';
+import { DeleteRoleService } from '../../application/services/role/deleteRole.service';
 
 @Controller('role')
 @ApiBearerAuth()

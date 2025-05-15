@@ -1,12 +1,12 @@
 import { ArticleAuthor, User, UserRole } from '@prisma/client';
-import { PrismaService } from '../../infrastructure/prisma.service';
+import { PrismaService } from '../services/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
-import { UserRepository } from './user.repository';
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
+import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class UserRepositoryImplementation implements UserRepository {
+export class UserRepository implements DatabaseAdapter<User> {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByEmail(email: string): Promise<User | null> {

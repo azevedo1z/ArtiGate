@@ -7,16 +7,16 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
-import { CreateUserService } from '../application/services/user/createUser.service';
-import { CreateUserDTO } from '../application/dtos/user/createUser.dto';
-import { GetUserService } from '../application/services/user/getUser.service';
+import { CreateUserService } from '../../application/services/user/createUser.service';
+import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
+import { GetUserService } from '../../application/services/user/getUser.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthService } from '../infrastructure/auth.service';
-import { AuthUserDTO } from '../application/dtos/user/authUser.dto';
-import { AuthGuardService } from '../infrastructure/authGuard.service';
-import { UpdateUserDTO } from '../application/dtos/user/updateUser.dto';
-import { UpdateUserService } from '../application/services/user/updateUser.service';
-import { DeleteUserService } from '../application/services/user/deleteUser.service';
+import { AuthService } from '../../infrastructure/services/auth.service';
+import { AuthUserDTO } from '../../application/dtos/user/authUser.dto';
+import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
+import { UpdateUserService } from '../../application/services/user/updateUser.service';
+import { DeleteUserService } from '../../application/services/user/deleteUser.service';
 
 @Controller('user')
 export class UserController {

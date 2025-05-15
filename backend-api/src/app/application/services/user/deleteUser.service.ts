@@ -24,7 +24,7 @@ export class DeleteUserService {
     let hasConstraint = false;
 
     const reviews = await this.getReviewService.getByUserId(id);
-    const articles = await this.getArticleService.getByArticleId(id);
+    const articles = await this.getArticleService.getAuthorsByArticleId(id);
 
     if (reviews?.some((review) => review.reviewerId === id))
       hasConstraint = true;

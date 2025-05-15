@@ -1,14 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ArticleRepository } from '../../../infrastructure/repositories/article.repository';
 import { Article } from '../../../domain/models/article.model';
 import { ArticleAuthor } from '@prisma/client';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetArticleService {
-  constructor(private readonly repository: ArticleRepository) {}
+  constructor(
+    private readonly adapter: DatabaseAdapter<Article>,
+    private readonly articleAuthorAdapter: DatabaseAdapter<ArticleAuthor>
+  ) {}
 
   async getById(id: string): Promise<Article | null> {
-    const existingArticle = await this.repository.findById(id);
+    const existingArticle = await this.adapter.findById(id);
 
     if (existingArticle == null)
       throw new BadRequestException(`There is no article with the ID "${id}".`);
@@ -21,7 +24,7 @@ export class GetArticleService {
   }
 
   async getAll(): Promise<Article[]> {
-    const articles = await this.repository.findAll();
+    const articles = await this.adapter.findAll();
 
     return articles.map((existingArticle) =>
       Article.factory(
@@ -33,13 +36,13 @@ export class GetArticleService {
   }
 
   async getAllAuthors(): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.repository.findAllAuthors();
+    const articleAuthors = await this.articleAuthorAdapter.findAll();
 
     return [...articleAuthors];
   }
 
-  async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.repository.findByArticleId(articleId);
+  async getAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+    const articleAuthors = await this.articleAuthorAdapter.findMany(articleId);
 
     return [...articleAuthors];
   }

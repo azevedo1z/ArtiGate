@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { AddressRepository } from '../../../infrastructure/repositories/address.repository';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { Address } from '../../../domain/models/address.model';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class CreateAddressService {
-  constructor(private readonly repository: AddressRepository) {}
+  constructor(private readonly adapter: DatabaseAdapter<Address>) {}
 
   async execute(data: CreateAddressDTO): Promise<Address> {
-    const addressRecord = await this.repository.create(data);
+    const addressRecord = await this.adapter.create(data);
 
     return Address.factory(
       addressRecord.id,

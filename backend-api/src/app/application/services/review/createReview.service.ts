@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ReviewRepository } from '../../../infrastructure/repositories/review.repository';
 import { CreateReviewDTO } from '../../dtos/review/createReview.dto';
 import { Review } from '../../../domain/models/review.model';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class CreateReviewService {
-  constructor(private readonly repository: ReviewRepository) {}
+  constructor(private readonly adapter: DatabaseAdapter<Review>) {}
 
   async execute(data: CreateReviewDTO): Promise<Review> {
-    const reviewRecord = await this.repository.create(data);
+    const reviewRecord = await this.adapter.create(data);
 
     return Review.factory(
       reviewRecord.id,

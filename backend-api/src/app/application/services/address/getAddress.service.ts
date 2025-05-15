@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { AddressRepository } from '../../../infrastructure/repositories/address.repository';
 import { Address } from '../../../domain/models/address.model';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetAddressService {
-  constructor(private readonly repository: AddressRepository) {}
+  constructor(private readonly adapter: DatabaseAdapter<Address>) {}
 
   async getById(id: string): Promise<Address | null> {
-    const existingAddress = await this.repository.findById(id);
+    const existingAddress = await this.adapter.findById(id);
 
     if (existingAddress == null)
       throw new BadRequestException(`There is no address with the ID "${id}".`);
@@ -25,7 +25,7 @@ export class GetAddressService {
   }
 
   async getAll(): Promise<Address[]> {
-    const addresses = await this.repository.findAll();
+    const addresses = await this.adapter.findAll();
 
     return addresses.map((existingAddress) =>
       Address.factory(

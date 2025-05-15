@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { AddressRepository } from '../../../domain/repositories/address.repository';
+import { AddressRepository } from '../../../infrastructure/repositories/address.repository';
 import { UpdateAddressDTO } from '../../dtos/address/updateAddress.dto';
 import { Address } from '../../../domain/models/address.model';
 import { GetAddressService } from './getAddress.service';

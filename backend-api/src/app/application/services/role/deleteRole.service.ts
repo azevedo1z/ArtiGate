@@ -1,5 +1,5 @@
 import { BadRequestException } from '@nestjs/common';
-import { RoleRepository } from '../../../domain/repositories/role.repository';
+import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import { GetUserService } from '../user/getUser.service';
 import { GetRoleService } from './getRole.service';
 

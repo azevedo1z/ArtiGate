@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ReviewRepository } from '../../../domain/repositories/review.repository';
+import { ReviewRepository } from '../../../infrastructure/repositories/review.repository';
 import { GetReviewService } from './getReview.service';
 import { GetUserService } from '../user/getUser.service';
 

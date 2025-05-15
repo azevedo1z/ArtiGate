@@ -1,12 +1,12 @@
 import { Address } from '@prisma/client';
 import { CreateAddressDTO } from '../../application/dtos/address/createAddress.dto';
-import { AddressRepository } from './address.repository';
-import { PrismaService } from '../../infrastructure/prisma.service';
+import { PrismaService } from '../services/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { UpdateAddressDTO } from '../../application/dtos/address/updateAddress.dto';
+import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class AddressRepositoryImplementation implements AddressRepository {
+export class AddressRepository implements DatabaseAdapter<Address> {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateAddressDTO): Promise<Address> {

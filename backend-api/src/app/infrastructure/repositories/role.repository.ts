@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRoleDTO } from '../../application/dtos/role/createRole.dto';
 import { Role } from '@prisma/client';
-import { RoleRepository } from './role.repository';
-import { PrismaService } from '../../infrastructure/prisma.service';
+import { PrismaService } from '../services/prisma.service';
 import { UpdateRoleDTO } from '../../application/dtos/role/updateRole.dto';
+import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class RoleRepositoryImplementation implements RoleRepository {
+export class RoleRepository implements DatabaseAdapter<Role> {
   constructor(private readonly prisma: PrismaService) {}
 
   async findByName(name: string): Promise<Role | null> {

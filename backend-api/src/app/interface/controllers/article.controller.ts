@@ -9,14 +9,14 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateArticleService } from '../application/services/article/createArticle.service';
-import { CreateArticleDTO } from '../application/dtos/article/createArticle.dto';
-import { GetArticleService } from '../application/services/article/getArticle.service';
+import { CreateArticleService } from '../../application/services/article/createArticle.service';
+import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
+import { GetArticleService } from '../../application/services/article/getArticle.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuardService } from '../infrastructure/authGuard.service';
-import { DeleteArticleService } from '../application/services/article/deleteArticle.service';
-import { UpdateArticleService } from '../application/services/article/updateArticle.service';
-import { UpdateArticleDTO } from '../application/dtos/article/updateArticle.dto';
+import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { DeleteArticleService } from '../../application/services/article/deleteArticle.service';
+import { UpdateArticleService } from '../../application/services/article/updateArticle.service';
+import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
 
 @Controller('article')
 @ApiBearerAuth()

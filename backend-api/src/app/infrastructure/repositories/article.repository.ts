@@ -1,12 +1,12 @@
 import { Article, ArticleAuthor } from '@prisma/client';
 import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
-import { ArticleRepository } from './article.repository';
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../infrastructure/prisma.service';
+import { PrismaService } from '../services/prisma.service';
 import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
+import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class ArticleRepositoryImplementation implements ArticleRepository {
+export class ArticleRepository implements DatabaseAdapter<Article> {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateArticleDTO): Promise<Article> {

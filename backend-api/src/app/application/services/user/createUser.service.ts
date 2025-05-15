@@ -1,9 +1,9 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
-import { UserRepository } from '../../../domain/repositories/user.repository';
+import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
-import { RoleRepository } from '../../../domain/repositories/role.repository';
+import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

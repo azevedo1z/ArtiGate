@@ -9,14 +9,14 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateAddressDTO } from '../application/dtos/address/createAddress.dto';
-import { CreateAddressService } from '../application/services/address/createAddress.service';
-import { GetAddressService } from '../application/services/address/getAddress.service';
+import { CreateAddressDTO } from '../../application/dtos/address/createAddress.dto';
+import { CreateAddressService } from '../../application/services/address/createAddress.service';
+import { GetAddressService } from '../../application/services/address/getAddress.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuardService } from '../infrastructure/authGuard.service';
-import { UpdateAddressDTO } from '../application/dtos/address/updateAddress.dto';
-import { UpdateAddressService } from '../application/services/address/updateAddress.service';
-import { DeleteAddressService } from '../application/services/address/deleteAddress.service';
+import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { UpdateAddressDTO } from '../../application/dtos/address/updateAddress.dto';
+import { UpdateAddressService } from '../../application/services/address/updateAddress.service';
+import { DeleteAddressService } from '../../application/services/address/deleteAddress.service';
 
 @Controller('address')
 export class AddressController {

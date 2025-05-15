@@ -1,43 +1,39 @@
 import { Module } from '@nestjs/common';
-import { UserController } from './presentation/user.controller';
-import { CreateUserService } from './application/services/user/createUser.service';
-import { UserRepositoryImplementation } from './domain/repositories/user.repositoryImplementation';
-import { PrismaService } from './infrastructure/prisma.service';
-import { UserRepository } from './domain/repositories/user.repository';
-import { AddressRepository } from './domain/repositories/address.repository';
-import { AddressRepositoryImplementation } from './domain/repositories/address.repositoryImplementation';
-import { AddressController } from './presentation/address.controller';
-import { CreateAddressService } from './application/services/address/createAddress.service';
-import { RoleController } from './presentation/role.controller';
-import { CreateRoleService } from './application/services/role/createRole.service';
-import { RoleRepository } from './domain/repositories/role.repository';
-import { RoleRepositoryImplementation } from './domain/repositories/role.repositoryImplementation';
-import { ArticleController } from './presentation/article.controller';
-import { CreateArticleService } from './application/services/article/createArticle.service';
-import { ArticleRepository } from './domain/repositories/article.repository';
-import { ArticleRepositoryImplementation } from './domain/repositories/article.repositoryImplementation';
-import { GetUserService } from './application/services/user/getUser.service';
-import { GetRoleService } from './application/services/role/getRole.service';
-import { GetAddressService } from './application/services/address/getAddress.service';
-import { GetArticleService } from './application/services/article/getArticle.service';
-import { ReviewController } from './presentation/review.controller';
-import { ReviewRepository } from './domain/repositories/review.repository';
-import { ReviewRepositoryImplementation } from './domain/repositories/review.repositoryImplementation';
-import { GetReviewService } from './application/services/review/getReview.service';
-import { CreateReviewService } from './application/services/review/createReview.service';
-import { AuthService } from './infrastructure/auth.service';
+import { PrismaService } from './infrastructure/services/prisma.service';
+import { DatabaseAdapter } from './interface/adapter/database.adapter';
+import { AuthService } from './infrastructure/services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuthGuardService } from './infrastructure/authGuard.service';
+import { AuthGuardService } from './infrastructure/services/authGuard.service';
+import { UserController } from './interface/controllers/user.controller';
+import { AddressController } from './interface/controllers/address.controller';
+import { RoleController } from './interface/controllers/role.controller';
+import { ArticleController } from './interface/controllers/article.controller';
+import { ReviewController } from './interface/controllers/review.controller';
+import { UserRepository } from './infrastructure/repositories/user.repository';
+import { AddressRepository } from './infrastructure/repositories/address.repository';
+import { RoleRepository } from './infrastructure/repositories/role.repository';
+import { ArticleRepository } from './infrastructure/repositories/article.repository';
+import { ReviewRepository } from './infrastructure/repositories/review.repository';
+import { CreateUserService } from './application/services/user/createUser.service';
+import { GetUserService } from './application/services/user/getUser.service';
+import { UpdateUserService } from './application/services/user/updateUser.service';
+import { DeleteUserService } from './application/services/user/deleteUser.service';
+import { CreateRoleService } from './application/services/role/createRole.service';
+import { GetRoleService } from './application/services/role/getRole.service';
+import { CreateAddressService } from './application/services/address/createAddress.service';
+import { GetAddressService } from './application/services/address/getAddress.service';
 import { UpdateAddressService } from './application/services/address/updateAddress.service';
 import { DeleteAddressService } from './application/services/address/deleteAddress.service';
-import { DeleteArticleService } from './application/services/article/deleteArticle.service';
+import { CreateArticleService } from './application/services/article/createArticle.service';
+import { GetArticleService } from './application/services/article/getArticle.service';
 import { UpdateArticleService } from './application/services/article/updateArticle.service';
+import { DeleteArticleService } from './application/services/article/deleteArticle.service';
+import { CreateReviewService } from './application/services/review/createReview.service';
+import { GetReviewService } from './application/services/review/getReview.service';
 import { UpdateReviewService } from './application/services/review/updateReview.service';
 import { DeleteReviewService } from './application/services/review/deleteReview.service';
 import { UpdateRoleService } from './application/services/role/updateRole.service';
 import { DeleteRoleService } from './application/services/role/deleteRole.service';
-import { UpdateUserService } from './application/services/user/updateUser.service';
-import { DeleteUserService } from './application/services/user/deleteUser.service';
 
 @Module({
   imports: [
@@ -55,47 +51,47 @@ import { DeleteUserService } from './application/services/user/deleteUser.servic
   ],
   providers: [
     PrismaService,
-    CreateUserService,
-    CreateAddressService,
-    CreateRoleService,
-    CreateArticleService,
-    CreateReviewService,
-    GetUserService,
-    GetRoleService,
-    GetAddressService,
-    GetArticleService,
-    GetReviewService,
     AuthService,
     AuthGuardService,
-    UpdateAddressService,
-    DeleteAddressService,
-    UpdateArticleService,
-    DeleteArticleService,
-    UpdateReviewService,
-    DeleteReviewService,
-    UpdateRoleService,
-    DeleteRoleService,
+    CreateUserService,
+    GetUserService,
     UpdateUserService,
     DeleteUserService,
+    CreateAddressService,
+    GetAddressService,
+    UpdateAddressService,
+    DeleteAddressService,
+    CreateArticleService,
+    GetArticleService,
+    UpdateArticleService,
+    DeleteArticleService,
+    CreateReviewService,
+    GetReviewService,
+    UpdateReviewService,
+    DeleteReviewService,
+    CreateRoleService,
+    GetRoleService,
+    UpdateRoleService,
+    DeleteRoleService,
     {
-      provide: UserRepository,
-      useClass: UserRepositoryImplementation,
+      provide: DatabaseAdapter,
+      useClass: UserRepository,
     },
     {
-      provide: AddressRepository,
-      useClass: AddressRepositoryImplementation,
+      provide: DatabaseAdapter,
+      useClass: AddressRepository,
     },
     {
-      provide: RoleRepository,
-      useClass: RoleRepositoryImplementation,
+      provide: DatabaseAdapter,
+      useClass: RoleRepository,
     },
     {
-      provide: ArticleRepository,
-      useClass: ArticleRepositoryImplementation,
+      provide: DatabaseAdapter,
+      useClass: ArticleRepository,
     },
     {
-      provide: ReviewRepository,
-      useClass: ReviewRepositoryImplementation,
+      provide: DatabaseAdapter,
+      useClass: ReviewRepository,
     },
   ],
 })

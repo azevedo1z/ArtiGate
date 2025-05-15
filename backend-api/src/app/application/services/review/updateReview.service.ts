@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ReviewRepository } from '../../../domain/repositories/review.repository';
+import { ReviewRepository } from '../../../infrastructure/repositories/review.repository';
 import { GetReviewService } from './getReview.service';
 import { UpdateReviewDTO } from '../../dtos/review/updateReview.dto';
 import { Review } from '../../../domain/models/review.model';

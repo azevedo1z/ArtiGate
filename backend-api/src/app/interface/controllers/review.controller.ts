@@ -9,14 +9,14 @@ import {
   Put,
   UseGuards,
 } from '@nestjs/common';
-import { CreateReviewService } from '../application/services/review/createReview.service';
-import { CreateReviewDTO } from '../application/dtos/review/createReview.dto';
-import { GetReviewService } from '../application/services/review/getReview.service';
+import { CreateReviewService } from '../../application/services/review/createReview.service';
+import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
+import { GetReviewService } from '../../application/services/review/getReview.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuardService } from '../infrastructure/authGuard.service';
-import { UpdateReviewDTO } from '../application/dtos/review/updateReview.dto';
-import { UpdateReviewService } from '../application/services/review/updateReview.service';
-import { DeleteReviewService } from '../application/services/review/deleteReview.service';
+import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
+import { UpdateReviewService } from '../../application/services/review/updateReview.service';
+import { DeleteReviewService } from '../../application/services/review/deleteReview.service';
 
 @Controller('review')
 @ApiBearerAuth()

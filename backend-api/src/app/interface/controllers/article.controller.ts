@@ -87,7 +87,7 @@ export class ArticleController {
   @Get('authorsBy/{articleId}')
   async getByArticleId(@Param('articleId') articleId: string) {
     try {
-      return await this.getArticleService.getByArticleId(articleId);
+      return await this.getArticleService.getAuthorsByArticleId(articleId);
     } catch (error) {
       throw new BadRequestException(error);
     }

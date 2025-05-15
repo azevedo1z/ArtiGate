@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { ReviewRepository } from '../../../infrastructure/repositories/review.repository';
 import { GetReviewService } from './getReview.service';
 import { GetUserService } from '../user/getUser.service';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Review } from '../../../domain/models/review.model';
 
 @Injectable()
 export class DeleteReviewService {
   constructor(
-    private readonly repository: ReviewRepository,
+    private readonly adapter: DatabaseAdapter<Review>,
     private readonly getReviewService: GetReviewService,
     private readonly getUserService: GetUserService
   ) {}
@@ -22,6 +23,6 @@ export class DeleteReviewService {
     if (hasConstraint)
       throw new BadRequestException('The review is associated with a user.');
 
-    return await this.repository.delete(id);
+    return await this.adapter.delete(id);
   }
 }

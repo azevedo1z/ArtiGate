@@ -1,8 +1,9 @@
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import { GetUserService } from '../user/getUser.service';
 import { GetRoleService } from './getRole.service';
 
+@Injectable()
 export class DeleteRoleService {
   constructor(
     private readonly repository: RoleRepository,

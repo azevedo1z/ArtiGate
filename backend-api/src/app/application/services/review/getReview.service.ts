@@ -1,16 +1,13 @@
-import {
-  BadRequestException,
-  Injectable
-} from '@nestjs/common';
-import { ReviewRepository } from '../../../infrastructure/repositories/review.repository';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Review } from '../../../domain/models/review.model';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetReviewService {
-  constructor(private readonly repository: ReviewRepository) {}
+  constructor(private readonly adapter: DatabaseAdapter<Review>) {}
 
   async getById(id: string) {
-    const existingReview = await this.repository.findById(id);
+    const existingReview = await this.adapter.findById(id);
 
     if (existingReview == null) {
       throw new BadRequestException(`There is no review with the ID "${id}".`);
@@ -20,7 +17,7 @@ export class GetReviewService {
   }
 
   async getAll() {
-    const reviews = await this.repository.findAll();
+    const reviews = await this.adapter.findAll();
 
     return reviews.map((existingReview) =>
       Review.factory(
@@ -34,7 +31,7 @@ export class GetReviewService {
   }
 
   async getByUserId(userId: string) {
-    const reviews = await this.repository.findByReviewerId(userId);
+    const reviews = await this.adapter.findMany(userId);
 
     return reviews.map((existingReview) =>
       Review.factory(
@@ -48,7 +45,7 @@ export class GetReviewService {
   }
 
   async getByArticleId(articleId: string) {
-    const reviews = await this.repository.findByArticleId(articleId);
+    const reviews = await this.adapter.findMany(articleId);
 
     return reviews.map((existingReview) =>
       Review.factory(

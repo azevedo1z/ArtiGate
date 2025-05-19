@@ -1,13 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { GetUserService } from './getUser.service';
 import { GetReviewService } from '../review/getReview.service';
 import { GetArticleService } from '../article/getArticle.service';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { User } from '../../../domain/models/user.model';
 
 @Injectable()
 export class DeleteUserService {
   constructor(
-    private readonly repository: UserRepository,
+    private readonly adapter: DatabaseAdapter<User>,
     private readonly getUserService: GetUserService,
     private readonly getReviewService: GetReviewService,
     private readonly getArticleService: GetArticleService
@@ -37,6 +38,6 @@ export class DeleteUserService {
         'The user is associated with a review or an articles.'
       );
 
-    return await this.repository.delete(id);
+    return await this.adapter.delete(id);
   }
 }

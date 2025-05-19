@@ -1,6 +1,6 @@
 import { Review } from '@prisma/client';
 import { PrismaService } from '../services/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
 import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
 import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
@@ -13,7 +13,7 @@ export class ReviewRepository implements DatabaseAdapter<Review> {
     return await this.prisma.review.create({ data });
   }
 
-  async findById(id: string): Promise<Review | null> {
+  async findBy(id: string): Promise<Review | null> {
     return await this.prisma.review.findUnique({ where: { id } });
   }
 
@@ -37,15 +37,20 @@ export class ReviewRepository implements DatabaseAdapter<Review> {
     return true;
   }
 
-  async findByReviewerId(reviewerId: string): Promise<Review[]> {
-    return await this.prisma.review.findMany({
-      where: { reviewerId: reviewerId },
-    });
+  async findManyBy(contextParam: string): Promise<Review[]> {
+    throw new NotImplementedException();
   }
 
-  async findByArticleId(articleId: string): Promise<Review[]> {
-    return await this.prisma.review.findMany({
-      where: { articleId: articleId },
-    });
-  }
+  // TODO: Create a service for them aswell.
+  // async findManyBy(reviewerId: string): Promise<Review[]> {
+  //   return await this.prisma.review.findMany({
+  //     where: { reviewerId: reviewerId },
+  //   });
+  // }
+
+  // async findManyBy(articleId: string): Promise<Review[]> {
+  //   return await this.prisma.review.findMany({
+  //     where: { articleId: articleId },
+  //   });
+  // }
 }

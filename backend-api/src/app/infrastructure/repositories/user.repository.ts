@@ -1,7 +1,7 @@
 import { ArticleAuthor, User, UserRole } from '@prisma/client';
 import { PrismaService } from '../services/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
@@ -9,11 +9,12 @@ import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 export class UserRepository implements DatabaseAdapter<User> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
-  }
+  // TODO: Fix this
+  // async findByEmail(email: string): Promise<User | null> {
+  //   return this.prisma.user.findUnique({
+  //     where: { email },
+  //   });
+  // }
 
   async create(
     data: CreateUserDTO,
@@ -81,7 +82,7 @@ export class UserRepository implements DatabaseAdapter<User> {
     return true;
   }
 
-  async findById(id: string): Promise<User | null> {
+  async findBy(id: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { id },
     });
@@ -91,31 +92,36 @@ export class UserRepository implements DatabaseAdapter<User> {
     return await this.prisma.user.findMany();
   }
 
-  async findAllRoles(): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany();
+  async findManyBy(): Promise<User[]> {
+    throw new NotImplementedException();
   }
 
-  async findRolesByAuthorId(userId: string): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany({ where: { userId } });
-  }
+  // TODO: fix them aswell
+  // async findAllRoles(): Promise<UserRole[]> {
+  //   return await this.prisma.userRole.findMany();
+  // }
 
-  async findByAddressId(addressId: string): Promise<User[]> {
-    return await this.prisma.user.findMany({
-      where: {
-        OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
-      },
-    });
-  }
+  // async findRolesByAuthorId(userId: string): Promise<UserRole[]> {
+  //   return await this.prisma.userRole.findMany({ where: { userId } });
+  // }
 
-  async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({
-      where: { articleId: articleId },
-    });
-  }
+  // async findByAddressId(addressId: string): Promise<User[]> {
+  //   return await this.prisma.user.findMany({
+  //     where: {
+  //       OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
+  //     },
+  //   });
+  // }
 
-  async findByReviewId(reviewId: string): Promise<User[]> {
-    return await this.prisma.user.findMany({
-      where: { reviews: { some: { id: reviewId } } },
-    });
-  }
+  // async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+  //   return await this.prisma.articleAuthor.findMany({
+  //     where: { articleId: articleId },
+  //   });
+  // }
+
+  // async findByReviewId(reviewId: string): Promise<User[]> {
+  //   return await this.prisma.user.findMany({
+  //     where: { reviews: { some: { id: reviewId } } },
+  //   });
+  // }
 }

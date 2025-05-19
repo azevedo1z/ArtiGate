@@ -8,10 +8,12 @@ export class CreateRoleService {
   constructor(private readonly adapter: DatabaseAdapter<Role>) {}
 
   async execute(data: CreateRoleDTO): Promise<Role> {
-    const roleExists = await this.adapter.findBy(data.name);
+    
+    // TODO: ReDo this logic with the Id.
+    // const roleExists = await this.adapter.findBy(data.name);
 
-    if (roleExists)
-      throw new BadRequestException('There is already a role with this name.');
+    // if (roleExists)
+    //   throw new BadRequestException('There is already a role with this name.');
 
     const roleRecord = await this.adapter.create(data);
 

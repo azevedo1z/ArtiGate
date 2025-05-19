@@ -1,6 +1,7 @@
 export abstract class DatabaseAdapter<T> {
-  abstract findById(id: string): Promise<T | null>;
-  abstract findAll(contextParam?: string): Promise<T[]>;
+  abstract findBy(contextParam: string): Promise<T | null>;
+  abstract findAll(): Promise<T[]>;
+  abstract findManyBy(contextParam: string): Promise<T[]>;
 
   abstract create(
     data: Partial<T>,

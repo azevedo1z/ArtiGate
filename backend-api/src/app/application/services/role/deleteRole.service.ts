@@ -1,12 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import { GetUserService } from '../user/getUser.service';
 import { GetRoleService } from './getRole.service';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class DeleteRoleService {
   constructor(
-    private readonly repository: RoleRepository,
+    private readonly adapter: DatabaseAdapter<Role>,
     private readonly getRoleService: GetRoleService,
     private readonly getUserService: GetUserService
   ) {}
@@ -23,6 +24,6 @@ export class DeleteRoleService {
     if (hasConstraint)
       throw new BadRequestException('The role is associated with a user.');
 
-    return await this.repository.delete(id);
+    return await this.adapter.delete(id);
   }
 }

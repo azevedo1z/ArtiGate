@@ -11,7 +11,7 @@ export class GetArticleService {
   ) {}
 
   async getById(id: string): Promise<Article | null> {
-    const existingArticle = await this.adapter.findById(id);
+    const existingArticle = await this.adapter.findBy(id);
 
     if (existingArticle == null)
       throw new BadRequestException(`There is no article with the ID "${id}".`);
@@ -42,7 +42,7 @@ export class GetArticleService {
   }
 
   async getAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.articleAuthorAdapter.findMany(articleId);
+    const articleAuthors = await this.articleAuthorAdapter.findManyBy(articleId);
 
     return [...articleAuthors];
   }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { CreateRoleDTO } from '../../application/dtos/role/createRole.dto';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../services/prisma.service';
@@ -9,13 +9,7 @@ import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 export class RoleRepository implements DatabaseAdapter<Role> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByName(name: string): Promise<Role | null> {
-    return await this.prisma.role.findUnique({
-      where: { name },
-    });
-  }
-
-  async findById(id: string): Promise<Role | null> {
+  async findBy(id: string): Promise<Role | null> {
     return await this.prisma.role.findUnique({
       where: { id },
     });
@@ -43,5 +37,9 @@ export class RoleRepository implements DatabaseAdapter<Role> {
 
   async findAll(): Promise<Role[]> {
     return await this.prisma.role.findMany();
+  }
+
+  async findManyBy(): Promise<Role[]> {
+    throw new NotImplementedException();
   }
 }

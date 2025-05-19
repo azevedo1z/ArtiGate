@@ -1,14 +1,18 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
 import { ArticleAuthor, UserRole } from '@prisma/client';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetUserService {
-  constructor(private readonly repository: UserRepository) {}
+  constructor(
+    private readonly adapter: DatabaseAdapter<User>,
+    private readonly userRoleAdapter: DatabaseAdapter<UserRole>,
+    private readonly articleAuthorAdapter: DatabaseAdapter<ArticleAuthor>
+  ) {}
 
   async getById(id: string): Promise<User | null> {
-    const existingUser = await this.repository.findById(id);
+    const existingUser = await this.adapter.findBy(id);
 
     if (existingUser == null)
       throw new BadRequestException(`There is no user with the ID "${id}".`);
@@ -26,7 +30,7 @@ export class GetUserService {
   }
 
   async getAll(): Promise<User[]> {
-    const users = await this.repository.findAll();
+    const users = await this.adapter.findAll();
 
     return users.map((existingUser) =>
       User.factory(
@@ -43,19 +47,19 @@ export class GetUserService {
   }
 
   async getAllRoles(): Promise<UserRole[]> {
-    const userRoles = await this.repository.findAllRoles();
+    const userRoles = await this.userRoleAdapter.findAll();
 
     return [...userRoles];
   }
 
   async getRolesByUserId(userId: string): Promise<UserRole[]> {
-    const userRoles = await this.repository.findRolesByAuthorId(userId);
+    const userRoles = await this.userRoleAdapter.findManyBy(userId);
 
     return [...userRoles];
   }
 
   async getByEmail(email: string): Promise<User> {
-    const existingUser = await this.repository.findByEmail(email);
+    const existingUser = await this.adapter.findBy(email);
 
     if (existingUser == null)
       throw new BadRequestException(
@@ -74,29 +78,32 @@ export class GetUserService {
     );
   }
 
-  async getByAddressId(addressId: string): Promise<User[]> {
-    const users = await this.repository.findByAddressId(addressId);
+  async getByAddressId(addressId: string): Promise<User> {
+    const existingUser = await this.adapter.findBy(addressId);
 
-    return users.map((existingUser) =>
-      User.factory(
-        existingUser.id,
-        existingUser.name,
-        existingUser.email,
-        existingUser.phone,
-        existingUser.homeAddressId,
-        existingUser.jobAddressId,
-        existingUser.badgeUrl,
-        existingUser.passwordHash
-      )
+    if (existingUser == null)
+      throw new BadRequestException(
+        `There is no user with the address Id "${addressId}".`
+      );
+
+    return User.factory(
+      existingUser.id,
+      existingUser.name,
+      existingUser.email,
+      existingUser.phone,
+      existingUser.homeAddressId,
+      existingUser.jobAddressId,
+      existingUser.badgeUrl,
+      existingUser.passwordHash
     );
   }
 
   async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    return await this.repository.findByArticleId(articleId);
+    return await this.articleAuthorAdapter.findManyBy(articleId);
   }
 
   async getByReviewId(reviewId: string): Promise<User[]> {
-    const reviewers = await this.repository.findByReviewId(reviewId);
+    const reviewers = await this.adapter.findManyBy(reviewId);
 
     return reviewers.map((reviewer) =>
       User.factory(

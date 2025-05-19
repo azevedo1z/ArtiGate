@@ -31,7 +31,7 @@ export class GetReviewService {
   }
 
   async getByUserId(userId: string) {
-    const reviews = await this.adapter.findMany(userId);
+    const reviews = await this.adapter.findAll(userId);
 
     return reviews.map((existingReview) =>
       Review.factory(
@@ -45,7 +45,7 @@ export class GetReviewService {
   }
 
   async getByArticleId(articleId: string) {
-    const reviews = await this.adapter.findMany(articleId);
+    const reviews = await this.adapter.findAll(articleId);
 
     return reviews.map((existingReview) =>
       Review.factory(

@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '../../../domain/models/role.model';
-import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import { UpdateRoleDTO } from '../../dtos/role/updateRole.dto';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class UpdateRoleService {
-  constructor(private readonly repository: RoleRepository) {}
+  constructor(private readonly adapter: DatabaseAdapter<Role>) {}
 
   async execute(data: UpdateRoleDTO): Promise<Role> {
-    await this.repository.findById(data.id);
+    await this.adapter.findBy(data.id);
 
-    const roleRecord = await this.repository.update(data);
+    const roleRecord = await this.adapter.update(data);
 
     return Role.factory(roleRecord.id, roleRecord.name);
   }

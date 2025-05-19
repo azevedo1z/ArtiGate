@@ -1,23 +1,23 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
-import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { User } from '../../../domain/models/user.model';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
-import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import * as bcrypt from 'bcrypt';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Role } from '@prisma/client';
 
 @Injectable()
 export class CreateUserService {
   constructor(
-    private readonly repository: UserRepository,
+    private readonly adapter: DatabaseAdapter<User>,
     private readonly createAddressService: CreateAddressService,
-    private readonly roleRepository: RoleRepository
+    private readonly roleAdapter: DatabaseAdapter<Role>
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
     data.password = await bcrypt.hash(data.password, 10);
 
-    const existingUser = await this.repository.findByEmail(data.email);
+    const existingUser = await this.adapter.findBy(data.email);
 
     await this.validateRoles(data.roleIds);
 
@@ -33,7 +33,7 @@ export class CreateUserService {
       data.jobAddress
     );
 
-    const userRecord = await this.repository.create(
+    const userRecord = await this.adapter.create(
       data,
       homeAddressId,
       jobAddressId
@@ -53,7 +53,7 @@ export class CreateUserService {
 
   private async validateRoles(roleIds: string[]) {
     for (const roleId of roleIds) {
-      const existingRole = await this.roleRepository.findById(roleId);
+      const existingRole = await this.roleAdapter.findBy(roleId);
 
       if (existingRole == null)
         throw new BadRequestException(

@@ -1,20 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UserRepository } from '../../../infrastructure/repositories/user.repository';
 import { UpdateUserDTO } from '../../dtos/user/updateUser.dto';
 import { GetUserService } from './getUser.service';
 import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
-import { RoleRepository } from '../../../infrastructure/repositories/role.repository';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
+import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Role } from '../../../domain/models/role.model';
 
 @Injectable()
 export class UpdateUserService {
   constructor(
-    private readonly repository: UserRepository,
+    private readonly adapter: DatabaseAdapter<User>,
     private readonly getUserService: GetUserService,
     private readonly createAddressService: CreateAddressService,
-    private readonly roleRepository: RoleRepository
+    private readonly roleAdapter: DatabaseAdapter<Role>
   ) {}
 
   async execute(data: UpdateUserDTO) {
@@ -27,7 +27,7 @@ export class UpdateUserService {
     const jobAddressId = await this.handleNewAddressCreation(data.jobAddress);
     const roleChanged = await this.validateRoles(data.roleIds);
 
-    const userRecord = await this.repository.update(
+    const userRecord = await this.adapter.update(
       data,
       homeAddressId,
       jobAddressId,
@@ -49,7 +49,7 @@ export class UpdateUserService {
   private async validateRoles(roleIds: string[]): Promise<boolean> {
     if (roleIds != null) {
       for (const roleId of roleIds) {
-        const existingRole = await this.roleRepository.findById(roleId);
+        const existingRole = await this.roleAdapter.findBy(roleId);
 
         if (existingRole == null)
           throw new BadRequestException(

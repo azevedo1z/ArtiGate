@@ -1,7 +1,7 @@
 import { Address } from '@prisma/client';
 import { CreateAddressDTO } from '../../application/dtos/address/createAddress.dto';
 import { PrismaService } from '../services/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { UpdateAddressDTO } from '../../application/dtos/address/updateAddress.dto';
 import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 
@@ -13,7 +13,7 @@ export class AddressRepository implements DatabaseAdapter<Address> {
     return await this.prisma.address.create({ data });
   }
 
-  async findById(id: string): Promise<Address | null> {
+  async findBy(id: string): Promise<Address | null> {
     return await this.prisma.address.findUnique({
       where: { id },
     });
@@ -36,5 +36,9 @@ export class AddressRepository implements DatabaseAdapter<Address> {
       where: { id: data.id },
       data,
     });
+  }
+
+  async findManyBy(contextParam: string): Promise<Address[]> {
+    throw new NotImplementedException();
   }
 }

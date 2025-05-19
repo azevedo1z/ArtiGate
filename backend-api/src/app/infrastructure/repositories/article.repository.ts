@@ -1,6 +1,6 @@
 import { Article, ArticleAuthor } from '@prisma/client';
 import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
 import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
 import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
@@ -25,7 +25,7 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
     return articleRecord;
   }
 
-  async findById(id: string): Promise<Article | null> {
+  async findBy(id: string): Promise<Article | null> {
     return await this.prisma.article.findUnique({ where: { id } });
   }
 
@@ -33,9 +33,10 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
     return await this.prisma.article.findMany();
   }
 
-  async findAllAuthors(): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany();
-  }
+  // TODo: Create a service for this guy here.
+  // async findAll(): Promise<ArticleAuthor[]> {
+  //   return await this.prisma.articleAuthor.findMany();
+  // }
 
   async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
     return await this.prisma.articleAuthor.findMany({ where: { articleId } });
@@ -54,5 +55,9 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
       data: { deletedOn: new Date() },
     });
     return true;
+  }
+
+  async findManyBy(id: string): Promise<Article[]> {
+    throw new NotImplementedException();
   }
 }

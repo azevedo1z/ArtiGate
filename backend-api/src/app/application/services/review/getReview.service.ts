@@ -7,7 +7,7 @@ export class GetReviewService {
   constructor(private readonly adapter: DatabaseAdapter<Review>) {}
 
   async getById(id: string) {
-    const existingReview = await this.adapter.findById(id);
+    const existingReview = await this.adapter.findBy(id);
 
     if (existingReview == null) {
       throw new BadRequestException(`There is no review with the ID "${id}".`);
@@ -31,7 +31,7 @@ export class GetReviewService {
   }
 
   async getByUserId(userId: string) {
-    const reviews = await this.adapter.findAll(userId);
+    const reviews = await this.adapter.findManyBy(userId);
 
     return reviews.map((existingReview) =>
       Review.factory(
@@ -45,7 +45,7 @@ export class GetReviewService {
   }
 
   async getByArticleId(articleId: string) {
-    const reviews = await this.adapter.findAll(articleId);
+    const reviews = await this.adapter.findManyBy(articleId);
 
     return reviews.map((existingReview) =>
       Review.factory(

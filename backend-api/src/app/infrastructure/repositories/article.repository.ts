@@ -1,4 +1,4 @@
-import { Article, ArticleAuthor } from '@prisma/client';
+import { Article } from '@prisma/client';
 import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
@@ -33,13 +33,8 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
     return await this.prisma.article.findMany();
   }
 
-  // TODo: Create a service for this guy here.
-  // async findAll(): Promise<ArticleAuthor[]> {
-  //   return await this.prisma.articleAuthor.findMany();
-  // }
-
-  async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { articleId } });
+  async findManyBy(id: string): Promise<Article[]> {
+    throw new NotImplementedException();
   }
 
   async update(data: UpdateArticleDTO): Promise<Article> {
@@ -55,9 +50,5 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
       data: { deletedOn: new Date() },
     });
     return true;
-  }
-
-  async findManyBy(id: string): Promise<Article[]> {
-    throw new NotImplementedException();
   }
 }

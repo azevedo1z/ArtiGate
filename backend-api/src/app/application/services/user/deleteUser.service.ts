@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetUserService } from './getUser.service';
 import { GetReviewService } from '../review/getReview.service';
-import { GetArticleService } from '../article/getArticle.service';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { User } from '../../../domain/models/user.model';
+import { GetArticleAuthorService } from '../article/getArticleAuthor.service';
 
 @Injectable()
 export class DeleteUserService {
@@ -11,7 +11,7 @@ export class DeleteUserService {
     private readonly adapter: DatabaseAdapter<User>,
     private readonly getUserService: GetUserService,
     private readonly getReviewService: GetReviewService,
-    private readonly getArticleService: GetArticleService
+    private readonly getArticleAuthorService: GetArticleAuthorService
   ) {}
   async execute(id: string): Promise<boolean> {
     await this.getUserService.getById(id);
@@ -25,7 +25,9 @@ export class DeleteUserService {
     let hasConstraint = false;
 
     const reviews = await this.getReviewService.getByUserId(id);
-    const articles = await this.getArticleService.getAuthorsByArticleId(id);
+    const articles = await this.getArticleAuthorService.getAuthorsByArticleId(
+      id
+    );
 
     if (reviews?.some((review) => review.reviewerId === id))
       hasConstraint = true;
@@ -35,7 +37,7 @@ export class DeleteUserService {
 
     if (hasConstraint)
       throw new BadRequestException(
-        'The user is associated with a review or an articles.'
+        'The user is associated with a review or an article.'
       );
 
     return await this.adapter.delete(id);

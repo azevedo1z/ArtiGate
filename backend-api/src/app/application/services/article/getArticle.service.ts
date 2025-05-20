@@ -1,14 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
-import { ArticleAuthor } from '@prisma/client';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetArticleService {
-  constructor(
-    private readonly adapter: DatabaseAdapter<Article>,
-    private readonly articleAuthorAdapter: DatabaseAdapter<ArticleAuthor>
-  ) {}
+  constructor(private readonly adapter: DatabaseAdapter<Article>) {}
 
   async getById(id: string): Promise<Article | null> {
     const existingArticle = await this.adapter.findBy(id);
@@ -33,17 +29,5 @@ export class GetArticleService {
         existingArticle.scoreAvg
       )
     );
-  }
-
-  async getAllAuthors(): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.articleAuthorAdapter.findAll();
-
-    return [...articleAuthors];
-  }
-
-  async getAuthorsByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.articleAuthorAdapter.findManyBy(articleId);
-
-    return [...articleAuthors];
   }
 }

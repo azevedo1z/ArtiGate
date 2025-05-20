@@ -96,15 +96,6 @@ export class UserRepository implements DatabaseAdapter<User> {
     throw new NotImplementedException();
   }
 
-  // TODO: fix them aswell
-  // async findAllRoles(): Promise<UserRole[]> {
-  //   return await this.prisma.userRole.findMany();
-  // }
-
-  // async findRolesByAuthorId(userId: string): Promise<UserRole[]> {
-  //   return await this.prisma.userRole.findMany({ where: { userId } });
-  // }
-
   // async findByAddressId(addressId: string): Promise<User[]> {
   //   return await this.prisma.user.findMany({
   //     where: {

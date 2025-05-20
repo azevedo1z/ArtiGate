@@ -1,15 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '../../../domain/models/user.model';
-import { ArticleAuthor, UserRole } from '@prisma/client';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetUserService {
-  constructor(
-    private readonly adapter: DatabaseAdapter<User>,
-    private readonly userRoleAdapter: DatabaseAdapter<UserRole>,
-    private readonly articleAuthorAdapter: DatabaseAdapter<ArticleAuthor>
-  ) {}
+  constructor(private readonly adapter: DatabaseAdapter<User>) {}
 
   async getById(id: string): Promise<User | null> {
     const existingUser = await this.adapter.findBy(id);
@@ -44,18 +39,6 @@ export class GetUserService {
         existingUser.passwordHash
       )
     );
-  }
-
-  async getAllRoles(): Promise<UserRole[]> {
-    const userRoles = await this.userRoleAdapter.findAll();
-
-    return [...userRoles];
-  }
-
-  async getRolesByUserId(userId: string): Promise<UserRole[]> {
-    const userRoles = await this.userRoleAdapter.findManyBy(userId);
-
-    return [...userRoles];
   }
 
   async getByEmail(email: string): Promise<User> {
@@ -96,10 +79,6 @@ export class GetUserService {
       existingUser.badgeUrl,
       existingUser.passwordHash
     );
-  }
-
-  async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-    return await this.articleAuthorAdapter.findManyBy(articleId);
   }
 
   async getByReviewId(reviewId: string): Promise<User[]> {

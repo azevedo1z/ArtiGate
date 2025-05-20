@@ -34,6 +34,8 @@ import { UpdateReviewService } from './application/services/review/updateReview.
 import { DeleteReviewService } from './application/services/review/deleteReview.service';
 import { UpdateRoleService } from './application/services/role/updateRole.service';
 import { DeleteRoleService } from './application/services/role/deleteRole.service';
+import { GetArticleAuthorService } from './application/services/article/getArticleAuthor.service';
+import { GetUserRoleService } from './application/services/user/getUserRole.service';
 
 @Module({
   imports: [
@@ -73,6 +75,8 @@ import { DeleteRoleService } from './application/services/role/deleteRole.servic
     GetRoleService,
     UpdateRoleService,
     DeleteRoleService,
+    GetArticleAuthorService,
+    GetUserRoleService,
     {
       provide: DatabaseAdapter,
       useClass: UserRepository,

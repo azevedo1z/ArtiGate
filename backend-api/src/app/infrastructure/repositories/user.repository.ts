@@ -1,4 +1,4 @@
-import { ArticleAuthor, User, UserRole } from '@prisma/client';
+import { User } from '@prisma/client';
 import { PrismaService } from '../services/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { Injectable, NotImplementedException } from '@nestjs/common';
@@ -9,12 +9,11 @@ import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 export class UserRepository implements DatabaseAdapter<User> {
   constructor(private readonly prisma: PrismaService) {}
 
-  // TODO: Fix this
-  // async findByEmail(email: string): Promise<User | null> {
-  //   return this.prisma.user.findUnique({
-  //     where: { email },
-  //   });
-  // }
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
 
   async create(
     data: CreateUserDTO,
@@ -96,23 +95,17 @@ export class UserRepository implements DatabaseAdapter<User> {
     throw new NotImplementedException();
   }
 
-  // async findByAddressId(addressId: string): Promise<User[]> {
-  //   return await this.prisma.user.findMany({
-  //     where: {
-  //       OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
-  //     },
-  //   });
-  // }
+  async findByAddressId(addressId: string): Promise<User | null> {
+    return await this.prisma.user.findFirst({
+      where: {
+        OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
+      },
+    });
+  }
 
-  // async findByArticleId(articleId: string): Promise<ArticleAuthor[]> {
-  //   return await this.prisma.articleAuthor.findMany({
-  //     where: { articleId: articleId },
-  //   });
-  // }
-
-  // async findByReviewId(reviewId: string): Promise<User[]> {
-  //   return await this.prisma.user.findMany({
-  //     where: { reviews: { some: { id: reviewId } } },
-  //   });
-  // }
+  async findByReviewId(reviewId: string): Promise<User | null> {
+    return await this.prisma.user.findFirst({
+      where: { reviews: { some: { id: reviewId } } },
+    });
+  }
 }

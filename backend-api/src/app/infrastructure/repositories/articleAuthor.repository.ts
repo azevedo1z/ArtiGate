@@ -5,7 +5,7 @@ import { PrismaService } from '../services/prisma.service';
 export class ArticleAuthorRepository implements DatabaseAdapter<ArticleAuthor> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findBy(contextParam: string): Promise<ArticleAuthor | null> {
+  async findBy(id: string): Promise<ArticleAuthor | null> {
     throw new Error('Method not implemented.');
   }
   async findAll(): Promise<ArticleAuthor[]> {
@@ -14,10 +14,9 @@ export class ArticleAuthorRepository implements DatabaseAdapter<ArticleAuthor> {
   async findManyBy(userId: string): Promise<ArticleAuthor[]> {
     return await this.prisma.articleAuthor.findMany({ where: { userId } });
   }
-
-//   async findManyBy(articleId: string): Promise<ArticleAuthor[]> {
-//     return await this.prisma.articleAuthor.findMany({ where: { articleId } });
-//   }
+  async findManyByArticleId(articleId: string): Promise<ArticleAuthor[]> {
+    return await this.prisma.articleAuthor.findMany({ where: { articleId } });
+  }
 
   async create(data: Partial<ArticleAuthor>): Promise<ArticleAuthor> {
     throw new Error('Method not implemented.');

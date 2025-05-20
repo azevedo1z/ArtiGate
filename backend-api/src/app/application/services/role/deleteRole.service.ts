@@ -1,21 +1,21 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetUserService } from '../user/getUser.service';
 import { GetRoleService } from './getRole.service';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { Role } from '@prisma/client';
+import { GetUserRoleService } from '../user/getUserRole.service';
 
 @Injectable()
 export class DeleteRoleService {
   constructor(
     private readonly adapter: DatabaseAdapter<Role>,
     private readonly getRoleService: GetRoleService,
-    private readonly getUserService: GetUserService
+    private readonly getUserRoleService: GetUserRoleService
   ) {}
 
   async execute(id: string): Promise<boolean> {
     await this.getRoleService.getById(id);
 
-    const participants = await this.getUserService.getAllRoles();
+    const participants = await this.getUserRoleService.getAllRoles();
 
     const hasConstraint = participants.some(
       (participant) => participant.roleId === id

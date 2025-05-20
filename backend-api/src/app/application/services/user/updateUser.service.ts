@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UpdateUserDTO } from '../../dtos/user/updateUser.dto';
 import { GetUserService } from './getUser.service';
 import { CreateAddressService } from '../address/createAddress.service';
@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { Role } from '../../../domain/models/role.model';
+import { GetRoleService } from '../role/getRole.service';
 
 @Injectable()
 export class UpdateUserService {
@@ -14,7 +14,7 @@ export class UpdateUserService {
     private readonly adapter: DatabaseAdapter<User>,
     private readonly getUserService: GetUserService,
     private readonly createAddressService: CreateAddressService,
-    private readonly roleAdapter: DatabaseAdapter<Role>
+    private readonly getRoleService: GetRoleService
   ) {}
 
   async execute(data: UpdateUserDTO) {
@@ -48,14 +48,7 @@ export class UpdateUserService {
 
   private async validateRoles(roleIds: string[]): Promise<boolean> {
     if (roleIds != null) {
-      for (const roleId of roleIds) {
-        const existingRole = await this.roleAdapter.findBy(roleId);
-
-        if (existingRole == null)
-          throw new BadRequestException(
-            `Role with ID "${roleId}" does not exist.`
-          );
-      }
+      for (const roleId of roleIds) await this.getRoleService.getById(roleId);
       return true;
     }
     return false;

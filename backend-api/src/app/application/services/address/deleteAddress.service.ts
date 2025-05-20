@@ -14,12 +14,9 @@ export class DeleteAddressService {
 
   async execute(id: string): Promise<boolean> {
     await this.getAddressService.getById(id);
-    const users = await this.getUserService.getByAddressId(id);
+    const user = await this.getUserService.getByAddressId(id);
 
-    const hasConstraint =
-      users?.some(
-        (user) => user.homeAddressId === id || user.jobAddressId === id
-      ) ?? false;
+    const hasConstraint = user.homeAddressId === id || user.jobAddressId === id;
 
     if (hasConstraint)
       throw new BadRequestException('The address is associated with a user.');

@@ -81,20 +81,28 @@ export class GetUserService {
     );
   }
 
-  async getByReviewId(reviewId: string): Promise<User[]> {
-    const reviewers = await this.adapter.findManyBy(reviewId);
+  async getByReviewId(reviewId: string): Promise<User> {
+    if (!this.adapter.findByReviewId)
+      throw new BadRequestException(
+        'Database adapter is not properly configured.'
+      );
 
-    return reviewers.map((reviewer) =>
-      User.factory(
-        reviewer.id,
-        reviewer.name,
-        reviewer.email,
-        reviewer.phone,
-        reviewer.homeAddressId,
-        reviewer.jobAddressId,
-        reviewer.badgeUrl,
-        reviewer.passwordHash
-      )
+    const reviewer = await this.adapter.findByReviewId(reviewId);
+
+    if (reviewer == null)
+      throw new BadRequestException(
+        `There is no user with the review Id "${reviewId}".`
+      );
+
+    return User.factory(
+      reviewer.id,
+      reviewer.name,
+      reviewer.email,
+      reviewer.phone,
+      reviewer.homeAddressId,
+      reviewer.jobAddressId,
+      reviewer.badgeUrl,
+      reviewer.passwordHash
     );
   }
 }

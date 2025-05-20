@@ -17,6 +17,8 @@ import { AuthGuardService } from '../../infrastructure/services/authGuard.servic
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 import { UpdateUserService } from '../../application/services/user/updateUser.service';
 import { DeleteUserService } from '../../application/services/user/deleteUser.service';
+import { GetUserRoleService } from '../../application/services/user/getUserRole.service';
+import { GetArticleAuthorService } from '../../application/services/article/getArticleAuthor.service';
 
 @Controller('user')
 export class UserController {
@@ -25,7 +27,9 @@ export class UserController {
     private readonly getUserService: GetUserService,
     private readonly authService: AuthService,
     private readonly updateUserService: UpdateUserService,
-    private readonly deleteUserService: DeleteUserService
+    private readonly deleteUserService: DeleteUserService,
+    private readonly getUserRoleService: GetUserRoleService,
+    private readonly getArticleAuthorService: GetArticleAuthorService
   ) {}
 
   @Post('create')
@@ -95,7 +99,7 @@ export class UserController {
   @UseGuards(AuthGuardService)
   async getAllRoles() {
     try {
-      return await this.getUserService.getAllRoles();
+      return await this.getUserRoleService.getAllRoles();
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -106,7 +110,7 @@ export class UserController {
   @UseGuards(AuthGuardService)
   async getRolesByUserId(@Param('userId') userId: string) {
     try {
-      return await this.getUserService.getRolesByUserId(userId);
+      return await this.getUserRoleService.getRolesByUserId(userId);
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -117,7 +121,7 @@ export class UserController {
   @UseGuards(AuthGuardService)
   async getByArticleId(@Param('articleId') articleId: string) {
     try {
-      return await this.getUserService.getByArticleId(articleId);
+      return await this.getArticleAuthorService.getByArticleId(articleId);
     } catch (error) {
       throw new BadRequestException(error);
     }

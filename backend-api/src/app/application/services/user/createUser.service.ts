@@ -4,14 +4,14 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { Role } from '@prisma/client';
+import { GetRoleService } from '../role/getRole.service';
 
 @Injectable()
 export class CreateUserService {
   constructor(
     private readonly adapter: DatabaseAdapter<User>,
     private readonly createAddressService: CreateAddressService,
-    private readonly roleAdapter: DatabaseAdapter<Role>
+    private readonly getRoleService: GetRoleService
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
@@ -52,13 +52,6 @@ export class CreateUserService {
   }
 
   private async validateRoles(roleIds: string[]) {
-    for (const roleId of roleIds) {
-      const existingRole = await this.roleAdapter.findBy(roleId);
-
-      if (existingRole == null)
-        throw new BadRequestException(
-          `Role with ID "${roleId}" does not exist.`
-        );
-    }
+    for (const roleId of roleIds) await this.getRoleService.getById(roleId);
   }
 }

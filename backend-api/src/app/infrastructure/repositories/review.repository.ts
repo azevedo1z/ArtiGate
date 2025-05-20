@@ -41,7 +41,6 @@ export class ReviewRepository implements DatabaseAdapter<Review> {
     throw new NotImplementedException();
   }
 
-  // TODO: Create a service for them aswell.
   // async findManyBy(reviewerId: string): Promise<Review[]> {
   //   return await this.prisma.review.findMany({
   //     where: { reviewerId: reviewerId },

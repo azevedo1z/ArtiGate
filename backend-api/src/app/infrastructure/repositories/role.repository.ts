@@ -42,4 +42,8 @@ export class RoleRepository implements DatabaseAdapter<Role> {
   async findManyBy(): Promise<Role[]> {
     throw new NotImplementedException();
   }
+
+  async findByName(name: string): Promise<Role | null> {
+    return await this.prisma.role.findUnique({ where: { name } });
+  }
 }

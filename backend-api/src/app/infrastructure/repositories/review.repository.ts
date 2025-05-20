@@ -41,15 +41,15 @@ export class ReviewRepository implements DatabaseAdapter<Review> {
     throw new NotImplementedException();
   }
 
-  // async findManyBy(reviewerId: string): Promise<Review[]> {
-  //   return await this.prisma.review.findMany({
-  //     where: { reviewerId: reviewerId },
-  //   });
-  // }
+  async findManyByReviewerId(reviewerId: string): Promise<Review[]> {
+    return await this.prisma.review.findMany({
+      where: { reviewerId: reviewerId },
+    });
+  }
 
-  // async findManyBy(articleId: string): Promise<Review[]> {
-  //   return await this.prisma.review.findMany({
-  //     where: { articleId: articleId },
-  //   });
-  // }
+  async findManyByArticleId(articleId: string): Promise<Review[]> {
+    return await this.prisma.review.findMany({
+      where: { articleId: articleId },
+    });
+  }
 }

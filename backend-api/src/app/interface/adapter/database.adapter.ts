@@ -19,4 +19,5 @@ export abstract class DatabaseAdapter<T> {
   abstract delete(id: string): Promise<boolean>;
 
   abstract findManyByUserId?(userId: string): Promise<T[]>;
+  abstract findByName?(name: string): Promise<T | null>;
 }

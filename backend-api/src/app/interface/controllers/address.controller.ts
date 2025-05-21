@@ -19,6 +19,8 @@ import { UpdateAddressService } from '../../application/services/address/updateA
 import { DeleteAddressService } from '../../application/services/address/deleteAddress.service';
 
 @Controller('address')
+@ApiBearerAuth()
+@UseGuards(AuthGuardService)
 export class AddressController {
   constructor(
     private readonly createAddressService: CreateAddressService,
@@ -37,8 +39,6 @@ export class AddressController {
   }
 
   @Put('update')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateAddressDTO) {
     try {
       return await this.updateAddressService.execute(data);
@@ -48,8 +48,6 @@ export class AddressController {
   }
 
   @Delete('delete')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
   async delete(@Body() id: string) {
     try {
       return await this.deleteAddressService.execute(id);
@@ -59,8 +57,6 @@ export class AddressController {
   }
 
   @Get(':id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
     try {
       return await this.getAddressService.getById(id);
@@ -70,8 +66,6 @@ export class AddressController {
   }
 
   @Get('allAddresses')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
   async getAll() {
     try {
       return await this.getAddressService.getAll();

@@ -12,12 +12,6 @@ export class GetArticleAuthorService {
     return [...articleAuthors];
   }
 
-  async getAllAuthors(): Promise<ArticleAuthor[]> {
-    const articleAuthors = await this.adapter.findAll();
-
-    return [...articleAuthors];
-  }
-
   async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {
     return await this.adapter.findMany(articleId);
   }

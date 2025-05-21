@@ -8,7 +8,7 @@ export class UpdateRoleService {
   constructor(private readonly adapter: DatabaseAdapter<Role>) {}
 
   async execute(data: UpdateRoleDTO): Promise<Role> {
-    await this.adapter.findBy(data.id);
+    await this.adapter.findById(data.id);
 
     const roleRecord = await this.adapter.update(data);
 

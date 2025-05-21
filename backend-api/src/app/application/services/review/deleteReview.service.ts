@@ -15,10 +15,9 @@ export class DeleteReviewService {
   async execute(id: string): Promise<boolean> {
     await this.getReviewService.getById(id);
 
-    const reviewers = await this.getUserService.getByReviewId(id);
+    const reviewer = await this.getUserService.getByReviewId(id);
 
-    const hasConstraint =
-      reviewers?.some((reviewer) => reviewer.id === id) ?? false;
+    const hasConstraint = !!reviewer;
 
     if (hasConstraint)
       throw new BadRequestException('The review is associated with a user.');

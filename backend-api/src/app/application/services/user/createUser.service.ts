@@ -15,9 +15,14 @@ export class CreateUserService {
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
+    if (!this.adapter.findByEmail)
+      throw new BadRequestException(
+        'The Database Adapter was not properly configured.'
+      );
+
     data.password = await bcrypt.hash(data.password, 10);
 
-    const existingUser = await this.adapter.findBy(data.email);
+    const existingUser = await this.adapter.findByEmail(data.email);
 
     await this.validateRoles(data.roleIds);
 

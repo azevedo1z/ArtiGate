@@ -1,13 +1,17 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
 import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { GetArticleAuthorService } from './getArticleAuthor.service';
 
 @Injectable()
 export class GetArticleService {
-  constructor(private readonly adapter: DatabaseAdapter<Article>) {}
+  constructor(
+    private readonly adapter: DatabaseAdapter<Article>,
+    private readonly getArticleAuthorService: GetArticleAuthorService
+  ) {}
 
   async getById(id: string): Promise<Article | null> {
-    const existingArticle = await this.adapter.findBy(id);
+    const existingArticle = await this.adapter.findById(id);
 
     if (existingArticle == null)
       throw new BadRequestException(`There is no article with the ID "${id}".`);
@@ -29,5 +33,22 @@ export class GetArticleService {
         existingArticle.scoreAvg
       )
     );
+  }
+
+  async getByAuthorId(authorId: string): Promise<Article[]> {
+    const articleAuthors =
+      await this.getArticleAuthorService.getArticleByAuthorId(authorId);
+
+    const articles = await Promise.all(
+      articleAuthors.map((existingArticleAuthor) =>
+        this.adapter.findById(existingArticleAuthor.articleId)
+      )
+    );
+
+    return articles
+      .filter((article): article is Article => article !== null)
+      .map((article) =>
+        Article.factory(article.id, article.summary, article.scoreAvg)
+      );
   }
 }

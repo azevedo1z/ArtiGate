@@ -31,12 +31,12 @@ export class GetReviewService {
   }
 
   async getByReviewerId(reviewerId: string) {
-    if (!this.adapter.findManyByUserId)
-      throw new BadRequestException(
-        'The Database Adapter was not properly configured.'
-      );
+    const reviews = await this.adapter.findManyByUserId?.(reviewerId);
 
-    const reviews = await this.adapter.findManyByUserId(reviewerId);
+    if (reviews == null || reviews.length == 0)
+      throw new BadRequestException(
+        `There is no review associated with the userId "${reviewerId}".`
+      );
 
     return reviews.map((existingReview) =>
       Review.factory(

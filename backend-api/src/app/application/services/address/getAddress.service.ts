@@ -7,7 +7,7 @@ export class GetAddressService {
   constructor(private readonly adapter: DatabaseAdapter<Address>) {}
 
   async getById(id: string): Promise<Address | null> {
-    const existingAddress = await this.adapter.findBy(id);
+    const existingAddress = await this.adapter.findById(id);
 
     if (existingAddress == null)
       throw new BadRequestException(`There is no address with the ID "${id}".`);

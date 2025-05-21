@@ -10,10 +10,12 @@ export class CreateRoleService {
   async execute(data: CreateRoleDTO): Promise<Role> {
     if (!this.adapter.findByName)
       throw new BadRequestException(
-        'Database adapter is not properly configured.'
+        'The Database Adapter was not properly configured.'
       );
 
-    const roleExists = await this.adapter.findByName(data.name);
+    const roleExists = await this.adapter.findByName(
+      data.name.toUpperCase().trim()
+    );
 
     if (roleExists)
       throw new BadRequestException('There is already a role with this name.');

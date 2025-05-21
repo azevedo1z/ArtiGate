@@ -9,12 +9,6 @@ import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 export class RoleRepository implements DatabaseAdapter<Role> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findBy(id: string): Promise<Role | null> {
-    return await this.prisma.role.findUnique({
-      where: { id },
-    });
-  }
-
   async create(data: CreateRoleDTO): Promise<Role> {
     return await this.prisma.role.create({ data });
   }
@@ -35,11 +29,17 @@ export class RoleRepository implements DatabaseAdapter<Role> {
     return true;
   }
 
+  async findById(id: string): Promise<Role | null> {
+    return await this.prisma.role.findUnique({
+      where: { id },
+    });
+  }
+
   async findAll(): Promise<Role[]> {
     return await this.prisma.role.findMany();
   }
 
-  async findManyBy(): Promise<Role[]> {
+  async findMany(): Promise<Role[]> {
     throw new NotImplementedException();
   }
 

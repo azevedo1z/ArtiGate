@@ -17,7 +17,6 @@ import { AuthGuardService } from '../../infrastructure/services/authGuard.servic
 import { DeleteArticleService } from '../../application/services/article/deleteArticle.service';
 import { UpdateArticleService } from '../../application/services/article/updateArticle.service';
 import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
-import { GetArticleAuthorService } from '../../application/services/article/getArticleAuthor.service';
 
 @Controller('article')
 @ApiBearerAuth()
@@ -27,8 +26,7 @@ export class ArticleController {
     private readonly createArticleService: CreateArticleService,
     private readonly getArticleService: GetArticleService,
     private readonly deleteArticleService: DeleteArticleService,
-    private readonly updateArticleService: UpdateArticleService,
-    private readonly getArticleAuthorService: GetArticleAuthorService
+    private readonly updateArticleService: UpdateArticleService
   ) {}
 
   @Post('create')
@@ -76,21 +74,10 @@ export class ArticleController {
     }
   }
 
-  @Get('allAuthors')
-  async getAllAuthors() {
+  @Get('articlesBy/{authorId}')
+  async getByAuthorId(@Param('authorId') authorId: string) {
     try {
-      return await this.getArticleAuthorService.getAllAuthors();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
-  @Get('authorsBy/{articleId}')
-  async getByArticleId(@Param('articleId') articleId: string) {
-    try {
-      return await this.getArticleAuthorService.getAuthorsByArticleId(
-        articleId
-      );
+      return await this.getArticleService.getByAuthorId(authorId);
     } catch (error) {
       throw new BadRequestException(error);
     }

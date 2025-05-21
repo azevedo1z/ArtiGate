@@ -5,20 +5,6 @@ import { PrismaService } from '../services/prisma.service';
 export class UserRoleRepository implements DatabaseAdapter<UserRole> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findBy(id: string): Promise<UserRole | null> {
-    return await this.prisma.userRole.findUnique({
-      where: { id },
-    });
-  }
-
-  async findAll(): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany();
-  }
-
-  async findManyBy(userId: string): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany({ where: { userId } });
-  }
-
   async create(data: Partial<UserRole>): Promise<UserRole> {
     throw new Error('Method not implemented.');
   }
@@ -28,6 +14,18 @@ export class UserRoleRepository implements DatabaseAdapter<UserRole> {
   }
 
   async delete(id: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+
+  async findById(id: string): Promise<UserRole | null> {
+    throw new Error('Method not implemented.');
+  }
+
+  async findAll(): Promise<UserRole[]> {
+    return await this.prisma.userRole.findMany();
+  }
+
+  async findMany(userId: string): Promise<UserRole[]> {
     throw new Error('Method not implemented.');
   }
 }

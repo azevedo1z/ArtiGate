@@ -9,10 +9,4 @@ export class GetUserRoleService {
 
     return [...userRoles];
   }
-
-  async getRolesByUserId(userId: string): Promise<UserRole[]> {
-    const userRoles = await this.adapter.findManyBy(userId);
-
-    return [...userRoles];
-  }
 }

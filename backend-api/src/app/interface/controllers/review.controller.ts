@@ -77,7 +77,7 @@ export class ReviewController {
   @Get('reviewsBy/{userId}')
   async getByUserId(@Param('userId') userId: string){
     try {
-      return await this.getReviewService.getByUserId(userId);
+      return await this.getReviewService.getByReviewerId(userId);
     } catch (error) {
       throw new BadRequestException(error);
     }

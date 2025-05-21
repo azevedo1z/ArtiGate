@@ -13,14 +13,6 @@ export class ReviewRepository implements DatabaseAdapter<Review> {
     return await this.prisma.review.create({ data });
   }
 
-  async findBy(id: string): Promise<Review | null> {
-    return await this.prisma.review.findUnique({ where: { id } });
-  }
-
-  async findAll(): Promise<Review[]> {
-    return await this.prisma.review.findMany();
-  }
-
   async update(data: UpdateReviewDTO): Promise<Review> {
     return await this.prisma.review.update({
       where: { id: data.id },
@@ -36,20 +28,19 @@ export class ReviewRepository implements DatabaseAdapter<Review> {
 
     return true;
   }
+  async findById(id: string): Promise<Review | null> {
+    return await this.prisma.review.findUnique({ where: { id } });
+  }
 
-  async findManyBy(contextParam: string): Promise<Review[]> {
+  async findAll(): Promise<Review[]> {
+    return await this.prisma.review.findMany();
+  }
+
+  async findMany(contextParam: string): Promise<Review[]> {
     throw new NotImplementedException();
   }
 
-  async findManyByReviewerId(reviewerId: string): Promise<Review[]> {
-    return await this.prisma.review.findMany({
-      where: { reviewerId: reviewerId },
-    });
-  }
-
-  async findManyByArticleId(articleId: string): Promise<Review[]> {
-    return await this.prisma.review.findMany({
-      where: { articleId: articleId },
-    });
+  async findManyByUserId(reviewerId: string): Promise<Review[]> {
+    return await this.prisma.review.findMany({ where: { reviewerId } });
   }
 }

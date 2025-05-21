@@ -20,4 +20,5 @@ export abstract class DatabaseAdapter<T> {
 
   abstract findManyByUserId?(userId: string): Promise<T[]>;
   abstract findByName?(name: string): Promise<T | null>;
+  abstract findByEmail?(email: string): Promise<T | null>;
 }

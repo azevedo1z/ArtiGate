@@ -17,20 +17,25 @@ import { AuthGuardService } from '../../infrastructure/services/authGuard.servic
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 import { UpdateUserService } from '../../application/services/user/updateUser.service';
 import { DeleteUserService } from '../../application/services/user/deleteUser.service';
-import { GetUserRoleService } from '../../application/services/user/getUserRole.service';
-import { GetArticleAuthorService } from '../../application/services/article/getArticleAuthor.service';
 
 @Controller('user')
 export class UserController {
   constructor(
+    private readonly authService: AuthService,
     private readonly createUserService: CreateUserService,
     private readonly getUserService: GetUserService,
-    private readonly authService: AuthService,
     private readonly updateUserService: UpdateUserService,
-    private readonly deleteUserService: DeleteUserService,
-    private readonly getUserRoleService: GetUserRoleService,
-    private readonly getArticleAuthorService: GetArticleAuthorService
+    private readonly deleteUserService: DeleteUserService
   ) {}
+
+  @Post('signIn')
+  async signIn(@Body() data: AuthUserDTO) {
+    try {
+      return await this.authService.signIn(data);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 
   @Post('create')
   async create(@Body() data: CreateUserDTO) {
@@ -63,26 +68,6 @@ export class UserController {
     }
   }
 
-  @Post('signIn')
-  async signIn(@Body() data: AuthUserDTO) {
-    try {
-      return await this.authService.signIn(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
-  @Get('allUsers')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getAll() {
-    try {
-      return await this.getUserService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
@@ -94,45 +79,12 @@ export class UserController {
     }
   }
 
-  @Get('allRoles')
+  @Get('allUsers')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async getAllRoles() {
+  async getAll() {
     try {
-      return await this.getUserRoleService.getAllRoles();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
-  @Get('rolesBy/{userId}')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getRolesByUserId(@Param('userId') userId: string) {
-    try {
-      return await this.getUserRoleService.getRolesByUserId(userId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
-  @Get('usersBy/{articleId}')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getByArticleId(@Param('articleId') articleId: string) {
-    try {
-      return await this.getArticleAuthorService.getByArticleId(articleId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
-  @Get('usersBy/{reviewId}')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getByReviewId(@Param('reviewId') reviewId: string) {
-    try {
-      return await this.getUserService.getByReviewId(reviewId);
+      return await this.getUserService.getAll();
     } catch (error) {
       throw new BadRequestException(error);
     }

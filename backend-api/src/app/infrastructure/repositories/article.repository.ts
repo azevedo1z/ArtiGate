@@ -25,18 +25,6 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
     return articleRecord;
   }
 
-  async findBy(id: string): Promise<Article | null> {
-    return await this.prisma.article.findUnique({ where: { id } });
-  }
-
-  async findAll(): Promise<Article[]> {
-    return await this.prisma.article.findMany();
-  }
-
-  async findManyBy(id: string): Promise<Article[]> {
-    throw new NotImplementedException();
-  }
-
   async update(data: UpdateArticleDTO): Promise<Article> {
     return await this.prisma.article.update({
       where: { id: data.id },
@@ -50,5 +38,17 @@ export class ArticleRepository implements DatabaseAdapter<Article> {
       data: { deletedOn: new Date() },
     });
     return true;
+  }
+
+  async findById(id: string): Promise<Article | null> {
+    return await this.prisma.article.findUnique({ where: { id } });
+  }
+
+  async findAll(): Promise<Article[]> {
+    return await this.prisma.article.findMany();
+  }
+
+  async findMany(id: string): Promise<Article[]> {
+    throw new NotImplementedException();
   }
 }

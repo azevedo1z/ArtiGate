@@ -7,7 +7,7 @@ export class GetRoleService {
   constructor(private readonly adapter: DatabaseAdapter<Role>) {}
 
   async getById(id: string): Promise<Role | null> {
-    const existingRole = await this.adapter.findBy(id);
+    const existingRole = await this.adapter.findById(id);
 
     if (existingRole == null)
       throw new BadRequestException(`There is no role with the ID "${id}".`);

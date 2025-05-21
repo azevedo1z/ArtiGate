@@ -24,8 +24,8 @@ export class DeleteUserService {
   private async validateConstraints(id: string) {
     let hasConstraint = false;
 
-    const reviews = await this.getReviewService.getByUserId(id);
-    const articles = await this.getArticleAuthorService.getAuthorsByArticleId(
+    const reviews = await this.getReviewService.getByReviewerId(id);
+    const articles = await this.getArticleAuthorService.getArticleByAuthorId(
       id
     );
 

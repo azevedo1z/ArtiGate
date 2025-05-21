@@ -9,12 +9,7 @@ import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
 export class UserRepository implements DatabaseAdapter<User> {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
-  }
-
+  
   async create(
     data: CreateUserDTO,
     homeAddressId: string,
@@ -29,18 +24,18 @@ export class UserRepository implements DatabaseAdapter<User> {
       jobAddressId,
       passwordHash: data.password,
     };
-
+    
     const userRecord = await this.prisma.user.create({ data: user });
-
+    
     for (const roleId of data.roleIds) {
       await this.prisma.userRole.create({
         data: { userId: userRecord.id, roleId },
       });
     }
-
+    
     return userRecord;
   }
-
+  
   async update(
     data: UpdateUserDTO,
     homeAddressId: string | undefined,
@@ -56,7 +51,7 @@ export class UserRepository implements DatabaseAdapter<User> {
       jobAddressId,
       passwordHash: data.password,
     };
-
+    
     if (roleChanged) {
       for (const roleId of data.roleIds) {
         await this.prisma.userRole.delete({ where: { id: data.id } });
@@ -65,36 +60,42 @@ export class UserRepository implements DatabaseAdapter<User> {
         });
       }
     }
-
+    
     return await this.prisma.user.update({
       where: { id: data.id },
       data: user,
     });
   }
-
+  
   async delete(id: string): Promise<boolean> {
     await this.prisma.user.update({
       where: { id: id },
       data: { deletedOn: new Date() },
     });
-
+    
     return true;
   }
-
-  async findBy(id: string): Promise<User | null> {
+  
+  async findById(id: string): Promise<User | null> {
     return await this.prisma.user.findUnique({
       where: { id },
     });
   }
-
+  
   async findAll(): Promise<User[]> {
     return await this.prisma.user.findMany();
   }
-
-  async findManyBy(): Promise<User[]> {
+  
+  async findMany(): Promise<User[]> {
     throw new NotImplementedException();
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+  
   async findByAddressId(addressId: string): Promise<User | null> {
     return await this.prisma.user.findFirst({
       where: {

@@ -1,15 +1,4 @@
 export abstract class DatabaseAdapter<T> {
-  abstract findBy(id: string): Promise<T | null>;
-  abstract findAll(): Promise<T[]>;
-  abstract findManyBy(contextParam: string): Promise<T[]>;
-
-  abstract findByName?(name: string): Promise<T | null>;
-  abstract findByEmail?(email: string): Promise<T | null>;
-  abstract findManyByArticleId?(articleId: string): Promise<T[]>;
-  abstract findManyByReviewerId?(reviewerId: string): Promise<T[]>;
-  abstract findByReviewId?(reviewId: string): Promise<T | null>;
-  abstract findByAddressId?(addressId: string): Promise<T | null>;
-
   abstract create(
     data: Partial<T>,
     primaryContextParam?: string,
@@ -23,5 +12,11 @@ export abstract class DatabaseAdapter<T> {
     tertiaryContextParam?: boolean
   ): Promise<T>;
 
+  abstract findById(id: string): Promise<T | null>;
+  abstract findAll(): Promise<T[]>;
+  abstract findMany(contextParam: string): Promise<T[]>;
+
   abstract delete(id: string): Promise<boolean>;
+
+  abstract findManyByUserId?(userId: string): Promise<T[]>;
 }

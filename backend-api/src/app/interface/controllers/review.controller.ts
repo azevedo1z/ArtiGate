@@ -56,15 +56,6 @@ export class ReviewController {
     }
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: string) {
-    try {
-      return await this.getReviewService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
   @Get('allReviews')
   async getAll() {
     try {
@@ -74,8 +65,17 @@ export class ReviewController {
     }
   }
 
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    try {
+      return await this.getReviewService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
   @Get('reviewsBy/{userId}')
-  async getByUserId(@Param('userId') userId: string){
+  async getByUserId(@Param('userId') userId: string) {
     try {
       return await this.getReviewService.getByReviewerId(userId);
     } catch (error) {
@@ -84,7 +84,7 @@ export class ReviewController {
   }
 
   @Get('reviewsBy/{articleId}')
-  async getByArticleId(@Param('articleId') articleId: string){
+  async getByArticleId(@Param('articleId') articleId: string) {
     try {
       return await this.getReviewService.getByArticleId(articleId);
     } catch (error) {

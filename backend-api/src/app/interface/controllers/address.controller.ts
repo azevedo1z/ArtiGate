@@ -56,19 +56,19 @@ export class AddressController {
     }
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: string) {
+  @Get('allAddresses')
+  async getAll() {
     try {
-      return await this.getAddressService.getById(id);
+      return await this.getAddressService.getAll();
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  @Get('allAddresses')
-  async getAll() {
+  @Get(':id')
+  async getById(@Param('id') id: string) {
     try {
-      return await this.getAddressService.getAll();
+      return await this.getAddressService.getById(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

@@ -3,17 +3,17 @@ import { CreateAddressDTO } from '../../application/dtos/address/createAddress.d
 import { PrismaService } from '../services/prisma.service';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { UpdateAddressDTO } from '../../application/dtos/address/updateAddress.dto';
-import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { AddressDatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class AddressRepository implements DatabaseAdapter<Address> {
+export class AddressRepository implements AddressDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateAddressDTO): Promise<Address> {
     return await this.prisma.address.create({ data });
   }
 
-  async findBy(id: string): Promise<Address | null> {
+  async findById(id: string): Promise<Address | null> {
     return await this.prisma.address.findUnique({
       where: { id },
     });
@@ -38,7 +38,7 @@ export class AddressRepository implements DatabaseAdapter<Address> {
     });
   }
 
-  async findManyBy(contextParam: string): Promise<Address[]> {
+  async findMany(contextParam: string): Promise<Address[]> {
     throw new NotImplementedException();
   }
 }

@@ -3,10 +3,10 @@ import { CreateArticleDTO } from '../../application/dtos/article/createArticle.d
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
 import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
-import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { ArticleDatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class ArticleRepository implements DatabaseAdapter<Article> {
+export class ArticleRepository implements ArticleDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateArticleDTO): Promise<Article> {

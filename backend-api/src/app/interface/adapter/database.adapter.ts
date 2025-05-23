@@ -1,3 +1,13 @@
+import {
+  Address,
+  Article,
+  ArticleAuthor,
+  Review,
+  Role,
+  User,
+  UserRole,
+} from '@prisma/client';
+
 export abstract class DatabaseAdapter<T> {
   abstract create(
     data: Partial<T>,
@@ -24,3 +34,11 @@ export abstract class DatabaseAdapter<T> {
   abstract findByAddressId?(addressId: string): Promise<T | null>;
   abstract findByReviewId?(reviewId: string): Promise<T | null>;
 }
+
+export abstract class UserDatabaseAdapter extends DatabaseAdapter<User> {}
+export abstract class AddressDatabaseAdapter extends DatabaseAdapter<Address> {}
+export abstract class RoleDatabaseAdapter extends DatabaseAdapter<Role> {}
+export abstract class ArticleDatabaseAdapter extends DatabaseAdapter<Article> {}
+export abstract class ReviewDatabaseAdapter extends DatabaseAdapter<Review> {}
+export abstract class ArticleAuthorDatabaseAdapter extends DatabaseAdapter<ArticleAuthor> {}
+export abstract class UserRoleDatabaseAdapter extends DatabaseAdapter<UserRole> {}

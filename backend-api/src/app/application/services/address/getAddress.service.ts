@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Address } from '../../../domain/models/address.model';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { AddressDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetAddressService {
-  constructor(private readonly adapter: DatabaseAdapter<Address>) {}
+  constructor(private readonly adapter: AddressDatabaseAdapter) {}
 
   async getById(id: string): Promise<Address | null> {
     const existingAddress = await this.adapter.findById(id);

@@ -3,10 +3,10 @@ import { PrismaService } from '../services/prisma.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
-import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { UserDatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class UserRepository implements DatabaseAdapter<User> {
+export class UserRepository implements UserDatabaseAdapter{
   constructor(private readonly prisma: PrismaService) {}
 
   

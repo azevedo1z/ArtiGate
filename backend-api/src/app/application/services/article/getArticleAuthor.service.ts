@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ArticleAuthorDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { ArticleAuthor } from '@prisma/client';
 
 @Injectable()
 export class GetArticleAuthorService {
-  constructor(private readonly adapter: DatabaseAdapter<ArticleAuthor>) {}
+  constructor(private readonly adapter: ArticleAuthorDatabaseAdapter) {}
 
   async getArticleByAuthorId(authorId: string): Promise<ArticleAuthor[]> {
     const articleAuthors = await this.adapter.findMany(authorId);

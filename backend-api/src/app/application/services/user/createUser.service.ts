@@ -5,19 +5,21 @@ import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { GetRoleService } from '../role/getRole.service';
+import { GetUserService } from './getUser.service';
 
 @Injectable()
 export class CreateUserService {
   constructor(
     private readonly adapter: UserDatabaseAdapter,
     private readonly createAddressService: CreateAddressService,
-    private readonly getRoleService: GetRoleService
+    private readonly getRoleService: GetRoleService,
+    private readonly getUserService: GetUserService
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
     data.password = await bcrypt.hash(data.password, 10);
 
-    const existingUser = await this.adapter.findByEmail?.(data.email);
+    const existingUser = await this.getUserService.getByEmail(data.email);
 
     await this.validateRoles(data.roleIds);
 

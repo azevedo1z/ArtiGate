@@ -56,19 +56,19 @@ export class RoleController {
     }
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: string) {
+  @Get('allRoles')
+  async getAll() {
     try {
-      return await this.getRoleService.getById(id);
+      return await this.getRoleService.getAll();
     } catch (error) {
       throw new BadRequestException(error);
     }
   }
 
-  @Get('allRoles')
-  async getAll() {
+  @Get(':id')
+  async getById(@Param('id') id: string) {
     try {
-      return await this.getRoleService.getAll();
+      return await this.getRoleService.getById(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

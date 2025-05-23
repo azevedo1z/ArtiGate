@@ -68,23 +68,23 @@ export class UserController {
     }
   }
 
-  @Get(':id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getById(@Param('id') id: string) {
-    try {
-      return await this.getUserService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
   @Get('allUsers')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAll() {
     try {
       return await this.getUserService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Get(':id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async getById(@Param('id') id: string) {
+    try {
+      return await this.getUserService.getById(id);
     } catch (error) {
       throw new BadRequestException(error);
     }

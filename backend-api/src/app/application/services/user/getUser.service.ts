@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { User } from '../../../domain/models/user.model';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetUserService {
-  constructor(private readonly adapter: DatabaseAdapter<User>) {}
+  constructor(private readonly adapter: UserDatabaseAdapter) {}
 
   async getById(id: string): Promise<User | null> {
     const existingUser = await this.adapter.findById(id);

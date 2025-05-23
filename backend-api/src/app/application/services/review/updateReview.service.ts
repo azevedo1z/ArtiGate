@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { GetReviewService } from './getReview.service';
 import { UpdateReviewDTO } from '../../dtos/review/updateReview.dto';
 import { Review } from '../../../domain/models/review.model';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class UpdateReviewService {
   constructor(
-    private readonly adapter: DatabaseAdapter<Review>,
+    private readonly adapter: ReviewDatabaseAdapter,
     private readonly getReviewService: GetReviewService
   ) {}
 

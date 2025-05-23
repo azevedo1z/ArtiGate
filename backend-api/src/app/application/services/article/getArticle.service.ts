@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { GetArticleAuthorService } from './getArticleAuthor.service';
 
 @Injectable()
 export class GetArticleService {
   constructor(
-    private readonly adapter: DatabaseAdapter<Article>,
+    private readonly adapter: ArticleDatabaseAdapter,
     private readonly getArticleAuthorService: GetArticleAuthorService
   ) {}
 
@@ -46,7 +46,9 @@ export class GetArticleService {
     );
 
     return articles
-      .filter((article): article is Article => article !== null)
+      .filter(
+        (article): article is NonNullable<typeof article> => article !== null
+      )
       .map((article) =>
         Article.factory(article.id, article.summary, article.scoreAvg)
       );

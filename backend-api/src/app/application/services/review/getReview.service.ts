@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Review } from '../../../domain/models/review.model';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class GetReviewService {
-  constructor(private readonly adapter: DatabaseAdapter<Review>) {}
+  constructor(private readonly adapter: ReviewDatabaseAdapter) {}
 
   async getById(id: string) {
     const existingReview = await this.adapter.findById(id);

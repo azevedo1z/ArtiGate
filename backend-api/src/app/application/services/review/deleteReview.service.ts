@@ -1,13 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetReviewService } from './getReview.service';
 import { GetUserService } from '../user/getUser.service';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { Review } from '../../../domain/models/review.model';
+import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class DeleteReviewService {
   constructor(
-    private readonly adapter: DatabaseAdapter<Review>,
+    private readonly adapter: ReviewDatabaseAdapter,
     private readonly getReviewService: GetReviewService,
     private readonly getUserService: GetUserService
   ) {}

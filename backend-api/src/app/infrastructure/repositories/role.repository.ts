@@ -3,10 +3,10 @@ import { CreateRoleDTO } from '../../application/dtos/role/createRole.dto';
 import { Role } from '@prisma/client';
 import { PrismaService } from '../services/prisma.service';
 import { UpdateRoleDTO } from '../../application/dtos/role/updateRole.dto';
-import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { RoleDatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
-export class RoleRepository implements DatabaseAdapter<Role> {
+export class RoleRepository implements RoleDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateRoleDTO): Promise<Role> {

@@ -1,6 +1,14 @@
 import { Module } from '@nestjs/common';
 import { PrismaService } from './infrastructure/services/prisma.service';
-import { DatabaseAdapter } from './interface/adapter/database.adapter';
+import {
+  AddressDatabaseAdapter,
+  ArticleAuthorDatabaseAdapter,
+  ArticleDatabaseAdapter,
+  ReviewDatabaseAdapter,
+  RoleDatabaseAdapter,
+  UserDatabaseAdapter,
+  UserRoleDatabaseAdapter,
+} from './interface/adapter/database.adapter';
 import { AuthService } from './infrastructure/services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuardService } from './infrastructure/services/authGuard.service';
@@ -14,6 +22,8 @@ import { AddressRepository } from './infrastructure/repositories/address.reposit
 import { RoleRepository } from './infrastructure/repositories/role.repository';
 import { ArticleRepository } from './infrastructure/repositories/article.repository';
 import { ReviewRepository } from './infrastructure/repositories/review.repository';
+import { ArticleAuthorRepository } from './infrastructure/repositories/articleAuthor.repository';
+import { UserRoleRepository } from './infrastructure/repositories/userRole.repository';
 import { CreateUserService } from './application/services/user/createUser.service';
 import { GetUserService } from './application/services/user/getUser.service';
 import { UpdateUserService } from './application/services/user/updateUser.service';
@@ -78,25 +88,35 @@ import { GetUserRoleService } from './application/services/user/getUserRole.serv
     GetArticleAuthorService,
     GetUserRoleService,
     {
-      provide: DatabaseAdapter,
+      provide: UserDatabaseAdapter,
       useClass: UserRepository,
     },
     {
-      provide: DatabaseAdapter,
+      provide: AddressDatabaseAdapter,
       useClass: AddressRepository,
     },
     {
-      provide: DatabaseAdapter,
+      provide: RoleDatabaseAdapter,
       useClass: RoleRepository,
     },
     {
-      provide: DatabaseAdapter,
+      provide: ArticleDatabaseAdapter,
       useClass: ArticleRepository,
     },
     {
-      provide: DatabaseAdapter,
+      provide: ReviewDatabaseAdapter,
       useClass: ReviewRepository,
     },
+    {
+      provide: ArticleAuthorDatabaseAdapter,
+      useClass: ArticleAuthorRepository,
+    },
+    {
+      provide: UserRoleDatabaseAdapter,
+      useClass: UserRoleRepository,
+    },
   ],
+  exports: [UserDatabaseAdapter, RoleDatabaseAdapter, ReviewDatabaseAdapter, UserRoleDatabaseAdapter,
+    ArticleDatabaseAdapter, ArticleDatabaseAdapter, AddressDatabaseAdapter],
 })
 export class AppModule {}

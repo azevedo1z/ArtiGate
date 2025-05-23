@@ -1,8 +1,8 @@
 import { UserRole } from '@prisma/client';
-import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { UserRoleDatabaseAdapter } from '../../interface/adapter/database.adapter';
 import { PrismaService } from '../services/prisma.service';
 
-export class UserRoleRepository implements DatabaseAdapter<UserRole> {
+export class UserRoleRepository implements UserRoleDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: Partial<UserRole>): Promise<UserRole> {

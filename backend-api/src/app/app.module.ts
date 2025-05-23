@@ -9,8 +9,8 @@ import {
   UserDatabaseAdapter,
   UserRoleDatabaseAdapter,
 } from './interface/adapter/database.adapter';
-import { AuthService } from './infrastructure/services/auth.service';
 import { JwtModule } from '@nestjs/jwt';
+import { AuthService } from './infrastructure/services/auth.service';
 import { AuthGuardService } from './infrastructure/services/authGuard.service';
 import { UserController } from './interface/controllers/user.controller';
 import { AddressController } from './interface/controllers/address.controller';
@@ -116,7 +116,14 @@ import { GetUserRoleService } from './application/services/user/getUserRole.serv
       useClass: UserRoleRepository,
     },
   ],
-  exports: [UserDatabaseAdapter, RoleDatabaseAdapter, ReviewDatabaseAdapter, UserRoleDatabaseAdapter,
-    ArticleDatabaseAdapter, ArticleDatabaseAdapter, AddressDatabaseAdapter],
+  exports: [
+    UserDatabaseAdapter,
+    RoleDatabaseAdapter,
+    ReviewDatabaseAdapter,
+    UserRoleDatabaseAdapter,
+    ArticleDatabaseAdapter,
+    ArticleDatabaseAdapter,
+    AddressDatabaseAdapter,
+  ],
 })
 export class AppModule {}

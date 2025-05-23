@@ -1,8 +1,8 @@
 import { UserRole } from '@prisma/client';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UserRoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 export class GetUserRoleService {
-  constructor(private readonly adapter: DatabaseAdapter<UserRole>) {}
+  constructor(private readonly adapter: UserRoleDatabaseAdapter) {}
 
   async getAllRoles(): Promise<UserRole[]> {
     const userRoles = await this.adapter.findAll();

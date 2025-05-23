@@ -3,13 +3,13 @@ import { User } from '../../../domain/models/user.model';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { GetRoleService } from '../role/getRole.service';
 
 @Injectable()
 export class CreateUserService {
   constructor(
-    private readonly adapter: DatabaseAdapter<User>,
+    private readonly adapter: UserDatabaseAdapter,
     private readonly createAddressService: CreateAddressService,
     private readonly getRoleService: GetRoleService
   ) {}

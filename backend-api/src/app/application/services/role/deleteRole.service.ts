@@ -1,13 +1,12 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetRoleService } from './getRole.service';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { Role } from '@prisma/client';
+import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { GetUserRoleService } from '../user/getUserRole.service';
 
 @Injectable()
 export class DeleteRoleService {
   constructor(
-    private readonly adapter: DatabaseAdapter<Role>,
+    private readonly adapter: RoleDatabaseAdapter,
     private readonly getRoleService: GetRoleService,
     private readonly getUserRoleService: GetUserRoleService
   ) {}

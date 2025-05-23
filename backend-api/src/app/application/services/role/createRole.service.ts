@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRoleDTO } from '../../dtos/role/createRole.dto';
 import { Role } from '../../../domain/models/role.model';
-import { DatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 
 @Injectable()
 export class CreateRoleService {
-  constructor(private readonly adapter: DatabaseAdapter<Role>) {}
+  constructor(private readonly adapter: RoleDatabaseAdapter) {}
 
   async execute(data: CreateRoleDTO): Promise<Role> {
     if (!this.adapter.findByName)

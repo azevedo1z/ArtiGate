@@ -1,8 +1,8 @@
 import { ArticleAuthor } from '@prisma/client';
-import { DatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { ArticleAuthorDatabaseAdapter } from '../../interface/adapter/database.adapter';
 import { PrismaService } from '../services/prisma.service';
 
-export class ArticleAuthorRepository implements DatabaseAdapter<ArticleAuthor> {
+export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: Partial<ArticleAuthor>): Promise<ArticleAuthor> {

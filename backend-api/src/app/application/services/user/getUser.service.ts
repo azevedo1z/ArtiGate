@@ -80,4 +80,24 @@ export class GetUserService {
       existingUser.passwordHash
     );
   }
+
+  async getByEmail(email: string): Promise<User | null> {
+    const existingUser = await this.adapter.findByEmail?.(email);
+
+    if (existingUser == null)
+      throw new BadRequestException(
+        `There is no user with the Email "${email}".`
+      );
+
+    return User.factory(
+      existingUser.id,
+      existingUser.name,
+      existingUser.email,
+      existingUser.phone,
+      existingUser.homeAddressId,
+      existingUser.jobAddressId,
+      existingUser.badgeUrl,
+      existingUser.passwordHash
+    );
+  }
 }

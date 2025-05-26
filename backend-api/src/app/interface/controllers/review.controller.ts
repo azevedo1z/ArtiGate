@@ -47,8 +47,8 @@ export class ReviewController {
     }
   }
 
-  @Delete('delete')
-  async delete(@Body() id: string) {
+  @Delete(':id')
+  async delete(@Param() id: string) {
     try {
       return await this.deleteReviewService.execute(id);
     } catch (error) {

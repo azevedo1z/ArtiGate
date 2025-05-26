@@ -14,7 +14,7 @@ export class DeleteRoleService {
   async execute(id: string): Promise<boolean> {
     await this.getRoleService.getById(id);
 
-    const participants = await this.getUserRoleService.getAllRoles();
+    const participants = await this.getUserRoleService.getAllUserRoles();
 
     const hasConstraint = participants.some(
       (participant) => participant.roleId === id

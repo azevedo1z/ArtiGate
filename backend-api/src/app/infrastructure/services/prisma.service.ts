@@ -9,30 +9,36 @@ export class PrismaService
   async onModuleInit() {
     await this.$connect();
 
-    // middleware for soft delete filtering using Prisma Client Extensions
-    this.$extends({
-      query: {
-        $allModels: {
-          async findUnique({ args, query }) {
-            if (!args.where) args.where = {} as typeof args.where;
-            args.where.deletedOn = null;
-            return query(args);
-          },
-          async findFirst({ args, query }) {
-            if (!args.where) args.where = {};
-            args.where.deletedOn = null;
-            return query(args);
-          },
-          async findMany({ args, query }) {
-            if (!args.where) args.where = {};
-            args.where.deletedOn = { equals: null };
-            return query(args);
-          },
-        },
-      },
+    // Soft delete middleware
+    this.$use(async (params, next) => {
+      // List of models with soft delete
+      const softDeleteModels = [
+        'User',
+        'Role',
+        'UserRole',
+        'Address',
+        'Article',
+        'ArticleAuthor',
+        'Review',
+        'Payment',
+      ];
+
+      // Only apply to find queries on soft-delete models
+      if (
+        params.model &&
+        softDeleteModels.includes(params.model) &&
+        ['findUnique', 'findFirst', 'findMany'].includes(params.action)
+      ) {
+        if (!params.args) params.args = {};
+        if (!params.args.where) params.args.where = {};
+        // Only add if not already filtering by deletedOn
+        if (params.args.where.deletedOn === undefined) {
+          params.args.where.deletedOn = null;
+        }
+      }
+      return next(params);
     });
   }
-
   async onModuleDestroy() {
     await this.$disconnect();
   }

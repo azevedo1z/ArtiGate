@@ -47,8 +47,8 @@ export class ArticleController {
     }
   }
 
-  @Delete('delete')
-  async delete(@Body() id: string) {
+  @Delete(':id')
+  async delete(@Param() id: string) {
     try {
       return await this.deleteArticleService.execute(id);
     } catch (error) {

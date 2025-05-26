@@ -41,13 +41,11 @@ export class GetUserService {
     );
   }
 
-  async getByAddressId(addressId: string): Promise<User> {
+  async getByAddressId(addressId: string): Promise<User | null> {
     const existingUser = await this.adapter.findByAddressId?.(addressId);
 
     if (existingUser == null)
-      throw new BadRequestException(
-        `There is no user with the addressId "${addressId}".`
-      );
+      return null;
 
     return User.factory(
       existingUser.id,

@@ -16,11 +16,7 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
 
     const articleRecord = await this.prisma.article.create({ data: article });
 
-    for (const userId of data.authorIds) {
-      await this.prisma.articleAuthor.create({
-        data: { articleId: articleRecord.id, userId },
-      });
-    }
+    await this.createArticleAuthors(articleRecord.id, data);
 
     return articleRecord;
   }
@@ -59,6 +55,17 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
 
   async findMany(id: string): Promise<Article[]> {
     throw new NotImplementedException();
+  }
+
+  private async createArticleAuthors(
+    articleId: string,
+    data: CreateArticleDTO
+  ) {
+    for (const userId of data.authorIds) {
+      await this.prisma.articleAuthor.create({
+        data: { articleId: articleId, userId },
+      });
+    }
   }
 
   private async updateArticleAuthors(

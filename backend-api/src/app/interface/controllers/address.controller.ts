@@ -47,8 +47,8 @@ export class AddressController {
     }
   }
 
-  @Delete('delete')
-  async delete(@Body() id: string) {
+  @Delete(':id')
+  async delete(@Param('id') id: string) {
     try {
       return await this.deleteAddressService.execute(id);
     } catch (error) {

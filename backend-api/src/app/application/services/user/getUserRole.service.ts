@@ -4,7 +4,7 @@ import { UserRoleDatabaseAdapter } from '../../../interface/adapter/database.ada
 export class GetUserRoleService {
   constructor(private readonly adapter: UserRoleDatabaseAdapter) {}
 
-  async getAllRoles(): Promise<UserRole[]> {
+  async getAllUserRoles(): Promise<UserRole[]> {
     const userRoles = await this.adapter.findAll();
 
     return [...userRoles];

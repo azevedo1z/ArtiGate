@@ -16,7 +16,7 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
 
     const articleRecord = await this.prisma.article.create({ data: article });
 
-    await this.createArticleAuthors(articleRecord.id, data);
+    // await this.createArticleAuthors(articleRecord.id, data);
 
     return articleRecord;
   }
@@ -32,7 +32,7 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
       data: article,
     });
 
-    await this.updateArticleAuthors(articleRecord.id, data);
+    // await this.updateArticleAuthors(articleRecord.id, data);
 
     return articleRecord;
   }

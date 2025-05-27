@@ -14,11 +14,7 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
       summary: data.summary,
     };
 
-    const articleRecord = await this.prisma.article.create({ data: article });
-
-    // await this.createArticleAuthors(articleRecord.id, data);
-
-    return articleRecord;
+    return await this.prisma.article.create({ data: article });
   }
 
   async update(data: UpdateArticleDTO): Promise<Article> {
@@ -27,14 +23,10 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
       summary: data.summary,
     };
 
-    const articleRecord = await this.prisma.article.update({
+    return await this.prisma.article.update({
       where: { id: data.id },
       data: article,
     });
-
-    // await this.updateArticleAuthors(articleRecord.id, data);
-
-    return articleRecord;
   }
 
   async delete(id: string): Promise<boolean> {
@@ -55,34 +47,5 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
 
   async findMany(id: string): Promise<Article[]> {
     throw new NotImplementedException();
-  }
-
-  private async createArticleAuthors(
-    articleId: string,
-    data: CreateArticleDTO
-  ) {
-    for (const userId of data.authorIds) {
-      await this.prisma.articleAuthor.create({
-        data: { articleId: articleId, userId },
-      });
-    }
-  }
-
-  private async updateArticleAuthors(
-    articleId: string,
-    data: UpdateArticleDTO
-  ) {
-    for (const userId of data.authorIds) {
-      const articleAuthor = await this.prisma.articleAuthor.findFirst({
-        where: { userId, articleId },
-      });
-
-      if (articleAuthor) {
-        await this.prisma.articleAuthor.update({
-          where: { id: articleAuthor.id },
-          data,
-        });
-      }
-    }
   }
 }

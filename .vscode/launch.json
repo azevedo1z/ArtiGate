@@ -6,7 +6,7 @@
             "request": "launch",
             "name": "Nx Serve Backend API",
             "command": "npx nx serve backend-api",
-            "cwd": "${workspaceFolder}/",
+            "cwd": "${workspaceFolder}/backend-api",
             "env": {
                 "NODE_ENV": "development"
             }

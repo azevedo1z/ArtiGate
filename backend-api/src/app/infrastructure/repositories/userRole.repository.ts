@@ -1,7 +1,9 @@
 import { UserRole } from '@prisma/client';
 import { UserRoleDatabaseAdapter } from '../../interface/adapter/database.adapter';
 import { PrismaService } from '../services/prisma.service';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UserRoleRepository implements UserRoleDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 

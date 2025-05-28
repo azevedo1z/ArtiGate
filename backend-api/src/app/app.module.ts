@@ -17,6 +17,7 @@ import { AddressController } from './interface/controllers/address.controller';
 import { RoleController } from './interface/controllers/role.controller';
 import { ArticleController } from './interface/controllers/article.controller';
 import { ReviewController } from './interface/controllers/review.controller';
+import { ArticleAuthorController } from './interface/controllers/articleAuthor.controller';
 import { UserRepository } from './infrastructure/repositories/user.repository';
 import { AddressRepository } from './infrastructure/repositories/address.repository';
 import { RoleRepository } from './infrastructure/repositories/role.repository';
@@ -60,6 +61,7 @@ import { GetUserRoleService } from './application/services/user/getUserRole.serv
     RoleController,
     ArticleController,
     ReviewController,
+    ArticleAuthorController,
   ],
   providers: [
     PrismaService,

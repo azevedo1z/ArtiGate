@@ -46,7 +46,8 @@ import { DeleteReviewService } from './application/services/review/deleteReview.
 import { UpdateRoleService } from './application/services/role/updateRole.service';
 import { DeleteRoleService } from './application/services/role/deleteRole.service';
 import { GetArticleAuthorService } from './application/services/articleAuthor/getArticleAuthor.service';
-import { GetUserRoleService } from './application/services/user/getUserRole.service';
+import { UpdateArticleAuthorService } from './application/services/articleAuthor/updateArticleAuthor.service';
+import { GetUserRoleService } from './application/services/userRole/getUserRole.service';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { GetUserRoleService } from './application/services/user/getUserRole.serv
     UpdateRoleService,
     DeleteRoleService,
     GetArticleAuthorService,
+    UpdateArticleAuthorService,
     GetUserRoleService,
     {
       provide: UserDatabaseAdapter,

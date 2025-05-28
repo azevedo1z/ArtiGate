@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetRoleService } from './getRole.service';
 import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetUserRoleService } from '../user/getUserRole.service';
+import { GetUserRoleService } from '../userRole/getUserRole.service';
 
 @Injectable()
 export class DeleteRoleService {
@@ -14,7 +14,7 @@ export class DeleteRoleService {
   async execute(id: string): Promise<boolean> {
     await this.getRoleService.getById(id);
 
-    const participants = await this.getUserRoleService.getAllUserRoles();
+    const participants = await this.getUserRoleService.getAll();
 
     const hasConstraint = participants.some(
       (participant) => participant.roleId === id

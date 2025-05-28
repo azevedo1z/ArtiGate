@@ -46,7 +46,10 @@ import { DeleteReviewService } from './application/services/review/deleteReview.
 import { UpdateRoleService } from './application/services/role/updateRole.service';
 import { DeleteRoleService } from './application/services/role/deleteRole.service';
 import { GetArticleAuthorService } from './application/services/articleAuthor/getArticleAuthor.service';
-import { GetUserRoleService } from './application/services/user/getUserRole.service';
+import { UpdateArticleAuthorService } from './application/services/articleAuthor/updateArticleAuthor.service';
+import { GetUserRoleService } from './application/services/userRole/getUserRole.service';
+import { UserRoleController } from './interface/controllers/userRole.controller';
+import { CreateArticleAuthorService } from './application/services/articleAuthor/createArticleAuthor.service';
 
 @Module({
   imports: [
@@ -62,6 +65,7 @@ import { GetUserRoleService } from './application/services/user/getUserRole.serv
     ArticleController,
     ReviewController,
     ArticleAuthorController,
+    UserRoleController,
   ],
   providers: [
     PrismaService,
@@ -87,7 +91,9 @@ import { GetUserRoleService } from './application/services/user/getUserRole.serv
     GetRoleService,
     UpdateRoleService,
     DeleteRoleService,
+    CreateArticleAuthorService,
     GetArticleAuthorService,
+    UpdateArticleAuthorService,
     GetUserRoleService,
     {
       provide: UserDatabaseAdapter,

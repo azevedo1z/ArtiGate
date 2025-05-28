@@ -2,17 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
 import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
 import { GetArticleService } from './getArticle.service';
-import {
-  ArticleAuthorDatabaseAdapter,
-  ArticleDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UpdateArticleAuthorService } from '../articleAuthor/updateArticleAuthor.service';
 
 @Injectable()
 export class UpdateArticleService {
   constructor(
     private readonly adapter: ArticleDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter,
-    private readonly getArticleService: GetArticleService
+    private readonly getArticleService: GetArticleService,
+    private readonly updateArticleAuthorService: UpdateArticleAuthorService
   ) {}
 
   async execute(data: UpdateArticleDTO): Promise<Article> {
@@ -21,23 +19,12 @@ export class UpdateArticleService {
     const articleRecord = await this.adapter.update(data);
 
     if (data.authorIds && data.authorIds.length > 0)
-      await this.updateArticleAuthor(data);
+      await this.updateArticleAuthorService.execute(data);
 
     return Article.factory(
       articleRecord.id,
       articleRecord.summary,
       articleRecord.scoreAvg
     );
-  }
-
-  private async updateArticleAuthor(data: UpdateArticleDTO) {
-    for (const userId of data.authorIds) {
-      const articleAuthorData = {
-        articleId: data.id,
-        userId,
-      };
-
-      await this.articleAuthorAdapter.create(articleAuthorData);
-    }
   }
 }

@@ -1,0 +1,19 @@
+import { Injectable } from '@nestjs/common';
+import { ArticleAuthorDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
+
+@Injectable()
+export class UpdateArticleAuthorService {
+  constructor(private readonly adapter: ArticleAuthorDatabaseAdapter) {}
+
+  async execute(data: UpdateArticleDTO) {
+    for (const userId of data.authorIds) {
+      const articleAuthorData = {
+        articleId: data.id,
+        userId,
+      };
+
+      await this.adapter.update(articleAuthorData);
+    }
+  }
+}

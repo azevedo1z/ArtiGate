@@ -48,6 +48,7 @@ import { DeleteRoleService } from './application/services/role/deleteRole.servic
 import { GetArticleAuthorService } from './application/services/articleAuthor/getArticleAuthor.service';
 import { UpdateArticleAuthorService } from './application/services/articleAuthor/updateArticleAuthor.service';
 import { GetUserRoleService } from './application/services/userRole/getUserRole.service';
+import { UserRoleController } from './interface/controllers/userRole.controller';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { GetUserRoleService } from './application/services/userRole/getUserRole.
     ArticleController,
     ReviewController,
     ArticleAuthorController,
+    UserRoleController,
   ],
   providers: [
     PrismaService,

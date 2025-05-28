@@ -46,7 +46,7 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
     throw new Error('Method not implemented.');
   }
   async findAll(): Promise<ArticleAuthor[]> {
-    throw new Error('Method not implemented.');
+    return await this.prisma.articleAuthor.findMany();
   }
   async findMany(contextParam: string): Promise<ArticleAuthor[]> {
     throw new Error('Method not implemented.');

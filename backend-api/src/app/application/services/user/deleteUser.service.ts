@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetUserService } from './getUser.service';
 import { GetReviewService } from '../review/getReview.service';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetArticleAuthorService } from '../article/getArticleAuthor.service';
+import { GetArticleAuthorService } from '../articleAuthor/getArticleAuthor.service';
 
 @Injectable()
 export class DeleteUserService {

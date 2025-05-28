@@ -74,7 +74,7 @@ export class ArticleController {
     }
   }
 
-  @Get('articlesBy/{authorId}')
+  @Get('by/{authorId}')
   async getByAuthorId(@Param('authorId') authorId: string) {
     try {
       return await this.getArticleService.getByAuthorId(authorId);

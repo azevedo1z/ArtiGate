@@ -20,7 +20,8 @@ export class UpdateArticleService {
 
     const articleRecord = await this.adapter.update(data);
 
-    await this.updateArticleAuthor(data);
+    if (data.authorIds && data.authorIds.length > 0)
+      await this.updateArticleAuthor(data);
 
     return Article.factory(
       articleRecord.id,

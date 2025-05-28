@@ -44,8 +44,7 @@ export class GetUserService {
   async getByAddressId(addressId: string): Promise<User | null> {
     const existingUser = await this.adapter.findByAddressId?.(addressId);
 
-    if (existingUser == null)
-      return null;
+    if (existingUser == null) return null;
 
     return User.factory(
       existingUser.id,
@@ -82,10 +81,7 @@ export class GetUserService {
   async getByEmail(email: string): Promise<User | null> {
     const existingUser = await this.adapter.findByEmail?.(email);
 
-    if (existingUser == null)
-      throw new BadRequestException(
-        `There is no user with the Email "${email}".`
-      );
+    if (!existingUser) return null;
 
     return User.factory(
       existingUser.id,

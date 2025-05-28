@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
 import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetArticleAuthorService } from './getArticleAuthor.service';
+import { GetArticleAuthorService } from '../articleAuthor/getArticleAuthor.service';
 
 @Injectable()
 export class GetArticleService {

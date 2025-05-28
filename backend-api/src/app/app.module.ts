@@ -49,6 +49,7 @@ import { GetArticleAuthorService } from './application/services/articleAuthor/ge
 import { UpdateArticleAuthorService } from './application/services/articleAuthor/updateArticleAuthor.service';
 import { GetUserRoleService } from './application/services/userRole/getUserRole.service';
 import { UserRoleController } from './interface/controllers/userRole.controller';
+import { CreateArticleAuthorService } from './application/services/articleAuthor/createArticleAuthor.service';
 
 @Module({
   imports: [
@@ -90,6 +91,7 @@ import { UserRoleController } from './interface/controllers/userRole.controller'
     GetRoleService,
     UpdateRoleService,
     DeleteRoleService,
+    CreateArticleAuthorService,
     GetArticleAuthorService,
     UpdateArticleAuthorService,
     GetUserRoleService,

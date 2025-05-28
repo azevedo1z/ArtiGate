@@ -1,6 +1,8 @@
+import { Injectable } from '@nestjs/common';
 import { ArticleAuthorDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 
+@Injectable()
 export class CreateArticleAuthorService {
   constructor(private readonly adapter: ArticleAuthorDatabaseAdapter) {}
 

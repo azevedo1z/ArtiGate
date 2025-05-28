@@ -74,7 +74,7 @@ export class ReviewController {
     }
   }
 
-  @Get('reviewsBy/{userId}')
+  @Get('by/{userId}')
   async getByUserId(@Param('userId') userId: string) {
     try {
       return await this.getReviewService.getByReviewerId(userId);
@@ -83,7 +83,7 @@ export class ReviewController {
     }
   }
 
-  @Get('reviewsBy/{articleId}')
+  @Get('by/{articleId}')
   async getByArticleId(@Param('articleId') articleId: string) {
     try {
       return await this.getReviewService.getByArticleId(articleId);

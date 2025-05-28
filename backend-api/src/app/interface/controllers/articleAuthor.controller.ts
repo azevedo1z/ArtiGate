@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
-import { GetArticleAuthorService } from '../../application/services/article/getArticleAuthor.service';
+import { GetArticleAuthorService } from '../../application/services/articleAuthor/getArticleAuthor.service';
 
 @Controller('articleAuthor')
 @ApiBearerAuth()

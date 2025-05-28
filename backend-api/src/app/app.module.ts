@@ -45,7 +45,7 @@ import { UpdateReviewService } from './application/services/review/updateReview.
 import { DeleteReviewService } from './application/services/review/deleteReview.service';
 import { UpdateRoleService } from './application/services/role/updateRole.service';
 import { DeleteRoleService } from './application/services/role/deleteRole.service';
-import { GetArticleAuthorService } from './application/services/article/getArticleAuthor.service';
+import { GetArticleAuthorService } from './application/services/articleAuthor/getArticleAuthor.service';
 import { GetUserRoleService } from './application/services/user/getUserRole.service';
 
 @Module({

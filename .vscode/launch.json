@@ -5,7 +5,7 @@
             "type": "node-terminal",
             "request": "launch",
             "name": "Nx Serve Backend API",
-            "command": "npx nx serve backend-api",
+            "command": "npx nx serve",
             "cwd": "${workspaceFolder}/backend-api",
             "env": {
                 "NODE_ENV": "development"
@@ -15,7 +15,7 @@
             "type": "node-terminal",
             "request": "launch",
             "name": "Nx Serve Frontend",
-            "command": "npx nx serve frontend",
+            "command": "npx nx serve",
             "cwd": "${workspaceFolder}/frontend",
             "env": {
                 "NODE_ENV": "development"

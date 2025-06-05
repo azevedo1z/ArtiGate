@@ -1,4 +1,4 @@
-import Counter from '../features/components/counter.component';
+import Counter from '../components/counter.component';
 
 export function App() {
   return (

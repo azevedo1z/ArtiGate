@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Button from './button.component';
 
 const Counter: React.FC = () => {
   const [count, setCount] = useState(0);
@@ -9,8 +10,8 @@ const Counter: React.FC = () => {
   return (
     <div>
       <h2>Counter: {count}</h2>
-      <button onClick={decrement}>-</button>
-      <button onClick={increment}>+</button>
+      <Button onClick={decrement}>-</Button>
+      <Button onClick={increment}>+</Button>
     </div>
   );
 };

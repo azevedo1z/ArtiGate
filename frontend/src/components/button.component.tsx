@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-type Variant = "primary" | "secondary" | "danger";
+type Variant = 'primary' | 'secondary' | 'danger';
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
@@ -9,18 +9,19 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 const variantClasses: Record<Variant, string> = {
-  primary: "bg-blue-600 text-white hover:bg-blue-700",
-  secondary: "bg-gray-300 text-black hover:bg-gray-400",
-  danger: "bg-red-600 text-white hover:bg-red-700",
+  primary: 'bg-blue-600 text-white hover:bg-blue-700',
+  secondary: 'bg-gray-300 text-black hover:bg-gray-400',
+  danger: 'bg-red-600 text-white hover:bg-red-700',
 };
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = "primary",
-  className = "",
+  variant = 'primary',
+  className = '',
   ...props
 }) => {
-  const baseStyle = "rounded px-4 py-2 font-semibold transition focus:outline-none";
+  const baseStyle =
+    'rounded px-4 py-2 font-semibold transition focus:outline-none';
 
   return (
     <button

@@ -18,7 +18,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => (
         textAlign: 'center',
       }}
     >
-      &copy; {new Date().getFullYear()} ArtiGate. All rights reserved to https://github.com/azevedo1x.
+      &copy; {new Date().getFullYear()} ArtiGate. All rights reserved to
+      https://github.com/azevedo1x.
     </footer>
   </div>
 );

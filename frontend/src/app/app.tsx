@@ -1,5 +1,6 @@
 import Button from '../components/button.component';
 import Counter from '../components/counter.component';
+import Input from '../components/input.component';
 import Layout from '../components/layout.component';
 
 export function App() {
@@ -12,6 +13,7 @@ export function App() {
           <Button>Log in</Button>
         </div>
       </div>
+      <Input></Input>
     </Layout>
   );
 }

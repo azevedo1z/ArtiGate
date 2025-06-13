@@ -1,6 +1,7 @@
 import Button from '../components/button.component';
 import Input from '../components/input.component';
 import Layout from '../components/layout.component';
+import TextArea from '../components/textarea.component';
 
 export function App() {
   return (
@@ -9,9 +10,10 @@ export function App() {
         <h1>Redux Starter</h1>
         <div>
           <Button>Log in</Button>
+          <TextArea>Text</TextArea>
         </div>
       </div>
-      <Input/>
+      <Input />
     </Layout>
   );
 }

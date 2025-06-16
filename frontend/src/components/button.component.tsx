@@ -2,11 +2,10 @@ import React from 'react';
 
 type Variant = 'primary' | 'secondary' | 'danger';
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   variant?: Variant;
-  className?: string;
-};
+}
 
 const variantClasses: Record<Variant, string> = {
   primary: 'bg-blue-600 text-white hover:bg-blue-700',
@@ -17,17 +16,13 @@ const variantClasses: Record<Variant, string> = {
 const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
-  className = '',
   ...props
 }) => {
   const baseStyle =
     'rounded px-4 py-2 font-semibold transition focus:outline-none';
 
   return (
-    <button
-      {...props}
-      className={`${baseStyle} ${variantClasses[variant]} ${className}`}
-    >
+    <button {...props} className={`${baseStyle} ${variantClasses[variant]}`}>
       {children}
     </button>
   );

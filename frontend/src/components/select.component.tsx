@@ -1,18 +1,30 @@
-import { forwardRef, SelectHTMLAttributes } from "react";
+import { forwardRef, SelectHTMLAttributes } from 'react';
 
 type Option = {
-    label: string;
-    value: string;
+  label: string;
+  value: string;
+};
+
+interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
+  placeholder: string;
+  options: Option[];
 }
 
-interface SelectProps extends SelectHTMLAttributes<SelectHTMLAttributes> {
-    
-}
-
-const Select = forwardRef<SelectHTMLAttributes, SelectProps>(
-    ({id, ...props}, ref) => {
-        return();
-    }
+const Select = forwardRef<HTMLSelectElement, SelectProps>(
+  ({ placeholder, options, id, ...props }, ref) => {
+    return (
+      <select id={id} ref={ref} {...props}>
+        <option value="" disabled hidden>
+          {placeholder}
+        </option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    );
+  }
 );
 
 Select.displayName = 'Select';

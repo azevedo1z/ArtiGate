@@ -1,27 +1,30 @@
 import { TextareaHTMLAttributes, forwardRef } from 'react';
 
 interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
-  label?: string;
+  label: string;
   error?: string;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ label, error, className = '', ...props }, ref) => {
-    const labelClass = 'text-sm font-medium text-gray-700';
-    const baseTextAreaClass =
+    const labelClassName = 'text-sm font-medium text-gray-700';
+    const baseTextAreaClassName =
       'rounded-md border p-2 min-h-[80px] resize-y bg-white text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200';
-    const errorTextAreaClass = error ? 'border-red-500' : 'border-gray-300';
-    const errorTextClass = 'text-xs text-red-500';
+    const borderTextAreaClassName = error
+      ? 'border-red-500'
+      : 'border-gray-300';
+    const textErrorClassName = 'text-xs text-red-500';
+    const parentDivClassName = 'flex flex-col gap-1';
 
     return (
-      <div className="flex flex-col gap-1">
-        {label && <label className={labelClass}>{label}</label>}
+      <div className={parentDivClassName}>
+        <label className={labelClassName}>{label}</label>
         <textarea
           ref={ref}
-          className={`${baseTextAreaClass} ${errorTextAreaClass} ${className}`}
+          className={`${baseTextAreaClassName} ${borderTextAreaClassName} ${className}`}
           {...props}
         />
-        {error && <span className={errorTextClass}>{error}</span>}
+        {error && <span className={textErrorClassName}>{error}</span>}
       </div>
     );
   }

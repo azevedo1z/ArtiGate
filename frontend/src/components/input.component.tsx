@@ -8,7 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, placeholder, error, id, ...props }, ref) => {
-    const mainClassName = 'mb-4';
+    const parentDivClassName = 'mb-4';
     const baseClassName =
       'p-2 border rounded w-full box-border focus:outline-none focus:ring-2 focus:ring-blue-500';
     const labelClassName = 'block mb-2 font-medium text-gray-700';
@@ -16,7 +16,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const textErrorClassName = 'text-red-500 text-sm mt-1 block';
 
     return (
-      <div className={mainClassName}>
+      <div className={parentDivClassName}>
         <label htmlFor={id} className={labelClassName}>
           {label}
         </label>

@@ -22,7 +22,10 @@ const Button: React.FC<ButtonProps> = ({
     'rounded px-4 py-2 font-semibold transition focus:outline-none';
 
   return (
-    <button {...props} className={`${baseClassName} ${variantClasses[variant]}`}>
+    <button
+      {...props}
+      className={`${baseClassName} ${variantClasses[variant]}`}
+    >
       {children}
     </button>
   );

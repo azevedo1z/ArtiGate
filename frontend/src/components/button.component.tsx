@@ -18,11 +18,14 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary',
   ...props
 }) => {
-  const baseStyle =
+  const baseClassName =
     'rounded px-4 py-2 font-semibold transition focus:outline-none';
 
   return (
-    <button {...props} className={`${baseStyle} ${variantClasses[variant]}`}>
+    <button
+    className={`${baseClassName} ${variantClasses[variant]}`}
+    {...props}
+    >
       {children}
     </button>
   );

@@ -23,10 +23,9 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
         <textarea
           ref={ref}
           className={`${baseTextAreaClassName} ${borderTextAreaClassName} ${className}`}
+          placeholder={placeholder}
           {...props}
-        >
-          {placeholder}
-        </textarea>
+        />
         {error && <span className={textErrorClassName}>{error}</span>}
       </div>
     );

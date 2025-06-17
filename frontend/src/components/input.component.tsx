@@ -8,24 +8,25 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   ({ label, placeholder, error, id, ...props }, ref) => {
-    const baseStyle =
+    const mainClassName = 'mb-4';
+    const baseClassName =
       'p-2 border rounded w-full box-border focus:outline-none focus:ring-2 focus:ring-blue-500';
-    const labelStyle = 'block mb-2 font-medium text-gray-700';
-    const borderStyle = error ? 'border-red-500' : 'border-gray-300';
-    const errorTextStyle = 'text-red-500 text-sm mt-1 block';
+    const labelClassName = 'block mb-2 font-medium text-gray-700';
+    const borderClassName = error ? 'border-red-500' : 'border-gray-300';
+    const textErrorClassName = 'text-red-500 text-sm mt-1 block';
 
     return (
-      <div className="mb-4">
-        <label htmlFor={id} className={labelStyle}>
+      <div className={mainClassName}>
+        <label htmlFor={id} className={labelClassName}>
           {label}
         </label>
         <input
           ref={ref}
           id={id}
           {...props}
-          className={`${baseStyle} ${borderStyle}`}
+          className={`${baseClassName} ${borderClassName}`}
         />
-        {error && <span className={errorTextStyle}>{error}</span>}
+        {error && <span className={textErrorClassName}>{error}</span>}
       </div>
     );
   }

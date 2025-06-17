@@ -25,7 +25,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           id={id}
           className={`${baseClassName} ${borderClassName}`}
           {...props}
-        />
+        >
+          {placeholder}
+        </input>
         {error && <span className={textErrorClassName}>{error}</span>}
       </div>
     );

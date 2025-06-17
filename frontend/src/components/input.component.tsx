@@ -23,8 +23,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={id}
-          {...props}
           className={`${baseClassName} ${borderClassName}`}
+          {...props}
         />
         {error && <span className={textErrorClassName}>{error}</span>}
       </div>

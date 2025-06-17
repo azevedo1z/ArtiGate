@@ -10,10 +10,10 @@ export function App() {
         <h1>Redux Starter</h1>
         <div>
           <Button>Log in</Button>
-          <TextArea>Text</TextArea>
+          <TextArea label={'Main Text Area'} placeholder={'Type here...'} />
         </div>
       </div>
-      <Input />
+      <Input label={'Input'} placeholder={'Type here too...'} />
     </Layout>
   );
 }

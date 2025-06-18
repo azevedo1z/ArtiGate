@@ -25,7 +25,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         <a
           href="https://github.com/azevedo1x"
           className={linkClassName}
-          target="_blank"
           rel="noopener noreferrer"
         >
           https://github.com/azevedo1x

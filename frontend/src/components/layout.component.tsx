@@ -5,11 +5,11 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const headerClassName = 'p-4 bg-gray-900 text-white';
-  const mainClassName = 'flex-1 p-8';
+  const parentDivClassName = 'min-h-screen grid grid-rows-[auto_1fr_auto]';
+  const headerClassName = 'p-4 bg-gray-900 text-white row-start-1';
+  const mainClassName = 'p-8 row-start-2';
   const footerClassName = 'p-4 bg-gray-900 text-white text-center';
   const linkClassName = 'underline ml-1';
-  const parentDivClassName = 'min-h-screen flex flex-col';
 
   return (
     <div className={parentDivClassName}>

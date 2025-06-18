@@ -15,7 +15,7 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
       ? 'border-red-500'
       : 'border-gray-300';
     const textErrorClassName = 'text-xs text-red-500';
-    const parentDivClassName = 'flex flex-col gap-1';
+    const parentDivClassName = 'grid gap-1';
 
     return (
       <div className={parentDivClassName}>

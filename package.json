@@ -75,6 +75,7 @@
     "@tailwindcss/postcss": "^4.1.8",
     "axios": "^1.6.0",
     "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
     "passport-jwt": "^4.0.1",
     "path-to-regexp": "^6.3.0",
     "react": "18.3.1",

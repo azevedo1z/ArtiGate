@@ -42,6 +42,7 @@ const LoginPage: React.FC = () => {
         label="E-mail"
         value={email}
         onChange={(email) => setEmail(email.target.value)}
+        type="email"
       />
       <Input
         placeholder="Type your password..."

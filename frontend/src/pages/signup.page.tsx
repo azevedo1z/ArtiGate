@@ -1,8 +1,8 @@
 import React from 'react';
-import Button from '../components/button.component';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/button.component';
 
-const LoginPage: React.FC = () => {
+const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -13,4 +13,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default SignUpPage;

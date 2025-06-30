@@ -9,6 +9,7 @@ const HomePage: React.FC = () => {
     <div className="flex flex-col items-center justify-center min-h-[60vh]">
       Join now.
       <Button onClick={() => navigate('/login')}>Log in</Button>
+      <Button onClick={() => navigate('/signup')}>Sign up</Button>
     </div>
   );
 };

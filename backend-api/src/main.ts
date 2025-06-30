@@ -9,6 +9,14 @@ import {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const cors = require('cors');
+
+  app.use(
+    cors({
+      origin: 'http://localhost:3001',
+      credentials: true,
+    })
+  );
 
   const config = new DocumentBuilder()
     .setTitle('ArtiGate API')

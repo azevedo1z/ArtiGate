@@ -3,6 +3,13 @@ import Button from '../components/button.component';
 import { useNavigate } from 'react-router-dom';
 import Input from '../components/input.component';
 
+interface LoginResponse {
+  access_token: string;
+  statusCode: number;
+  message: string;
+  error: string;
+}
+
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = React.useState('');
@@ -14,21 +21,28 @@ const LoginPage: React.FC = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
     });
-    const data = await response.json();
-    // validateResponse(data);
+
+    const data: LoginResponse = await response.json();
+    handleLogin(data, response.ok);
   };
 
-  // const validateResponse = async (data: JSON) => {
-    
-  // }
+  const handleLogin = (data: LoginResponse, success: boolean) => {
+    if (success) {
+      localStorage.setItem('access_token', data.access_token);
+      navigate('/home');
+    } else {
+      alert(data.message);
+    }
+  };
 
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center min-h-[60vh]">
       <Input
         placeholder="Type your e-mail..."
         label="E-mail"
         value={email}
         onChange={(email) => setEmail(email.target.value)}
+        type="email"
       />
       <Input
         placeholder="Type your password..."

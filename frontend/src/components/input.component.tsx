@@ -34,8 +34,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const errorInputClassName = 'border-red-500 focus:ring-red-500';
     const errorTextClassName = 'text-red-500 text-sm mt-1 block';
 
-    const inputWithLeadingIconClassName = leadingIcon ? 'pl-11' : '';
-    const inputWithTrailingIconClassName = trailingIcon ? 'pr-11' : '';
+    const inputWithLeadingIconClassName = 'pl-11';
+    const inputWithTrailingIconClassName = 'pr-11';
 
     const leadingIconClassName =
       'absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400';
@@ -45,8 +45,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const trailingIconButtonClassName =
       trailingIcon && onTrailingIconClick ? 'cursor-pointer' : '';
 
-    const finalInputClassName =
-      `${baseInputClassName} ${inputWithLeadingIconClassName} ${inputWithTrailingIconClassName} ${errorInputClassName}`.trim();
+    const finalInputClassName = [
+      baseInputClassName,
+      error && errorInputClassName,
+      leadingIcon && inputWithLeadingIconClassName,
+      trailingIcon && inputWithTrailingIconClassName,
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     return (
       <div className={containerClassName}>

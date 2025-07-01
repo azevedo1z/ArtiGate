@@ -14,9 +14,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       label,
       placeholder,
-      error,
-      leadingIcon,
-      trailingIcon,
+      error = false,
+      leadingIcon = null,
+      trailingIcon = null,
       onTrailingIconClick,
       id,
       ...props

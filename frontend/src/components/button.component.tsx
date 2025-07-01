@@ -5,12 +5,12 @@ type Size = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  variant?: Variant;
-  size?: Size;
+  variantClassName?: Variant;
+  sizeClassName?: Size;
   isLoading?: boolean;
   loadingText?: string;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
+  leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
   fullWidth?: boolean;
 }
 
@@ -30,26 +30,32 @@ const sizeClasses: Record<Size, string> = {
 
 const Button: React.FC<ButtonProps> = ({
   children,
-  variant = 'primary',
-  size = 'md',
+  variantClassName = 'primary',
+  sizeClassName = 'md',
   isLoading = false,
   loadingText = 'Loading...',
-  leftIcon,
-  rightIcon,
+  leadingIcon,
+  trailingIcon,
   fullWidth = false,
-  disabled,
+  disabled = false,
   ...props
 }) => {
   const baseClassName =
     'rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] flex items-center justify-center gap-2';
-  const widthClassName = fullWidth ? 'w-full' : '';
-  const disabledClassName =
-    disabled || isLoading ? 'opacity-50 cursor-not-allowed transform-none' : '';
+  const fullWidthClassName = 'w-full';
+  const disabledClassName = 'opacity-50 cursor-not-allowed transform-none';
   const loadingSpinnerClassName =
     'animate-spin rounded-full h-5 w-5 border-b-2 border-white';
 
-  const finalClassName =
-    `${baseClassName} ${variantClasses[variant]} ${sizeClasses[size]} ${widthClassName} ${disabledClassName}`.trim();
+  const finalClassName = [
+    baseClassName,
+    variantClasses[variantClassName],
+    sizeClasses[sizeClassName],
+    fullWidth && fullWidthClassName,
+    (disabled || isLoading) && disabledClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <button
@@ -64,9 +70,9 @@ const Button: React.FC<ButtonProps> = ({
         </>
       ) : (
         <>
-          {leftIcon}
+          {leadingIcon}
           {children}
-          {rightIcon}
+          {trailingIcon}
         </>
       )}
     </button>

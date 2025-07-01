@@ -24,18 +24,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const containerClassName = 'space-y-2';
-    const inputWrapperClassName = 'relative';
+    const wrapperClassName = 'relative';
 
-    const baseInputClassName =
+    const baseClassName =
       'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200';
     const labelClassName =
       'text-sm font-medium text-gray-700 flex items-center gap-2';
 
-    const errorInputClassName = 'border-red-500 focus:ring-red-500';
-    const errorTextClassName = 'text-red-500 text-sm mt-1 block';
+    const errorClassName = 'border-red-500 focus:ring-red-500';
+    const textErrorClassName = 'text-red-500 text-sm mt-1 block';
 
-    const inputWithLeadingIconClassName = 'pl-11';
-    const inputWithTrailingIconClassName = 'pr-11';
+    const paddingForLeadingIconClassName = 'pl-11';
+    const paddingForTrailingIconClassName = 'pr-11';
 
     const leadingIconClassName =
       'absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400';
@@ -45,11 +45,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const trailingIconButtonClassName =
       trailingIcon && onTrailingIconClick ? 'cursor-pointer' : '';
 
-    const finalInputClassName = [
-      baseInputClassName,
-      error && errorInputClassName,
-      leadingIcon && inputWithLeadingIconClassName,
-      trailingIcon && inputWithTrailingIconClassName,
+    const finalClassName = [
+      baseClassName,
+      error && errorClassName,
+      leadingIcon && paddingForLeadingIconClassName,
+      trailingIcon && paddingForTrailingIconClassName,
     ]
       .filter(Boolean)
       .join(' ');
@@ -60,11 +60,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {leadingIcon}
           {label}
         </label>
-        <div className={inputWrapperClassName}>
+        <div className={wrapperClassName}>
           <input
             ref={ref}
             id={id}
-            className={finalInputClassName}
+            className={finalClassName}
             placeholder={placeholder}
             {...props}
           />
@@ -80,7 +80,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             </div>
           )}
         </div>
-        {error && <span className={errorTextClassName}>{error}</span>}
+        {error && <span className={textErrorClassName}>{error}</span>}
       </div>
     );
   }

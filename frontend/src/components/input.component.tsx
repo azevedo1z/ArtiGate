@@ -57,7 +57,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className={containerClassName}>
         <label htmlFor={id} className={labelClassName}>
-          {leadingIcon}
           {label}
         </label>
         <div className={wrapperClassName}>

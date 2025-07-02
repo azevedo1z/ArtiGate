@@ -38,7 +38,7 @@ const Layout: React.FC<LayoutProps> = ({
     <div className={baseClassName}>
       {showHeader && (
         <header className={headerClassName}>
-          <Container noPadding className="py-4">
+          <Container noDefaultPadding className="py-4">
             <div className={headerContentClassName}>
               <h1 className={logoClassName}>ArtiGate</h1>
               {headerContent}
@@ -53,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({
 
       {showFooter && (
         <footer className={footerClassName}>
-          <Container noPadding className="py-6">
+          <Container noDefaultPadding className="py-6">
             <div className={footerContentClassName}>
               <p>
                 &copy; {currentYear} ArtiGate. All rights reserved to{' '}

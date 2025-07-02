@@ -5,7 +5,7 @@ type ContainerSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
   size?: ContainerSize;
-  noPadding?: boolean;
+  noDefaultPadding?: boolean;
   centered?: boolean;
 }
 
@@ -20,7 +20,7 @@ const sizeClasses: Record<ContainerSize, string> = {
 const Container: React.FC<ContainerProps> = ({
   children,
   size = 'xl',
-  noPadding = false,
+  noDefaultPadding = false,
   centered = true,
   className = '',
   ...props
@@ -33,7 +33,7 @@ const Container: React.FC<ContainerProps> = ({
     baseClassName,
     sizeClasses[size],
     centered && centerAlignmentClassName,
-    !noPadding && paddingClassName,
+    !noDefaultPadding && paddingClassName,
     className,
   ]
     .filter(Boolean)

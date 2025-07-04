@@ -19,3 +19,15 @@ select,
 textarea {
   @apply transition-all duration-200;
 }
+
+html {
+  zoom: 0.9;
+}
+
+/* Fallback for Firefox */
+@-moz-document url-prefix() {
+  html {
+    transform: scale(0.9);
+    transform-origin: 0 0;
+  }
+}

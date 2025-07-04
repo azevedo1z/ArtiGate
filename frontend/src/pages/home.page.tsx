@@ -26,13 +26,13 @@ const HomePage: React.FC = () => {
         </div>
 
         <header className="space-y-4">
-          <h1 className="text-5xl sm:text-6xl font-bold text-gray-900 leading-tight">
+          <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
             Welcome to{' '}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               ArtiGate
             </span>
           </h1>
-          <p className="text-xl sm:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
             Submit, review, and manage conference articles seamlessly. Join
             researchers and academics worldwide.
           </p>

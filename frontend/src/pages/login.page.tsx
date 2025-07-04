@@ -1,6 +1,8 @@
 import React from 'react';
 import Input from '../components/input.component';
 import Button from '../components/button.component';
+import Container from '../components/container.component';
+import Wrapper from '../components/wrapper.component';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -48,8 +50,8 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <Wrapper variant="gradient">
+      <Container size="sm" noDefaultPadding className="max-w-md space-y-8 px-4">
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
             <LogIn className="h-8 w-8 text-white" />
@@ -134,8 +136,8 @@ const LoginPage: React.FC = () => {
             </button>
           </p>
         </div>
-      </div>
-    </div>
+      </Container>
+    </Wrapper>
   );
 };
 

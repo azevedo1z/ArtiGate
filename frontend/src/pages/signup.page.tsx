@@ -89,7 +89,7 @@ const SignUpPage: React.FC = () => {
   });
 
   const roleOptions = [
-    { value: 'AUTHOR', label: 'Author' },
+    { value: 'AUTHOR', label: 'Author', disabled: true },
     { value: 'REVIEWER', label: 'Reviewer' },
   ];
 
@@ -104,6 +104,17 @@ const SignUpPage: React.FC = () => {
     value: string | string[]
   ) => {
     setFormData((previousValue) => ({ ...previousValue, [field]: value }));
+  };
+
+  const toggleRole = (roleValue: string) => {
+    
+    const roleOption = roleOptions.find((role) => role.value === roleValue);
+    if (roleOption?.disabled) return;
+
+    const newRoles = formData.roles.includes(roleValue)
+      ? formData.roles.filter((r) => r !== roleValue)
+      : [...formData.roles, roleValue];
+    handleInputChange('roles', newRoles);
   };
 
   const isFormValid = (): boolean => {
@@ -191,7 +202,8 @@ const SignUpPage: React.FC = () => {
             Join ArtiGate
           </h1>
           <p className="text-gray-600">
-            Create your account to start submitting and reviewing articles
+            Create your account to start submitting and reviewing articles.
+            You're an author by default though ;D
           </p>
         </div>
 
@@ -252,20 +264,9 @@ const SignUpPage: React.FC = () => {
                         <input
                           type="checkbox"
                           checked={formData.roles.includes(role.value)}
-                          onChange={(e) => {
-                            if (e.target.checked) {
-                              handleInputChange('roles', [
-                                ...formData.roles,
-                                role.value,
-                              ]);
-                            } else {
-                              handleInputChange(
-                                'roles',
-                                formData.roles.filter((r) => r !== role.value)
-                              );
-                            }
-                          }}
+                          onChange={() => toggleRole(role.value)}
                           className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          disabled={role.disabled}
                         />
                         <span className="text-sm text-gray-700">
                           {role.label}

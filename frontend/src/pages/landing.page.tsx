@@ -13,7 +13,7 @@ import {
   Star,
 } from 'lucide-react';
 
-const HomePage: React.FC = () => {
+const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   return (
     <Wrapper variant="gradient">
@@ -85,4 +85,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default LandingPage;

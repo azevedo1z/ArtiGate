@@ -112,8 +112,8 @@ const SignUpPage: React.FC = () => {
     if (role?.disabled) return;
 
     const updatedRoles = formData.roles.includes(roleValue)
-      ? formData.roles.filter((r) => r !== roleValue) // Remove role
-      : [...formData.roles, roleValue]; // Add role
+      ? formData.roles.filter((r) => r !== roleValue)
+      : [...formData.roles, roleValue];
 
     handleInputChange('roles', updatedRoles);
   };

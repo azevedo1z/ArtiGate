@@ -107,14 +107,15 @@ const SignUpPage: React.FC = () => {
   };
 
   const toggleRole = (roleValue: string) => {
-    
-    const roleOption = roleOptions.find((role) => role.value === roleValue);
-    if (roleOption?.disabled) return;
+    const role = roleOptions.find((option) => option.value === roleValue);
 
-    const newRoles = formData.roles.includes(roleValue)
-      ? formData.roles.filter((r) => r !== roleValue)
-      : [...formData.roles, roleValue];
-    handleInputChange('roles', newRoles);
+    if (role?.disabled) return;
+
+    const updatedRoles = formData.roles.includes(roleValue)
+      ? formData.roles.filter((r) => r !== roleValue) // Remove role
+      : [...formData.roles, roleValue]; // Add role
+
+    handleInputChange('roles', updatedRoles);
   };
 
   const isFormValid = (): boolean => {

@@ -1,6 +1,6 @@
 # ArtiGate
 
-ArtiGate is a web application designed to streamline the process of managing academic conferences. It allows participants to register, log in, submit articles, and perform peer reviews—all in one place.
+ArtiGate is a web application designed to streamline the process of managing academic conferences. It allows participants to register, log in, submit articles, and perform peer reviews, all in one place.
 
 ## 🧠 Motivation
 

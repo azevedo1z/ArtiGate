@@ -74,8 +74,8 @@ Want to help? Feel free to open an issue or submit a pull request.
 
 ## 📷 Screenshots / Demo
 
-![image](https://github.com/user-attachments/assets/64b47563-d2a0-446c-9195-4865d61bce75)
-![image](https://github.com/user-attachments/assets/ffc1b78e-0288-4775-a522-507be6880c4e)
+<img width="1366" height="3431" alt="image" src="https://github.com/user-attachments/assets/932d435d-f798-404b-9f6b-e81cf30f8b4c" />
+<img width="800" height="374" alt="image" src="https://github.com/user-attachments/assets/b0be8c54-1e4d-4aec-bf3e-e663cc4ebb50" />
 
 
 ## 📝 License

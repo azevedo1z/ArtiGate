@@ -56,7 +56,7 @@ export class ReviewController {
     }
   }
 
-  @Get('allReviews')
+  @Get('all')
   async getAll() {
     try {
       return await this.getReviewService.getAll();

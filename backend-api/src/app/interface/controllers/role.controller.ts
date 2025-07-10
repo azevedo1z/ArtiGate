@@ -56,7 +56,7 @@ export class RoleController {
     }
   }
 
-  @Get('allRoles')
+  @Get('all')
   async getAll() {
     try {
       return await this.getRoleService.getAll();

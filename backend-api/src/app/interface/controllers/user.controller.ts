@@ -62,7 +62,7 @@ export class UserController {
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async delete(@Param() id: string) {
+  async delete(@Param('id') id: string) {
     try {
       return await this.deleteUserService.execute(id);
     } catch (error) {

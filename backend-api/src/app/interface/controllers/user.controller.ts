@@ -6,6 +6,8 @@ import {
   Param,
   UseGuards,
   BadRequestException,
+  Put,
+  Delete,
 } from '@nestjs/common';
 import { CreateUserService } from '../../application/services/user/createUser.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
@@ -46,7 +48,7 @@ export class UserController {
     }
   }
 
-  @Post('update')
+  @Put('update')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateUserDTO) {
@@ -57,7 +59,7 @@ export class UserController {
     }
   }
 
-  @Post(':id')
+  @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async delete(@Param() id: string) {

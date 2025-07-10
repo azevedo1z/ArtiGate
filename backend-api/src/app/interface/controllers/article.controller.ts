@@ -48,7 +48,7 @@ export class ArticleController {
   }
 
   @Delete(':id')
-  async delete(@Param() id: string) {
+  async delete(@Param('id') id: string) {
     try {
       return await this.deleteArticleService.execute(id);
     } catch (error) {
@@ -74,7 +74,7 @@ export class ArticleController {
     }
   }
 
-  @Get('by/{authorId}')
+  @Get(':authorId')
   async getByAuthorId(@Param('authorId') authorId: string) {
     try {
       return await this.getArticleService.getByAuthorId(authorId);

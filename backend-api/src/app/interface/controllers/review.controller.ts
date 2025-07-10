@@ -48,7 +48,7 @@ export class ReviewController {
   }
 
   @Delete(':id')
-  async delete(@Param() id: string) {
+  async delete(@Param('id') id: string) {
     try {
       return await this.deleteReviewService.execute(id);
     } catch (error) {
@@ -74,7 +74,7 @@ export class ReviewController {
     }
   }
 
-  @Get('by/{userId}')
+  @Get(':userId')
   async getByUserId(@Param('userId') userId: string) {
     try {
       return await this.getReviewService.getByReviewerId(userId);
@@ -83,7 +83,7 @@ export class ReviewController {
     }
   }
 
-  @Get('by/{articleId}')
+  @Get(':articleId')
   async getByArticleId(@Param('articleId') articleId: string) {
     try {
       return await this.getReviewService.getByArticleId(articleId);

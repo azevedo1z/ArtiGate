@@ -56,7 +56,7 @@ export class AddressController {
     }
   }
 
-  @Get('allAddresses')
+  @Get('all')
   async getAll() {
     try {
       return await this.getAddressService.getAll();

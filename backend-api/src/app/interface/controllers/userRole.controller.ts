@@ -14,7 +14,7 @@ import { GetUserRoleService } from '../../application/services/userRole/getUserR
 export class UserRoleController {
   constructor(private readonly getUserRoleService: GetUserRoleService) {}
 
-  @Get('allUserRoles')
+  @Get('all')
   async getAll() {
     try {
       return await this.getUserRoleService.getAll();

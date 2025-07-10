@@ -70,7 +70,7 @@ export class UserController {
     }
   }
 
-  @Get('allUsers')
+  @Get('all')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAll() {

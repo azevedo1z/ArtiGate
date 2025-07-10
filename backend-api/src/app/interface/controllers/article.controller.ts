@@ -56,7 +56,7 @@ export class ArticleController {
     }
   }
 
-  @Get('allArticles')
+  @Get('all')
   async getAll() {
     try {
       return await this.getArticleService.getAll();

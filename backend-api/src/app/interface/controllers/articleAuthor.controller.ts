@@ -16,7 +16,7 @@ export class ArticleAuthorController {
     private readonly getArticleAuthorService: GetArticleAuthorService
   ) {}
 
-  @Get('allArticleAuthors')
+  @Get('all')
   async getAll() {
     try {
       return await this.getArticleAuthorService.getAll();

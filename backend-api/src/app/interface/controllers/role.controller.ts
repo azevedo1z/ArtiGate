@@ -20,7 +20,6 @@ import { DeleteRoleService } from '../../application/services/role/deleteRole.se
 
 @Controller('role')
 @ApiBearerAuth()
-@UseGuards(AuthGuardService)
 export class RoleController {
   constructor(
     private readonly createRoleService: CreateRoleService,
@@ -30,6 +29,7 @@ export class RoleController {
   ) {}
 
   @Post('create')
+  @UseGuards(AuthGuardService)
   async create(@Body() data: CreateRoleDTO) {
     try {
       return await this.createRoleService.execute(data);
@@ -39,6 +39,7 @@ export class RoleController {
   }
 
   @Put('update')
+  @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateRoleDTO) {
     try {
       return await this.updateRoleService.execute(data);
@@ -48,6 +49,7 @@ export class RoleController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuardService)
   async delete(@Param('id') id: string) {
     try {
       return await this.deleteRoleService.execute(id);
@@ -66,6 +68,7 @@ export class RoleController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
     try {
       return await this.getRoleService.getById(id);

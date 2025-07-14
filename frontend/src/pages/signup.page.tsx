@@ -75,7 +75,7 @@ const SignUpPage: React.FC = () => {
     phone: '',
     password: '',
     passwordConfirmation: '',
-    roles: [],
+    roles: ['AUTHOR'],
     homeZipCode: '',
     homeStreet: '',
     homeComplement: '',

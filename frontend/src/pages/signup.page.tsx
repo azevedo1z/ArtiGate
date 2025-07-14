@@ -6,6 +6,7 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Select from '../components/select.component';
 import toast from 'react-hot-toast';
+import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
 import {
   Mail,
   Lock,
@@ -113,17 +114,6 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const roleOptions = [
-    { value: 'AUTHOR', label: 'Author', disabled: true },
-    { value: 'REVIEWER', label: 'Reviewer' },
-  ];
-
-  const cardBrandOptions = [
-    { value: 'Visa', label: 'Visa' },
-    { value: 'Mastercard', label: 'Mastercard' },
-    { value: 'American Express', label: 'American Express' },
-  ];
-
   const handleInputChange = (
     field: keyof SignUpFormData,
     value: string | string[]
@@ -132,7 +122,7 @@ const SignUpPage: React.FC = () => {
   };
 
   const toggleRole = (roleValue: string) => {
-    const role = roleOptions.find((option) => option.value === roleValue);
+    const role = ROLE_OPTIONS.find((option) => option.value === roleValue);
 
     if (role?.disabled) return;
 
@@ -284,7 +274,7 @@ const SignUpPage: React.FC = () => {
                     Role(s) *
                   </label>
                   <div className="flex flex-wrap gap-3">
-                    {roleOptions.map((role) => (
+                    {ROLE_OPTIONS.map((role) => (
                       <label
                         key={role.value}
                         className="flex items-center space-x-2"
@@ -569,7 +559,7 @@ const SignUpPage: React.FC = () => {
               <Select
                 id="cardBrand"
                 placeholder="Select card brand"
-                options={cardBrandOptions}
+                options={CARD_BRAND_OPTIONS}
                 value={formData.cardBrand}
                 onChange={(e) => handleInputChange('cardBrand', e.target.value)}
               />

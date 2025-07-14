@@ -6,6 +6,7 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Select from '../components/select.component';
 import toast from 'react-hot-toast';
+import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
 import {
   Mail,
   Lock,
@@ -57,6 +58,11 @@ interface SignUpFormData {
   cardBrand: string;
 }
 
+interface Role {
+  id: string;
+  name: string;
+}
+
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
@@ -88,17 +94,6 @@ const SignUpPage: React.FC = () => {
     cardBrand: 'Visa',
   });
 
-  const roleOptions = [
-    { value: 'AUTHOR', label: 'Author', disabled: true },
-    { value: 'REVIEWER', label: 'Reviewer' },
-  ];
-
-  const cardBrandOptions = [
-    { value: 'Visa', label: 'Visa' },
-    { value: 'Mastercard', label: 'Mastercard' },
-    { value: 'American Express', label: 'American Express' },
-  ];
-
   const handleInputChange = (
     field: keyof SignUpFormData,
     value: string | string[]
@@ -107,7 +102,7 @@ const SignUpPage: React.FC = () => {
   };
 
   const toggleRole = (roleValue: string) => {
-    const role = roleOptions.find((option) => option.value === roleValue);
+    const role = ROLE_OPTIONS.find((option) => option.value === roleValue);
 
     if (role?.disabled) return;
 
@@ -140,6 +135,8 @@ const SignUpPage: React.FC = () => {
     setIsLoading(true);
 
     try {
+      const roleIds = await getRoleIds(formData.roles);
+
       const response = await fetch('http://localhost:3000/user/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -148,7 +145,7 @@ const SignUpPage: React.FC = () => {
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          roleIds: formData.roles,
+          roleIds: roleIds,
           homeAddress: {
             zipCode: formData.homeZipCode,
             street: formData.homeStreet,
@@ -175,6 +172,26 @@ const SignUpPage: React.FC = () => {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getRoleIds = async (roleNames: string[]): Promise<string[]> => {
+    try {
+      const response = await fetch('http://localhost:3000/role/all');
+      if (!response.ok) toast.error('Failed to fetch roles');
+
+      const roles: Role[] = await response.json();
+
+      const roleIds = roleNames
+        .map((name) => roles.find((role) => role.name === name)?.id)
+        .filter(Boolean) as string[];
+
+      if (roleIds.length === 0) toast.error('No matching role IDs found');
+
+      return roleIds;
+    } catch {
+      toast.error('Failed to load roles');
+      return [];
     }
   };
 
@@ -257,7 +274,7 @@ const SignUpPage: React.FC = () => {
                     Role(s) *
                   </label>
                   <div className="flex flex-wrap gap-3">
-                    {roleOptions.map((role) => (
+                    {ROLE_OPTIONS.map((role) => (
                       <label
                         key={role.value}
                         className="flex items-center space-x-2"
@@ -542,7 +559,7 @@ const SignUpPage: React.FC = () => {
               <Select
                 id="cardBrand"
                 placeholder="Select card brand"
-                options={cardBrandOptions}
+                options={CARD_BRAND_OPTIONS}
                 value={formData.cardBrand}
                 onChange={(e) => handleInputChange('cardBrand', e.target.value)}
               />

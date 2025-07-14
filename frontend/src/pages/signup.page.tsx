@@ -30,11 +30,6 @@ interface SignUpResponse {
   error: string;
 }
 
-interface Role {
-  id: string;
-  name: string;
-}
-
 interface SignUpFormData {
   name: string;
   email: string;
@@ -61,6 +56,11 @@ interface SignUpFormData {
   cardNumber: string;
   cardExpiry: string;
   cardBrand: string;
+}
+
+interface Role {
+  id: string;
+  name: string;
 }
 
 const SignUpPage: React.FC = () => {
@@ -93,26 +93,6 @@ const SignUpPage: React.FC = () => {
     cardExpiry: '',
     cardBrand: 'Visa',
   });
-
-  const getRoleIds = async (roleNames: string[]): Promise<string[]> => {
-    try {
-      const response = await fetch('http://localhost:3000/role/all');
-      if (!response.ok) toast.error('Failed to fetch roles');
-
-      const roles: Role[] = await response.json();
-
-      const roleIds = roleNames
-        .map((name) => roles.find((role) => role.name === name)?.id)
-        .filter(Boolean) as string[];
-
-      if (roleIds.length === 0) toast.error('No matching role IDs found');
-
-      return roleIds;
-    } catch {
-      toast.error('Failed to load roles');
-      return [];
-    }
-  };
 
   const handleInputChange = (
     field: keyof SignUpFormData,
@@ -192,6 +172,26 @@ const SignUpPage: React.FC = () => {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const getRoleIds = async (roleNames: string[]): Promise<string[]> => {
+    try {
+      const response = await fetch('http://localhost:3000/role/all');
+      if (!response.ok) toast.error('Failed to fetch roles');
+
+      const roles: Role[] = await response.json();
+
+      const roleIds = roleNames
+        .map((name) => roles.find((role) => role.name === name)?.id)
+        .filter(Boolean) as string[];
+
+      if (roleIds.length === 0) toast.error('No matching role IDs found');
+
+      return roleIds;
+    } catch {
+      toast.error('Failed to load roles');
+      return [];
     }
   };
 

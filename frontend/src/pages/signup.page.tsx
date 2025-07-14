@@ -93,6 +93,26 @@ const SignUpPage: React.FC = () => {
     cardBrand: 'Visa',
   });
 
+  const getRoleIds = async (roleNames: string[]): Promise<string[]> => {
+    try {
+      const response = await fetch('http://localhost:3000/role/all');
+      if (!response.ok) toast.error('Failed to fetch roles');
+
+      const roles: Role[] = await response.json();
+
+      const roleIds = roleNames
+        .map((name) => roles.find((role) => role.name === name)?.id)
+        .filter(Boolean) as string[];
+
+      if (roleIds.length === 0) toast.error('No matching role IDs found');
+
+      return roleIds;
+    } catch {
+      toast.error('Failed to load roles');
+      return [];
+    }
+  };
+
   const roleOptions = [
     { value: 'AUTHOR', label: 'Author', disabled: true },
     { value: 'REVIEWER', label: 'Reviewer' },
@@ -145,6 +165,8 @@ const SignUpPage: React.FC = () => {
     setIsLoading(true);
 
     try {
+      const roleIds = await getRoleIds(formData.roles);
+
       const response = await fetch('http://localhost:3000/user/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -153,7 +175,7 @@ const SignUpPage: React.FC = () => {
           email: formData.email,
           phone: formData.phone,
           password: formData.password,
-          roleIds: formData.roles,
+          roleIds: roleIds,
           homeAddress: {
             zipCode: formData.homeZipCode,
             street: formData.homeStreet,

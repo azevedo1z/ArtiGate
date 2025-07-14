@@ -29,6 +29,11 @@ interface SignUpResponse {
   error: string;
 }
 
+interface Role {
+  id: string;
+  name: string;
+}
+
 interface SignUpFormData {
   name: string;
   email: string;
@@ -70,7 +75,7 @@ const SignUpPage: React.FC = () => {
     phone: '',
     password: '',
     passwordConfirmation: '',
-    roles: ['AUTHOR'],
+    roles: [],
     homeZipCode: '',
     homeStreet: '',
     homeComplement: '',

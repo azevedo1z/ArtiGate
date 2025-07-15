@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
+import Button from '../components/button.component';
+import { LogOut } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 interface UserData {
   id: string;
@@ -20,7 +23,7 @@ const HomePage: React.FC = () => {
     const token = localStorage.getItem('access_token');
 
     if (!token) {
-      navigate('/login');
+      navigate('/');
       return;
     }
 
@@ -37,12 +40,36 @@ const HomePage: React.FC = () => {
       );
     }
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token');
+    toast.success('Logged out successfully');
+    navigate('/');
+  };
+
   return (
     <Wrapper variant="gradient">
       <Container size="lg" className="space-y-8 py-8">
-        <div></div>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Welcome to ArtiGate
+            </h1>
+            <p className="text-gray-600 mt-2">
+              Manage your articles and reviews
+            </p>
+          </div>
+          <Button
+            variantClassName="secondary"
+            onClick={handleLogout}
+            leadingIcon={<LogOut className="h-4 w-4" />}
+          >
+            Logout
+          </Button>
+        </div>
       </Container>
     </Wrapper>
   );
 };
+
 export default HomePage;

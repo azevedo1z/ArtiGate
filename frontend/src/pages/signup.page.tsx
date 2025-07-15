@@ -59,8 +59,8 @@ interface SignUpFormData {
 }
 
 interface Role {
-  id: string;
-  name: string;
+  _id: string;
+  _name: string;
 }
 
 const SignUpPage: React.FC = () => {
@@ -137,6 +137,11 @@ const SignUpPage: React.FC = () => {
     try {
       const roleIds = await getRoleIds(formData.roles);
 
+      if (roleIds.length === 0) {
+        toast.error('No matching role IDs found');
+        return;
+      }
+
       const response = await fetch('http://localhost:3000/user/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -178,15 +183,20 @@ const SignUpPage: React.FC = () => {
   const getRoleIds = async (roleNames: string[]): Promise<string[]> => {
     try {
       const response = await fetch('http://localhost:3000/role/all');
-      if (!response.ok) toast.error('Failed to fetch roles');
+
+      if (!response.ok) {
+        toast.error('Failed to fetch roles');
+        return [];
+      }
 
       const roles: Role[] = await response.json();
 
       const roleIds = roleNames
-        .map((name) => roles.find((role) => role.name === name)?.id)
+        .map((name) => roles.find((role) => role._name === name)?._id)
         .filter(Boolean) as string[];
 
-      if (roleIds.length === 0) toast.error('No matching role IDs found');
+        console.log(roles);
+        console.log(roleIds);
 
       return roleIds;
     } catch {
@@ -286,7 +296,7 @@ const SignUpPage: React.FC = () => {
                           className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                           disabled={role.disabled}
                         />
-                        <span className="text-sm text-gray-700">
+                        <span className="text-md text-gray-700">
                           {role.label}
                         </span>
                       </label>

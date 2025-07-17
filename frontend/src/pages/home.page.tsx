@@ -27,8 +27,7 @@ const HomePage: React.FC = () => {
       return;
     }
 
-    //TODO: need to retrieve the UserId from the acesstoken and add the userId param
-    const response = await fetch('http://localhost:3000/user/id', {
+    const response = await fetch('http://localhost:3000/user/me', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -37,17 +36,6 @@ const HomePage: React.FC = () => {
     });
 
     const isReviewer = userData?.roles.includes('REVIEWER');
-
-    if (isLoading) {
-      return (
-        <Wrapper>
-          <Container size="md" className="text-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Loading...</p>
-          </Container>
-        </Wrapper>
-      );
-    }
   };
 
   const handleLogout = () => {

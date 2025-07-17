@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-type Variant = 'default' | 'gradient' | 'solid';
+type Variant = 'default' | 'gradient' | 'solid' | 'transparent';
 
 interface WrapperProps extends React.HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
@@ -13,6 +13,7 @@ const variantClasses: Record<Variant, string> = {
   default: 'bg-gray-50',
   gradient: 'bg-gradient-to-br from-blue-50 via-white to-purple-50',
   solid: 'bg-white',
+  transparent: '',
 };
 
 const Wrapper: React.FC<WrapperProps> = ({

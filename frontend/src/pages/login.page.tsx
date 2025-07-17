@@ -50,7 +50,7 @@ const LoginPage: React.FC = () => {
   };
 
   return (
-    <Wrapper variant="transparent">
+    <Wrapper>
       <Container size="sm" noDefaultPadding className="max-w-md space-y-8 px-4">
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg">

@@ -9,14 +9,14 @@ import HomePage from '../pages/home.page';
 export function App() {
   return (
     <Toaster>
-      <Layout>
-        <Routes>
+      <Routes>
+        <Layout>
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/home" element={<HomePage />} />
-        </Routes>
-      </Layout>
+        </Layout>
+      </Routes>
     </Toaster>
   );
 }

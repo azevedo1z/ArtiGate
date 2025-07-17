@@ -8,6 +8,7 @@ import {
   BadRequestException,
   Put,
   Delete,
+  Request,
 } from '@nestjs/common';
 import { CreateUserService } from '../../application/services/user/createUser.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
@@ -19,6 +20,7 @@ import { AuthGuardService } from '../../infrastructure/services/authGuard.servic
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 import { UpdateUserService } from '../../application/services/user/updateUser.service';
 import { DeleteUserService } from '../../application/services/user/deleteUser.service';
+import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @Controller('user')
 export class UserController {
@@ -76,6 +78,17 @@ export class UserController {
   async getAll() {
     try {
       return await this.getUserService.getAll();
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
+  @Get('me')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async getAuthenticatedUser(@Request() req: AuthenticatedRequest) {
+    try {
+      return await this.getUserService.getById(req.user.id);
     } catch (error) {
       throw new BadRequestException(error);
     }

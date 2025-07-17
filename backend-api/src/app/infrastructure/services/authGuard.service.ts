@@ -6,7 +6,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Observable } from 'rxjs';
-import { Request } from 'express';
+import { AuthenticatedRequest } from '../../shared/types/auth.types';
+
+interface JwtPayload {
+  sub: string;
+  iat?: number;
+  exp?: number;
+}
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
@@ -20,7 +26,9 @@ export class AuthGuardService implements CanActivate {
     return this.validateRequest(request);
   }
 
-  private async validateRequest(request: Request): Promise<boolean> {
+  private async validateRequest(
+    request: AuthenticatedRequest
+  ): Promise<boolean> {
     const authHeader = request.headers['authorization'];
 
     if (authHeader == null)
@@ -33,7 +41,11 @@ export class AuthGuardService implements CanActivate {
     try {
       const secretKey = process.env.SECRET_KEY;
 
-      await this.jwtService.verify(token, { secret: secretKey });
+      const payload: JwtPayload = await this.jwtService.verify(token, {
+        secret: secretKey,
+      });
+
+      request.user = { id: payload.sub };
 
       return true;
     } catch {

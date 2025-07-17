@@ -57,7 +57,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <Wrapper variant="gradient">
+    <Wrapper variant="transparent">
       <Container size="lg" className="space-y-8 py-8">
         <div className="flex justify-between items-center">
           <div>

@@ -216,7 +216,7 @@ const SignUpPage: React.FC = () => {
   };
 
   return (
-    <Wrapper variant="gradient">
+    <Wrapper variant="transparent">
       <Container
         size="md"
         noDefaultPadding

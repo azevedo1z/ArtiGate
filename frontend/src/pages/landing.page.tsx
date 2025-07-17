@@ -16,7 +16,7 @@ import {
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   return (
-    <Wrapper variant="gradient">
+    <Wrapper variant="transparent">
       <Container size="lg" className="text-center space-y-8">
         <div
           className="mx-auto h-20 w-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex

@@ -40,7 +40,7 @@ const HomePage: React.FC = () => {
 
     if (isLoading) {
       return (
-        <Wrapper variant="gradient">
+        <Wrapper>
           <Container size="md" className="text-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading...</p>
@@ -57,7 +57,7 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <Wrapper variant="gradient">
+    <Wrapper>
       <Container size="lg" className="space-y-8 py-8">
         <div className="flex justify-between items-center">
           <div>

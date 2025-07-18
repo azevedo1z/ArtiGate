@@ -1,26 +1,63 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Button from '../components/button.component';
-import { LogOut } from 'lucide-react';
+import Card from '../components/card.component';
+import { LogOut, FileText, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-interface UserData {
-  id: string;
-  name: string;
-  email: string;
-  roles: string[];
-}
+import { UserData, UserRoleData } from '../shared/types/types.shared';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [userRoleData, setUserRoleData] = useState<UserRoleData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const isReviewer = userData?.roles.includes('REVIEWER') ?? false;
+  const isReviewer = userRoleData?.roleName.includes('REVIEWER') ?? false;
+
+  const handleUserRoleDataFetch = async (
+    userRoleData: UserRoleData,
+    success: boolean
+  ) => {
+    if (success) {
+      setUserRoleData(userRoleData);
+    } else throw new Error();
+  };
+
+  const fetchUserRoleData = useCallback(async (userId: string) => {
+    const token = localStorage.getItem('access_token');
+
+    try {
+      const response = await fetch(`http://localhost:3000/userRole/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const userRoleData: UserRoleData = await response.json();
+      await handleUserRoleDataFetch(userRoleData, response.ok);
+    } catch {
+      toast.error(
+        'An error occurred loading your data. Please refresh the page.'
+      );
+    }
+  }, []);
+
+  const handleUserDataFetch = useCallback(
+    async (userData: UserData, success: boolean) => {
+      if (success) {
+        setUserData(userData);
+        await fetchUserRoleData(userData.id);
+      } else throw new Error();
+    },
+    [fetchUserRoleData]
+  );
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchUserData = async () => {
       const token = localStorage.getItem('access_token');
 
@@ -29,21 +66,46 @@ const HomePage: React.FC = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/user/me', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      try {
+        const response = await fetch('http://localhost:3000/user/me', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userData: UserData = await response.json();
+        await handleUserDataFetch(userData, response.ok);
+      } catch {
+        toast.error(
+          'An error occurred loading your data. Please refresh the page.'
+        );
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }, [navigate]);
+
+    fetchUserData();
+  }, [navigate, handleUserDataFetch]);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
     navigate('/');
   };
+
+  if (isLoading) {
+    return (
+      <Wrapper>
+        <Container size="lg" className="py-8">
+          <div className="flex justify-center items-center h-64">
+            <div className="text-gray-600">Loading...</div>
+          </div>
+        </Container>
+      </Wrapper>
+    );
+  }
 
   return (
     <Wrapper>
@@ -54,7 +116,9 @@ const HomePage: React.FC = () => {
               Welcome to ArtiGate
             </h1>
             <p className="text-gray-600 mt-2">
-              Manage your articles and reviews
+              {userData?.name
+                ? `Hello, ${userData.name}`
+                : 'Oops, something went wrong... :('}
             </p>
           </div>
           <Button
@@ -64,6 +128,34 @@ const HomePage: React.FC = () => {
           >
             Logout
           </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+          <Card
+            icon={<FileText className="h-6 w-6 text-white" />}
+            title="Submit your article"
+            description="Submit new articles for conference review and publication."
+            iconColor="blue"
+            className="cursor-pointer hover:scale-105 transform transition-all duration-200"
+            onClick={() => {
+              // TODO: Navigate to article submission page
+              toast('Article submission coming soon!', { icon: 'ℹ️' });
+            }}
+          />
+
+          {isReviewer && (
+            <Card
+              icon={<Eye className="h-6 w-6 text-white" />}
+              title="Review an article"
+              description="Review submitted articles and provide feedback to authors."
+              iconColor="purple"
+              className="cursor-pointer hover:scale-105 transform transition-all duration-200"
+              onClick={() => {
+                // TODO: Navigate to article review page
+                toast('Article review coming soon!', { icon: 'ℹ️' });
+              }}
+            />
+          )}
         </div>
       </Container>
     </Wrapper>

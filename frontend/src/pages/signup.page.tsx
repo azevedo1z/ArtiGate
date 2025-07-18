@@ -22,46 +22,11 @@ import {
   EyeOff,
   HomeIcon,
 } from 'lucide-react';
-
-interface SignUpResponse {
-  access_token: string;
-  statusCode: number;
-  message: string;
-  error: string;
-}
-
-interface SignUpFormData {
-  name: string;
-  email: string;
-  phone: string;
-  password: string;
-  passwordConfirmation: string;
-  roles: string[];
-
-  homeZipCode: string;
-  homeStreet: string;
-  homeComplement: string;
-  homeNeighborhood: string;
-  homeCity: string;
-  homeState: string;
-
-  jobZipCode: string;
-  jobStreet: string;
-  jobComplement: string;
-  jobNeighborhood: string;
-  jobCity: string;
-  jobState: string;
-
-  // mocked
-  cardNumber: string;
-  cardExpiry: string;
-  cardBrand: string;
-}
-
-interface Role {
-  _id: string;
-  _name: string;
-}
+import {
+  RoleData,
+  SignUpFormData,
+  SignUpResponse,
+} from '../shared/types/types.shared';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -189,7 +154,7 @@ const SignUpPage: React.FC = () => {
         return [];
       }
 
-      const roles: Role[] = await response.json();
+      const roles: RoleData[] = await response.json();
 
       const roleIds = roleNames
         .map((name) => roles.find((role) => role._name === name)?._id)

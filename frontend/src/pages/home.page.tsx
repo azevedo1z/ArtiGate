@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
@@ -18,25 +18,26 @@ const HomePage: React.FC = () => {
   const [userData, setUserData] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  //TODO: Search for useEffect
-  const fetchUserData = async () => {
-    const token = localStorage.getItem('access_token');
+  const isReviewer = userData?.roles.includes('REVIEWER') ?? false;
 
-    if (!token) {
-      navigate('/');
-      return;
-    }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = localStorage.getItem('access_token');
 
-    const response = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
+      if (!token) {
+        navigate('/');
+        return;
+      }
 
-    const isReviewer = userData?.roles.includes('REVIEWER');
-  };
+      const response = await fetch('http://localhost:3000/user/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    };
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');

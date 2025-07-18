@@ -29,15 +29,31 @@ const HomePage: React.FC = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/user/me', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      try {
+        const response = await fetch('http://localhost:3000/user/me', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const userData: UserData = await response.json();
+        await handleUserDataFetch(userData, response.ok);
+      } catch {
+        toast.error(
+          'An error occurred loading your data. Please refresh the page.'
+        );
+      } finally {
+        setIsLoading(false);
+      }
     };
   }, [navigate]);
+
+  const handleUserDataFetch = async (userData: UserData, success: boolean) => {
+    if (success) setUserData(userData);
+    else throw new Error();
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');

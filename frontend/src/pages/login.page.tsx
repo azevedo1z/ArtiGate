@@ -6,22 +6,17 @@ import Wrapper from '../components/wrapper.component';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-interface LoginResponse {
-  access_token: string;
-  statusCode: number;
-  message: string;
-  error: string;
-}
+import { LoginResponse } from '../shared/types/types.shared';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const authLogin = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
       const response = await fetch('http://localhost:3000/user/signIn', {
         method: 'POST',

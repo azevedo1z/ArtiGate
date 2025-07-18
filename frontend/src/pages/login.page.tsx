@@ -19,10 +19,9 @@ const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const authLogin = async (email: string, password: string) => {
-    setIsLoading(true);
     try {
       const response = await fetch('http://localhost:3000/user/signIn', {
         method: 'POST',

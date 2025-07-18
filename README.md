@@ -32,12 +32,15 @@ Backend:
 - /infrastructure
   - repositories/
   - services/
+- /shared
+  - types/
 
 Frontend:
 - components/
 - pages/
 - providers/
 - store/
+- utils/
 ```
 
 ## 🚀 Getting Started

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Input from '../components/input.component';
 import Button from '../components/button.component';
 import Container from '../components/container.component';
@@ -6,20 +6,14 @@ import Wrapper from '../components/wrapper.component';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-interface LoginResponse {
-  access_token: string;
-  statusCode: number;
-  message: string;
-  error: string;
-}
+import { LoginResponse } from '../shared/types/types.shared';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [showPassword, setShowPassword] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const authLogin = async (email: string, password: string) => {
     setIsLoading(true);

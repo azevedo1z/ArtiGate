@@ -17,7 +17,6 @@ import { AddressController } from './interface/controllers/address.controller';
 import { RoleController } from './interface/controllers/role.controller';
 import { ArticleController } from './interface/controllers/article.controller';
 import { ReviewController } from './interface/controllers/review.controller';
-import { ArticleAuthorController } from './interface/controllers/articleAuthor.controller';
 import { UserRepository } from './infrastructure/repositories/user.repository';
 import { AddressRepository } from './infrastructure/repositories/address.repository';
 import { RoleRepository } from './infrastructure/repositories/role.repository';
@@ -48,7 +47,6 @@ import { DeleteRoleService } from './application/services/role/deleteRole.servic
 import { GetArticleAuthorService } from './application/services/articleAuthor/getArticleAuthor.service';
 import { UpdateArticleAuthorService } from './application/services/articleAuthor/updateArticleAuthor.service';
 import { GetUserRoleService } from './application/services/userRole/getUserRole.service';
-import { UserRoleController } from './interface/controllers/userRole.controller';
 import { CreateArticleAuthorService } from './application/services/articleAuthor/createArticleAuthor.service';
 
 @Module({
@@ -64,8 +62,6 @@ import { CreateArticleAuthorService } from './application/services/articleAuthor
     RoleController,
     ArticleController,
     ReviewController,
-    ArticleAuthorController,
-    UserRoleController,
   ],
   providers: [
     PrismaService,

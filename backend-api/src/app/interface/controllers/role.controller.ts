@@ -76,4 +76,15 @@ export class RoleController {
       throw new BadRequestException(error);
     }
   }
+
+  @Get(':userId')
+  @UseGuards(AuthGuardService)
+  async getByUserId(@Param('userId') userId: string) {
+    try {
+      return await this.getRoleService.getRoleByUserId(userId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
+
 }

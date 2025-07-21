@@ -11,8 +11,7 @@ export class GetRoleService {
 
     if (existingRole == null)
       throw new BadRequestException(`There is no role with the ID "${id}".`);
-    // for testing
-    // '5a3bbe8f-aa90-412d-94b2-602682f55d87'
+
     return Role.factory(existingRole.id, existingRole.name);
   }
 

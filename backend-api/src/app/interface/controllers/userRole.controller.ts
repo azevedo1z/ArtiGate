@@ -22,4 +22,13 @@ export class UserRoleController {
       throw new BadRequestException(error);
     }
   }
+
+  @Get(':userId')
+  async getByUserId(userId: string){
+    try {
+      return await this.getUserRoleService.getByUserId(userId);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

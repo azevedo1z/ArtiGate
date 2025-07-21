@@ -6,30 +6,27 @@ import Button from '../components/button.component';
 import Card from '../components/card.component';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { UserData, UserRoleData } from '../shared/types/types.shared';
+import { UserData, RoleData } from '../shared/types/types.shared';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [userRoleData, setUserRoleData] = useState<UserRoleData | null>(null);
+  const [roleData, setRoleData] = useState<RoleData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isReviewer = userRoleData?.roleName.includes('REVIEWER') ?? false;
+  const isReviewer = roleData?._name.includes('REVIEWER') ?? false;
 
-  const handleUserRoleDataFetch = async (
-    userRoleData: UserRoleData,
-    success: boolean
-  ) => {
+  const handleRoleDataFetch = async (roleData: RoleData, success: boolean) => {
     if (success) {
-      setUserRoleData(userRoleData);
+      setRoleData(roleData);
     } else throw new Error();
   };
 
-  const fetchUserRoleData = useCallback(async (userId: string) => {
+  const fetchRoleData = useCallback(async (userId: string) => {
     const token = localStorage.getItem('access_token');
 
     try {
-      const response = await fetch(`http://localhost:3000/userRole/${userId}`, {
+      const response = await fetch(`http://localhost:3000/role/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -37,8 +34,8 @@ const HomePage: React.FC = () => {
         },
       });
 
-      const userRoleData: UserRoleData = await response.json();
-      await handleUserRoleDataFetch(userRoleData, response.ok);
+      const roleData: RoleData = await response.json();
+      await handleRoleDataFetch(roleData, response.ok);
     } catch {
       toast.error(
         'An error occurred loading your data. Please refresh the page.'
@@ -50,10 +47,10 @@ const HomePage: React.FC = () => {
     async (userData: UserData, success: boolean) => {
       if (success) {
         setUserData(userData);
-        await fetchUserRoleData(userData.id);
+        await fetchRoleData(userData.id);
       } else throw new Error();
     },
-    [fetchUserRoleData]
+    [fetchRoleData]
   );
 
   useEffect(() => {

@@ -17,11 +17,6 @@ export interface UserData {
   email: string;
 }
 
-export interface UserRoleData {
-  roleId: string;
-  roleName: string;
-}
-
 export interface RoleData {
   _id: string;
   _name: string;

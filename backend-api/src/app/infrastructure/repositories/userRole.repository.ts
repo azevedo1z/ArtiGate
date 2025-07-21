@@ -27,7 +27,11 @@ export class UserRoleRepository implements UserRoleDatabaseAdapter {
     return await this.prisma.userRole.findMany();
   }
 
-  async findMany(userId: string): Promise<UserRole[]> {
+  async findMany(id: string): Promise<UserRole[]> {
     throw new Error('Method not implemented.');
+  }
+
+  async findManyByUserId(userId: string): Promise<UserRole[]> {
+    return await this.prisma.userRole.findMany({ where: { userId } });
   }
 }

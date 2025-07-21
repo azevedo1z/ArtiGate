@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Param,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -24,7 +25,7 @@ export class UserRoleController {
   }
 
   @Get(':userId')
-  async getByUserId(userId: string){
+  async getByUserId(@Param('userId') userId: string) {
     try {
       return await this.getUserRoleService.getByUserId(userId);
     } catch (error) {

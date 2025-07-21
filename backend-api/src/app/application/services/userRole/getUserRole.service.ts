@@ -2,6 +2,7 @@ import { UserRole } from '@prisma/client';
 import { UserRoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { GetUserService } from '../user/getUser.service';
+import { GetRoleService } from '../role/getRole.service';
 
 @Injectable()
 export class GetUserRoleService {

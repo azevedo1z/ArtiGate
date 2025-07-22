@@ -67,16 +67,6 @@ export class RoleController {
     }
   }
 
-  @Get(':id')
-  @UseGuards(AuthGuardService)
-  async getById(@Param('id') id: string) {
-    try {
-      return await this.getRoleService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
-  }
-
   @Get(':userId')
   @UseGuards(AuthGuardService)
   async getByUserId(@Param('userId') userId: string) {
@@ -86,5 +76,14 @@ export class RoleController {
       throw new BadRequestException(error);
     }
   }
-
+  
+  @Get(':id')
+  @UseGuards(AuthGuardService)
+  async getById(@Param('id') id: string) {
+    try {
+      return await this.getRoleService.getById(id);
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
+  }
 }

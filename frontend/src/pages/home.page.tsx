@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
@@ -16,46 +16,9 @@ const HomePage: React.FC = () => {
 
   const isReviewer = roleData?._name.includes('REVIEWER') ?? false;
 
-  const handleRoleDataFetch = async (roleData: RoleData, success: boolean) => {
-    if (success) {
-      setRoleData(roleData);
-    } else throw new Error();
-  };
-
-  const fetchRoleData = useCallback(async (userId: string) => {
-    const token = localStorage.getItem('access_token');
-
-    try {
-      const response = await fetch(`http://localhost:3000/role/${userId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const roleData: RoleData = await response.json();
-      await handleRoleDataFetch(roleData, response.ok);
-    } catch {
-      toast.error(
-        'An error occurred loading your data. Please refresh the page.'
-      );
-    }
-  }, []);
-
-  const handleUserDataFetch = useCallback(
-    async (userData: UserData, success: boolean) => {
-      if (success) {
-        setUserData(userData);
-        await fetchRoleData(userData.id);
-      } else throw new Error();
-    },
-    [fetchRoleData]
-  );
-
   useEffect(() => {
-    setIsLoading(true);
-    const fetchUserData = async () => {
+    const fetchData = async () => {
+      setIsLoading(true);
       const token = localStorage.getItem('access_token');
 
       if (!token) {
@@ -64,7 +27,7 @@ const HomePage: React.FC = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:3000/user/me', {
+        const userResponse = await fetch('http://localhost:3000/user/me', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -72,8 +35,26 @@ const HomePage: React.FC = () => {
           },
         });
 
-        const userData: UserData = await response.json();
-        await handleUserDataFetch(userData, response.ok);
+        if (!userResponse.ok) throw new Error();
+
+        const userData: UserData = await userResponse.json();
+        setUserData(userData);
+
+        const roleResponse = await fetch(
+          `http://localhost:3000/role/${userData.id}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!roleResponse.ok) throw new Error();
+
+        const roleData: RoleData = await roleResponse.json();
+        setRoleData(roleData);
       } catch {
         toast.error(
           'An error occurred loading your data. Please refresh the page.'
@@ -83,8 +64,8 @@ const HomePage: React.FC = () => {
       }
     };
 
-    fetchUserData();
-  }, [navigate, handleUserDataFetch]);
+    fetchData();
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');

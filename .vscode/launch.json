@@ -21,15 +21,5 @@
                 "NODE_ENV": "development"
             }
         }
-    ],
-    "compounds": [
-        {
-            "name": "Launch Full Stack",
-            "configurations": [
-                "Nx Serve Backend API",
-                "Nx Serve Frontend"
-            ],
-            "stopAll": true
-        }
     ]
 }

@@ -12,9 +12,9 @@ export interface LoginResponse {
   error: string;
 }
 export interface UserData {
-  id: string;
-  name: string;
-  email: string;
+  _id: string;
+  _name: string;
+  _email: string;
 }
 
 export interface RoleData {

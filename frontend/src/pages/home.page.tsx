@@ -14,7 +14,7 @@ const HomePage: React.FC = () => {
   const [roleData, setRoleData] = useState<RoleData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isReviewer = roleData?._name.includes('REVIEWER') ?? false;
+  const isReviewer = roleData?._name?.includes('REVIEWER') ?? false;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,7 +41,7 @@ const HomePage: React.FC = () => {
         setUserData(userData);
 
         const roleResponse = await fetch(
-          `http://localhost:3000/role/${userData.id}`,
+          `http://localhost:3000/role/${userData._id}`,
           {
             method: 'GET',
             headers: {
@@ -94,8 +94,8 @@ const HomePage: React.FC = () => {
               Welcome to ArtiGate
             </h1>
             <p className="text-gray-600 mt-2">
-              {userData?.name
-                ? `Hello, ${userData.name}`
+              {userData?._name
+                ? `Hello, ${userData._name}.`
                 : 'Oops, something went wrong... :('}
             </p>
           </div>

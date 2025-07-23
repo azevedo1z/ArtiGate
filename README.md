@@ -41,6 +41,8 @@ Frontend:
 - providers/
 - store/
 - utils/
+- /shared
+  - types/
 ```
 
 ## 🚀 Getting Started

@@ -160,9 +160,6 @@ const SignUpPage: React.FC = () => {
         .map((name) => roles.find((role) => role._name === name)?._id)
         .filter(Boolean) as string[];
 
-      console.log(roles);
-      console.log(roleIds);
-
       return roleIds;
     } catch {
       toast.error('Failed to load roles');

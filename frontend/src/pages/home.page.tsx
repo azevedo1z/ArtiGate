@@ -6,15 +6,16 @@ import Button from '../components/button.component';
 import Card from '../components/card.component';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { UserData, RoleData } from '../shared/types/types.shared';
+import { UserData, RoleData as RolesData } from '../shared/types/types.shared';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [roleData, setRoleData] = useState<RoleData | null>(null);
+  const [roleData, setRolesData] = useState<RolesData[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const isReviewer = roleData?._name?.includes('REVIEWER') ?? false;
+  const isReviewer =
+    roleData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,8 +54,8 @@ const HomePage: React.FC = () => {
 
         if (!roleResponse.ok) throw new Error();
 
-        const roleData: RoleData = await roleResponse.json();
-        setRoleData(roleData);
+        const rolesData: RolesData[] = await roleResponse.json();
+        setRolesData(rolesData);
       } catch {
         toast.error(
           'An error occurred loading your data. Please refresh the page.'

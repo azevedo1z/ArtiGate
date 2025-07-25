@@ -1,27 +1,20 @@
 import React, { ReactNode } from 'react';
 import Container from './container.component';
+import Navbar from './navbar.component';
 import { ExternalLink } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
   showHeader?: boolean;
   showFooter?: boolean;
-  headerContent?: ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({
   children,
   showHeader = true,
   showFooter = true,
-  headerContent,
 }) => {
   const baseClassName = 'min-h-screen grid grid-rows-[auto_1fr_auto]';
-
-  const headerClassName =
-    'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg border-b border-gray-700';
-  const headerContentClassName = 'flex items-center justify-between';
-  const logoClassName =
-    'text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent';
 
   const mainClassName =
     'row-start-2 bg-gradient-to-br from-gray-50 via-white to-blue-50';
@@ -36,16 +29,7 @@ const Layout: React.FC<LayoutProps> = ({
 
   return (
     <div className={baseClassName}>
-      {showHeader && (
-        <header className={headerClassName}>
-          <Container noDefaultPadding className="py-4">
-            <div className={headerContentClassName}>
-              <h1 className={logoClassName}>ArtiGate</h1>
-              {headerContent}
-            </div>
-          </Container>
-        </header>
-      )}
+      {showHeader && <Navbar />}
 
       <main className={mainClassName}>
         <Container>{children}</Container>

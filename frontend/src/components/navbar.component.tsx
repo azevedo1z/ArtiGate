@@ -11,6 +11,8 @@ const navLinks = [
 
 const Navbar: React.FC = () => {
   // TODO: Search for useLocation()
+  // TODO: Implement redux
+  // const { isLoggedIn } = useAuth();
 
   const baseClassName =
     'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg border-b border-gray-700';
@@ -31,18 +33,19 @@ const Navbar: React.FC = () => {
           ArtiGate
         </Link>
 
-        <div className={navLinksClassName}>
-          {navLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={navLinksContentClassName}
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-
+        {/* {isLoggedIn && ( */}
+          <div className={navLinksClassName}>
+            {navLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={navLinksContentClassName}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+        {/* )} */}
         <Link
           to="/settings"
           className={settingsButtonClassName}

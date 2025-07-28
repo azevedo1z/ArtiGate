@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from './container.component';
 import { Link } from 'react-router-dom';
-import { Menu, Settings } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 const navLinks = [
   { name: 'Home', path: '/' },

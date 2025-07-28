@@ -10,7 +10,6 @@ const navLinks = [
 ];
 
 const Navbar: React.FC = () => {
-  // TODO: Search for useLocation()
   // TODO: Implement redux
   // const { isLoggedIn } = useAuth();
 

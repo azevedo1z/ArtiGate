@@ -7,15 +7,24 @@ import Card from '../components/card.component';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { UserData, RoleData as RolesData } from '../shared/types/types.shared';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../store/my.store';
+import { logout } from '../store/slices/auth.slice';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+
+  // TODO: need to implement these two w/ redux aswell
   const [userData, setUserData] = useState<UserData | null>(null);
   const [roleData, setRolesData] = useState<RolesData[] | null>(null);
+
   const [isLoading, setIsLoading] = useState(false);
+  const { userId } = useSelector((state: RootState) => state.auth);
 
   const isReviewer =
     roleData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -28,21 +37,8 @@ const HomePage: React.FC = () => {
       }
 
       try {
-        const userResponse = await fetch('http://localhost:3000/user/me', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!userResponse.ok) throw new Error();
-
-        const userData: UserData = await userResponse.json();
-        setUserData(userData);
-
         const roleResponse = await fetch(
-          `http://localhost:3000/role/${userData._id}`,
+          `http://localhost:3000/role/${userId}`,
           {
             method: 'GET',
             headers: {
@@ -66,12 +62,13 @@ const HomePage: React.FC = () => {
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, userId]);
 
   const handleLogout = () => {
+    dispatch(logout());
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
-    navigate('/');
+    setTimeout(() => navigate('/'), 1000);
   };
 
   if (isLoading) {

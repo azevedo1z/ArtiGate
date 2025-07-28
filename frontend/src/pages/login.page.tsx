@@ -6,7 +6,9 @@ import Wrapper from '../components/wrapper.component';
 import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { LoginResponse } from '../shared/types/types.shared';
+import { LoginResponse, UserData } from '../shared/types/types.shared';
+import { login } from '../store/slices/auth.slice';
+import { useDispatch } from 'react-redux';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +16,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const authLogin = async (email: string, password: string) => {
     setIsLoading(true);
@@ -33,10 +36,23 @@ const LoginPage: React.FC = () => {
     }
   };
 
-  const handleLogin = (data: LoginResponse, success: boolean) => {
+  const handleLogin = async (data: LoginResponse, success: boolean) => {
     if (success) {
-      toast.success('Login successful! Welcome back.');
+      const userResponse = await fetch('http://localhost:3000/user/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) throw new Error();
+
+      const userData: UserData = await userResponse.json();
+      dispatch(login({ userId: userData._id }));
+
       localStorage.setItem('access_token', data.access_token);
+      toast.success('Login successful! Welcome back.');
       setTimeout(() => navigate('/home'), 1000);
     } else {
       toast.error(data.message);

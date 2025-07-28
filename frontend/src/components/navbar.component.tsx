@@ -34,25 +34,28 @@ const Navbar: React.FC = () => {
         </Link>
 
         {isLoggedIn && (
-          <div className={navLinksClassName}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={navLinksContentClassName}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+          <>
+            <div className={navLinksClassName}>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={navLinksContentClassName}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              to="/settings"
+              className={settingsButtonClassName}
+              aria-label="Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
+          </>
         )}
-        <Link
-          to="/settings"
-          className={settingsButtonClassName}
-          aria-label="Settings"
-        >
-          <Settings className="h-5 w-5" />
-        </Link>
 
         {/* TODO: Mobile responsivity */}
         {/* <button aria-label="Open menu">

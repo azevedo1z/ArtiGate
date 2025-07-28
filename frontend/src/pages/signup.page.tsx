@@ -26,7 +26,10 @@ import {
   RoleData,
   SignUpFormData,
   SignUpResponse,
+  UserData,
 } from '../shared/types/types.shared';
+import { useDispatch } from 'react-redux';
+import { login } from '../store/slices/auth.slice';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -58,6 +61,8 @@ const SignUpPage: React.FC = () => {
     cardExpiry: '',
     cardBrand: 'Visa',
   });
+
+  const dispatch = useDispatch();
 
   const handleInputChange = (
     field: keyof SignUpFormData,
@@ -167,10 +172,23 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleSignUp = (data: SignUpResponse, success: boolean) => {
+  const handleSignUp = async (data: SignUpResponse, success: boolean) => {
     if (success) {
-      toast.success('Account created successfully! Welcome to ArtiGate.');
+      const userResponse = await fetch('http://localhost:3000/user/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) throw new Error();
+
+      const userData: UserData = await userResponse.json();
+      dispatch(login({ userId: userData._id }));
+
       localStorage.setItem('access_token', data.access_token);
+      toast.success('Account created successfully! Welcome to ArtiGate.');
       setTimeout(() => navigate('/home'), 1000);
     } else {
       toast.error(data.message);

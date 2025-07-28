@@ -1,10 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-
-const placeholderReducer = (state = {}, action: { type: string }) => state;
+import authReducer from './slices/auth.slice';
 
 const myStore = configureStore({
   reducer: {
-    placeholder: placeholderReducer,
+    auth: authReducer,
   },
 });
 

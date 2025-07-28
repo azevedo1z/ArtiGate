@@ -1,18 +1,18 @@
 import React from 'react';
 import Container from './container.component';
 import { Link } from 'react-router-dom';
-import { Menu, Settings } from 'lucide-react';
-
-const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'My Articles', path: '/articles/{userId}' },
-  { name: 'About', path: '/about' },
-];
+import { Settings } from 'lucide-react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store/my.store';
 
 const Navbar: React.FC = () => {
-  // TODO: Search for useLocation()
-  // TODO: Implement redux
-  // const { isLoggedIn } = useAuth();
+  const { isLoggedIn, userId } = useSelector((state: RootState) => state.auth);
+
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'My Articles', path: `/articles/${userId}` },
+    { name: 'About', path: '/about' },
+  ];
 
   const baseClassName =
     'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg border-b border-gray-700';
@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
           ArtiGate
         </Link>
 
-        {/* {isLoggedIn && ( */}
+        {isLoggedIn && (
           <div className={navLinksClassName}>
             {navLinks.map((link) => (
               <Link
@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
               </Link>
             ))}
           </div>
-        {/* )} */}
+        )}
         <Link
           to="/settings"
           className={settingsButtonClassName}

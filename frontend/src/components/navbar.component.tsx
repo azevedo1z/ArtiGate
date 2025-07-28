@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
   const { isLoggedIn, userId } = useSelector((state: RootState) => state.auth);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
+    { name: 'Home', path: '/home' },
     { name: 'My Articles', path: `/articles/${userId}` },
     { name: 'About', path: '/about' },
   ];
@@ -29,7 +29,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className={baseClassName}>
       <Container noDefaultPadding className={containerClassName}>
-        <Link to="/" className={logoClassName}>
+        <Link to="/home" className={logoClassName}>
           ArtiGate
         </Link>
 

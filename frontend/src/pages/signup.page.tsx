@@ -26,7 +26,10 @@ import {
   RoleData,
   SignUpFormData,
   SignUpResponse,
+  UserData,
 } from '../shared/types/types.shared';
+import { useDispatch } from 'react-redux';
+import { login } from '../store/slices/auth.slice';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -58,6 +61,8 @@ const SignUpPage: React.FC = () => {
     cardExpiry: '',
     cardBrand: 'Visa',
   });
+
+  const dispatch = useDispatch();
 
   const handleInputChange = (
     field: keyof SignUpFormData,
@@ -92,7 +97,7 @@ const SignUpPage: React.FC = () => {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isFormValid()) return;
@@ -137,7 +142,7 @@ const SignUpPage: React.FC = () => {
       });
 
       const data: SignUpResponse = await response.json();
-      handleRegistration(data, response.ok);
+      handleSignUp(data, response.ok);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
@@ -167,10 +172,23 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleRegistration = (data: SignUpResponse, success: boolean) => {
+  const handleSignUp = async (data: SignUpResponse, success: boolean) => {
     if (success) {
-      toast.success('Account created successfully! Welcome to ArtiGate.');
+      const userResponse = await fetch('http://localhost:3000/user/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) throw new Error();
+
+      const userData: UserData = await userResponse.json();
+      dispatch(login({ userId: userData._id }));
+
       localStorage.setItem('access_token', data.access_token);
+      toast.success('Account created successfully! Welcome to ArtiGate.');
       setTimeout(() => navigate('/home'), 1000);
     } else {
       toast.error(data.message);
@@ -198,7 +216,7 @@ const SignUpPage: React.FC = () => {
         </div>
 
         <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <form className="space-y-8" onSubmit={handleSubmit}>
+          <form className="space-y-8" onSubmit={handleRegistration}>
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                 <User className="inline h-5 w-5 mr-2" />

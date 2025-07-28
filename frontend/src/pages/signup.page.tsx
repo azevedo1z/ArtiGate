@@ -92,7 +92,7 @@ const SignUpPage: React.FC = () => {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!isFormValid()) return;
@@ -137,7 +137,7 @@ const SignUpPage: React.FC = () => {
       });
 
       const data: SignUpResponse = await response.json();
-      handleRegistration(data, response.ok);
+      handleSignUp(data, response.ok);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
@@ -167,7 +167,7 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleRegistration = (data: SignUpResponse, success: boolean) => {
+  const handleSignUp = (data: SignUpResponse, success: boolean) => {
     if (success) {
       toast.success('Account created successfully! Welcome to ArtiGate.');
       localStorage.setItem('access_token', data.access_token);
@@ -198,7 +198,7 @@ const SignUpPage: React.FC = () => {
         </div>
 
         <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <form className="space-y-8" onSubmit={handleSubmit}>
+          <form className="space-y-8" onSubmit={handleRegistration}>
             <div className="space-y-6">
               <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
                 <User className="inline h-5 w-5 mr-2" />

@@ -9,7 +9,7 @@ const Navbar: React.FC = () => {
   const { isLoggedIn, userId } = useSelector((state: RootState) => state.auth);
 
   const navLinks = [
-    { name: 'Home', path: '/' },
+    { name: 'Home', path: '/home' },
     { name: 'My Articles', path: `/articles/${userId}` },
     { name: 'About', path: '/about' },
   ];
@@ -29,30 +29,33 @@ const Navbar: React.FC = () => {
   return (
     <nav className={baseClassName}>
       <Container noDefaultPadding className={containerClassName}>
-        <Link to="/" className={logoClassName}>
+        <Link to="/home" className={logoClassName}>
           ArtiGate
         </Link>
 
         {isLoggedIn && (
-          <div className={navLinksClassName}>
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className={navLinksContentClassName}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </div>
+          <>
+            <div className={navLinksClassName}>
+              {navLinks.map((link) => (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={navLinksContentClassName}
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+
+            <Link
+              to="/settings"
+              className={settingsButtonClassName}
+              aria-label="Settings"
+            >
+              <Settings className="h-5 w-5" />
+            </Link>
+          </>
         )}
-        <Link
-          to="/settings"
-          className={settingsButtonClassName}
-          aria-label="Settings"
-        >
-          <Settings className="h-5 w-5" />
-        </Link>
 
         {/* TODO: Mobile responsivity */}
         {/* <button aria-label="Open menu">

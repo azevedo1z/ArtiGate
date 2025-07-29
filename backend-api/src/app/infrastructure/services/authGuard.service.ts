@@ -9,9 +9,9 @@ import { Observable } from 'rxjs';
 import { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 interface JwtPayload {
-  sub: string;
-  iat?: number;
-  exp?: number;
+  subject: string;
+  issuedAt?: number;
+  expirationTime?: number;
 }
 
 @Injectable()
@@ -44,7 +44,7 @@ export class AuthGuardService implements CanActivate {
       secret: secretKey,
     });
 
-    request.user = { id: payload.sub };
+    request.user = { id: payload.subject };
 
     return true;
   }

@@ -6,7 +6,7 @@ import Button from '../components/button.component';
 import Card from '../components/card.component';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { UserData, RoleData as RolesData } from '../shared/types/types.shared';
+import { RolesData } from '../shared/types/types.shared';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 import { logout } from '../store/slices/auth.slice';
@@ -14,15 +14,15 @@ import { logout } from '../store/slices/auth.slice';
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
-  // TODO: need to implement these two w/ redux aswell
-  const [userData, setUserData] = useState<UserData | null>(null);
-  const [roleData, setRolesData] = useState<RolesData[] | null>(null);
+  const userData = useSelector((state: RootState) => state.user.data);
+  // Use Redux for roles
+  const [rolesData, setRolesData] = useState<RolesData[] | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const { userId } = useSelector((state: RootState) => state.auth);
 
   const isReviewer =
-    roleData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
+    rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
 
   const dispatch = useDispatch();
 

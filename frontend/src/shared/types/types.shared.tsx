@@ -11,13 +11,14 @@ export interface LoginResponse {
   message: string;
   error: string;
 }
+
 export interface UserData {
   _id: string;
   _name: string;
   _email: string;
 }
 
-export interface RoleData {
+export interface RolesData {
   _id: string;
   _name: string;
 }

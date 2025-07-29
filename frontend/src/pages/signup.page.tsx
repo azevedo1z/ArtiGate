@@ -23,7 +23,7 @@ import {
   HomeIcon,
 } from 'lucide-react';
 import {
-  RoleData,
+  RolesData,
   SignUpFormData,
   SignUpResponse,
   UserData,
@@ -159,7 +159,7 @@ const SignUpPage: React.FC = () => {
         return [];
       }
 
-      const roles: RoleData[] = await response.json();
+      const roles: RolesData[] = await response.json();
 
       const roleIds = roleNames
         .map((name) => roles.find((role) => role._name === name)?._id)

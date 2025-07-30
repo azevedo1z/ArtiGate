@@ -6,7 +6,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 
 const Navbar: React.FC = () => {
-  const { isLoggedIn, userId } = useSelector((state: RootState) => state.auth);
+  const { isLoggedIn } = useSelector((state: RootState) => state.auth);
+  const userId = useSelector((state: RootState) => state.user.data?._id);
 
   const navLinks = [
     { name: 'Home', path: '/home' },

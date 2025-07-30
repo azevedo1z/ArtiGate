@@ -15,11 +15,9 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const userData = useSelector((state: RootState) => state.user.data);
-  // Use Redux for roles
   const [rolesData, setRolesData] = useState<RolesData[] | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
-  const { userId } = useSelector((state: RootState) => state.auth);
 
   const isReviewer =
     rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
@@ -38,7 +36,7 @@ const HomePage: React.FC = () => {
 
       try {
         const roleResponse = await fetch(
-          `http://localhost:3000/role/${userId}`,
+          `http://localhost:3000/role/${userData?._id}`,
           {
             method: 'GET',
             headers: {
@@ -62,7 +60,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchData();
-  }, [navigate, userId]);
+  }, [navigate, userData?._id]);
 
   const handleLogout = () => {
     dispatch(logout());

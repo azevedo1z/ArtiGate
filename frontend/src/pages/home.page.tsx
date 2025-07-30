@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { RolesData } from '../shared/types/types.shared';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
-import { logout } from '../store/slices/auth.slice';
+import { clearUser } from '../store/slices/user.slice';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
   }, [navigate, userData?._id]);
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(clearUser());
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
     setTimeout(() => navigate('/'), 1000);

@@ -3,10 +3,12 @@ import { UserData } from '../../shared/types/types.shared';
 
 export interface UserState {
   data: UserData | null;
+  isLoggedIn: boolean;
 }
 
 const initialState: UserState = {
   data: null,
+  isLoggedIn: false,
 };
 
 const userSlice = createSlice({
@@ -15,9 +17,11 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<UserData>) => {
       state.data = action.payload;
+      state.isLoggedIn = true;
     },
     clearUser: (state) => {
       state.data = null;
+      state.isLoggedIn = false;
     },
   },
 });

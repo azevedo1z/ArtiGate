@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { LoginResponse, UserData } from '../shared/types/types.shared';
-import { login } from '../store/slices/auth.slice';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../store/slices/user.slice';
 
@@ -51,7 +50,6 @@ const LoginPage: React.FC = () => {
 
       const userData: UserData = await userResponse.json();
 
-      dispatch(login({ userId: userData._id }));
       dispatch(setUser(userData));
 
       localStorage.setItem('access_token', data.access_token);

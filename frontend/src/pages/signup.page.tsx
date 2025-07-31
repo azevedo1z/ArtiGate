@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import Button from '../components/button.component';
-import Input from '../components/input.component';
-import Container from '../components/container.component';
-import Wrapper from '../components/wrapper.component';
-import Select from '../components/select.component';
+import { setUser } from '../store/slices/user.slice';
 import toast from 'react-hot-toast';
-import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
 import {
   Mail,
   Lock,
@@ -22,22 +18,26 @@ import {
   EyeOff,
   HomeIcon,
 } from 'lucide-react';
+import Button from '../components/button.component';
+import Input from '../components/input.component';
+import Container from '../components/container.component';
+import Wrapper from '../components/wrapper.component';
+import Select from '../components/select.component';
+import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
 import {
   RolesData,
   SignUpFormData,
   SignUpResponse,
   UserData,
 } from '../shared/types/types.shared';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../store/slices/user.slice';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const [formData, setFormData] = useState<SignUpFormData>({
     name: '',
     email: '',
@@ -61,8 +61,6 @@ const SignUpPage: React.FC = () => {
     cardExpiry: '',
     cardBrand: 'Visa',
   });
-
-  const dispatch = useDispatch();
 
   const handleInputChange = (
     field: keyof SignUpFormData,
@@ -97,6 +95,47 @@ const SignUpPage: React.FC = () => {
     return true;
   };
 
+  const fetchRoleIds = async (roleNames: string[]): Promise<string[]> => {
+    try {
+      const response = await fetch('http://localhost:3000/role/all');
+      if (!response.ok) {
+        toast.error('Failed to fetch roles');
+        return [];
+      }
+      const roles: RolesData[] = await response.json();
+      const roleIds = roleNames
+        .map((name) => roles.find((role) => role._name === name)?._id)
+        .filter(Boolean) as string[];
+      return roleIds;
+    } catch {
+      toast.error('Failed to load roles');
+      return [];
+    }
+  };
+
+  const handleSignUp = async (data: SignUpResponse, success: boolean) => {
+    if (success) {
+      const userResponse = await fetch('http://localhost:3000/user/me', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${data.access_token}`,
+        },
+      });
+
+      if (!userResponse.ok) throw new Error();
+
+      const userData: UserData = await userResponse.json();
+      dispatch(setUser(userData));
+
+      localStorage.setItem('access_token', data.access_token);
+      toast.success('Account created successfully! Welcome to ArtiGate.');
+      setTimeout(() => navigate('/home'), 1000);
+    } else {
+      toast.error(data.message);
+    }
+  };
+
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -105,7 +144,7 @@ const SignUpPage: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const roleIds = await getRoleIds(formData.roles);
+      const roleIds = await fetchRoleIds(formData.roles);
 
       if (roleIds.length === 0) {
         toast.error('No matching role IDs found');
@@ -147,51 +186,6 @@ const SignUpPage: React.FC = () => {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const getRoleIds = async (roleNames: string[]): Promise<string[]> => {
-    try {
-      const response = await fetch('http://localhost:3000/role/all');
-
-      if (!response.ok) {
-        toast.error('Failed to fetch roles');
-        return [];
-      }
-
-      const roles: RolesData[] = await response.json();
-
-      const roleIds = roleNames
-        .map((name) => roles.find((role) => role._name === name)?._id)
-        .filter(Boolean) as string[];
-
-      return roleIds;
-    } catch {
-      toast.error('Failed to load roles');
-      return [];
-    }
-  };
-
-  const handleSignUp = async (data: SignUpResponse, success: boolean) => {
-    if (success) {
-      const userResponse = await fetch('http://localhost:3000/user/me', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.access_token}`,
-        },
-      });
-
-      if (!userResponse.ok) throw new Error();
-
-      const userData: UserData = await userResponse.json();
-      dispatch(setUser(userData));
-
-      localStorage.setItem('access_token', data.access_token);
-      toast.success('Account created successfully! Welcome to ArtiGate.');
-      setTimeout(() => navigate('/home'), 1000);
-    } else {
-      toast.error(data.message);
     }
   };
 

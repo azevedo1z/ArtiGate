@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Container from '../components/container.component';
-import Wrapper from '../components/wrapper.component';
-import Button from '../components/button.component';
-import Card from '../components/card.component';
-import { LogOut, FileText, Eye } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { RolesData } from '../shared/types/types.shared';
+import { LogOut, FileText, Eye } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 import { clearUser } from '../store/slices/user.slice';
 import { setRoles } from '../store/slices/roles.slice';
+import { RolesData } from '../shared/types/types.shared';
+import Container from '../components/container.component';
+import Wrapper from '../components/wrapper.component';
+import Button from '../components/button.component';
+import Card from '../components/card.component';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const userData = useSelector((state: RootState) => state.user.data);
   const rolesData = useSelector((state: RootState) => state.roles.data);
   const [isLoading, setIsLoading] = useState(false);
 
   const isReviewer =
     rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
-
-  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -111,10 +109,9 @@ const HomePage: React.FC = () => {
             description="Submit new articles for conference review and publication."
             iconColor="blue"
             className="cursor-pointer hover:scale-105 transform transition-all duration-200"
-            onClick={() => {
-              // TODO: Navigate to article submission page
-              toast('Article submission coming soon!', { icon: 'ℹ️' });
-            }}
+            onClick={() =>
+              toast('Article submission coming soon!', { icon: 'ℹ️' })
+            }
           />
 
           {isReviewer && (
@@ -124,10 +121,9 @@ const HomePage: React.FC = () => {
               description="Review submitted articles and provide feedback to authors."
               iconColor="purple"
               className="cursor-pointer hover:scale-105 transform transition-all duration-200"
-              onClick={() => {
-                // TODO: Navigate to article review page
-                toast('Article review coming soon!', { icon: 'ℹ️' });
-              }}
+              onClick={() =>
+                toast('Article review coming soon!', { icon: 'ℹ️' })
+              }
             />
           )}
         </div>

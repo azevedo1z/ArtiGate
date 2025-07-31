@@ -1,22 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import toast from 'react-hot-toast';
+import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
+import { setUser } from '../store/slices/user.slice';
 import Input from '../components/input.component';
 import Button from '../components/button.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import { useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
-import toast from 'react-hot-toast';
 import { LoginResponse, UserData } from '../shared/types/types.shared';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../store/slices/user.slice';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
 
   const authLogin = async (email: string, password: string) => {
     setIsLoading(true);
@@ -49,7 +49,6 @@ const LoginPage: React.FC = () => {
       if (!userResponse.ok) throw new Error();
 
       const userData: UserData = await userResponse.json();
-
       dispatch(setUser(userData));
 
       localStorage.setItem('access_token', data.access_token);

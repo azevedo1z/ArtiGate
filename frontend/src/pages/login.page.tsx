@@ -28,7 +28,7 @@ const LoginPage: React.FC = () => {
       });
 
       const data: LoginResponse = await response.json();
-      handleLogin(data, response.ok);
+      await handleLogin(data, response.ok);
     } catch {
       toast.error('An error occurred during login. Please try again.');
     } finally {

@@ -10,13 +10,13 @@ import { RolesData } from '../shared/types/types.shared';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 import { clearUser } from '../store/slices/user.slice';
+import { setRoles } from '../store/slices/roles.slice';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
   const userData = useSelector((state: RootState) => state.user.data);
-  const [rolesData, setRolesData] = useState<RolesData[] | null>(null);
-
+  const rolesData = useSelector((state: RootState) => state.roles.data);
   const [isLoading, setIsLoading] = useState(false);
 
   const isReviewer =
@@ -35,7 +35,7 @@ const HomePage: React.FC = () => {
       }
 
       try {
-        const roleResponse = await fetch(
+        const rolesResponse = await fetch(
           `http://localhost:3000/role/${userData?._id}`,
           {
             method: 'GET',
@@ -46,10 +46,10 @@ const HomePage: React.FC = () => {
           }
         );
 
-        if (!roleResponse.ok) throw new Error();
+        if (!rolesResponse.ok) throw new Error();
 
-        const rolesData: RolesData[] = await roleResponse.json();
-        setRolesData(rolesData);
+        const rolesData: RolesData[] = await rolesResponse.json();
+        dispatch(setRoles(rolesData));
       } catch {
         toast.error(
           'An error occurred loading your data. Please refresh the page.'
@@ -60,7 +60,7 @@ const HomePage: React.FC = () => {
     };
 
     fetchData();
-  }, [navigate, userData?._id]);
+  }, [navigate, dispatch, userData?._id]);
 
   const handleLogout = () => {
     dispatch(clearUser());

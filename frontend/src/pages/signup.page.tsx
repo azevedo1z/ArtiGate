@@ -98,14 +98,17 @@ const SignUpPage: React.FC = () => {
   const fetchRoleIds = async (roleNames: string[]): Promise<string[]> => {
     try {
       const response = await fetch('http://localhost:3000/role/all');
+
       if (!response.ok) {
         toast.error('Failed to fetch roles');
         return [];
       }
+
       const roles: RolesData[] = await response.json();
       const roleIds = roleNames
         .map((name) => roles.find((role) => role._name === name)?._id)
         .filter(Boolean) as string[];
+
       return roleIds;
     } catch {
       toast.error('Failed to load roles');
@@ -181,7 +184,7 @@ const SignUpPage: React.FC = () => {
       });
 
       const data: SignUpResponse = await response.json();
-      handleSignUp(data, response.ok);
+      await handleSignUp(data, response.ok);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {

@@ -81,6 +81,59 @@ const SignUpPage: React.FC = () => {
     handleInputChange('roles', updatedRoles);
   };
 
+  const handleRegistration = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!isFormValid()) return;
+
+    setIsLoading(true);
+
+    try {
+      const roleIds = await fetchRoleIds(formData.roles);
+
+      if (roleIds.length === 0) {
+        toast.error('No matching role IDs found');
+        return;
+      }
+
+      const response = await fetch('http://localhost:3000/user/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          roleIds: roleIds,
+          homeAddress: {
+            zipCode: formData.homeZipCode,
+            street: formData.homeStreet,
+            complement: formData.homeComplement,
+            neighborhood: formData.homeNeighborhood,
+            city: formData.homeCity,
+            state: formData.homeState,
+          },
+          jobAddress: {
+            zipCode: formData.jobZipCode,
+            street: formData.jobStreet,
+            complement: formData.jobComplement,
+            neighborhood: formData.jobNeighborhood,
+            city: formData.jobCity,
+            state: formData.jobState,
+          },
+          badgeUrl: '',
+        }),
+      });
+
+      const data: SignUpResponse = await response.json();
+      await handleSignUp(data, response.ok);
+    } catch {
+      toast.error('An error occurred during signup. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const isFormValid = (): boolean => {
     if (formData.password !== formData.passwordConfirmation) {
       toast.error('Passwords do not match');
@@ -136,59 +189,6 @@ const SignUpPage: React.FC = () => {
       setTimeout(() => navigate('/home'), 1000);
     } else {
       toast.error(data.message);
-    }
-  };
-
-  const handleRegistration = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!isFormValid()) return;
-
-    setIsLoading(true);
-
-    try {
-      const roleIds = await fetchRoleIds(formData.roles);
-
-      if (roleIds.length === 0) {
-        toast.error('No matching role IDs found');
-        return;
-      }
-
-      const response = await fetch('http://localhost:3000/user/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          password: formData.password,
-          roleIds: roleIds,
-          homeAddress: {
-            zipCode: formData.homeZipCode,
-            street: formData.homeStreet,
-            complement: formData.homeComplement,
-            neighborhood: formData.homeNeighborhood,
-            city: formData.homeCity,
-            state: formData.homeState,
-          },
-          jobAddress: {
-            zipCode: formData.jobZipCode,
-            street: formData.jobStreet,
-            complement: formData.jobComplement,
-            neighborhood: formData.jobNeighborhood,
-            city: formData.jobCity,
-            state: formData.jobState,
-          },
-          badgeUrl: '',
-        }),
-      });
-
-      const data: SignUpResponse = await response.json();
-      await handleSignUp(data, response.ok);
-    } catch {
-      toast.error('An error occurred during signup. Please try again.');
-    } finally {
-      setIsLoading(false);
     }
   };
 

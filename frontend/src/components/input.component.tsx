@@ -1,4 +1,5 @@
 import { InputHTMLAttributes, forwardRef, ReactNode } from 'react';
+import InputMask from 'react-input-mask';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
@@ -7,6 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
   onTrailingIconClick?: () => void;
+  mask?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -19,6 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       trailingIcon = null,
       onTrailingIconClick,
       id,
+      mask,
       ...props
     },
     ref
@@ -60,13 +63,28 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {label}
         </label>
         <div className={wrapperClassName}>
-          <input
-            ref={ref}
-            id={id}
-            className={finalClassName}
-            placeholder={placeholder}
-            {...props}
-          />
+          {mask ? (
+            <InputMask mask={mask} {...props}>
+              {(inputProps) => (
+                <input
+                  ref={ref}
+                  id={id}
+                  className={finalClassName}
+                  placeholder={placeholder}
+                  {...props}
+                  {...inputProps}
+                />
+              )}
+            </InputMask>
+          ) : (
+            <input
+              ref={ref}
+              id={id}
+              className={finalClassName}
+              placeholder={placeholder}
+              {...props}
+            />
+          )}
           {leadingIcon && (
             <div className={leadingIconClassName}>{leadingIcon}</div>
           )}

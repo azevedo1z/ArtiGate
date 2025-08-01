@@ -30,6 +30,7 @@ import {
   SignUpResponse,
   UserData,
 } from '../shared/types/types.shared';
+import { stripMask } from '../utils/helpers.util';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -102,11 +103,11 @@ const SignUpPage: React.FC = () => {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          phone: formData.phone,
+          phone: stripMask(formData.phone),
           password: formData.password,
           roleIds: roleIds,
           homeAddress: {
-            zipCode: formData.homeZipCode,
+            zipCode: stripMask(formData.homeZipCode),
             street: formData.homeStreet,
             complement: formData.homeComplement,
             neighborhood: formData.homeNeighborhood,
@@ -114,7 +115,7 @@ const SignUpPage: React.FC = () => {
             state: formData.homeState,
           },
           jobAddress: {
-            zipCode: formData.jobZipCode,
+            zipCode: stripMask(formData.jobZipCode),
             street: formData.jobStreet,
             complement: formData.jobComplement,
             neighborhood: formData.jobNeighborhood,
@@ -122,6 +123,9 @@ const SignUpPage: React.FC = () => {
             state: formData.jobState,
           },
           badgeUrl: '',
+          cardNumber: stripMask(formData.cardNumber),
+          cardExpiry: stripMask(formData.cardExpiry),
+          cardBrand: formData.cardBrand,
         }),
       });
 
@@ -254,6 +258,7 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   leadingIcon={<Phone className="h-4 w-4 text-gray-500" />}
                   required
+                  mask="+9-999-999-9999"
                 />
 
                 <div className="space-y-2">
@@ -347,6 +352,7 @@ const SignUpPage: React.FC = () => {
                   }
                   leadingIcon={<MapPin className="h-4 w-4 text-gray-500" />}
                   required
+                  mask="99999-999"
                 />
 
                 <div className="md:col-span-2">
@@ -438,6 +444,7 @@ const SignUpPage: React.FC = () => {
                   }
                   leadingIcon={<MapPin className="h-4 w-4 text-gray-500" />}
                   required
+                  mask="99999-999"
                 />
 
                 <div className="md:col-span-2">
@@ -527,6 +534,7 @@ const SignUpPage: React.FC = () => {
                   }
                   leadingIcon={<CreditCard className="h-4 w-4 text-gray-500" />}
                   required
+                  mask="9999 9999 9999 9999"
                 />
 
                 <Input
@@ -540,6 +548,7 @@ const SignUpPage: React.FC = () => {
                   }
                   leadingIcon={<Calendar className="h-4 w-4 text-gray-500" />}
                   required
+                  mask="99/99"
                 />
               </div>
 

@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
-import { clearUser } from '../store/slices/user.slice';
+import { clearUser, setUser } from '../store/slices/user.slice';
 import { setRoles } from '../store/slices/roles.slice';
 import { RolesData } from '../shared/types/types.shared';
 import Container from '../components/container.component';
@@ -33,20 +33,12 @@ const HomePage: React.FC = () => {
       }
 
       try {
-        const rolesResponse = await fetch(
-          `http://localhost:3000/role/${userData?._id}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const userData = await fetchUserData(token);
+        const rolesData: RolesData[] = await fetchRolesData(
+          token,
+          userData?._id
         );
-
-        if (!rolesResponse.ok) throw new Error();
-
-        const rolesData: RolesData[] = await rolesResponse.json();
+        dispatch(setUser(userData));
         dispatch(setRoles(rolesData));
       } catch {
         toast.error(
@@ -59,6 +51,34 @@ const HomePage: React.FC = () => {
 
     fetchData();
   }, [navigate, dispatch, userData?._id]);
+
+  const fetchUserData = async (token: string) => {
+    const userResponse = await fetch('http://localhost:3000/user/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!userResponse.ok) throw new Error();
+
+    return await userResponse.json();
+  };
+
+  const fetchRolesData = async (token: string, userId: string) => {
+    const rolesResponse = await fetch(`http://localhost:3000/role/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!rolesResponse.ok) throw new Error();
+
+    return await rolesResponse.json();
+  };
 
   const handleLogout = () => {
     dispatch(clearUser());

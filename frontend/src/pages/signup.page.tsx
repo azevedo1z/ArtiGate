@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../store/slices/user.slice';
 import toast from 'react-hot-toast';
 import {
   Mail,
@@ -24,17 +23,11 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Select from '../components/select.component';
 import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
-import {
-  RolesData,
-  SignUpFormData,
-  SignUpResponse,
-  UserData,
-} from '../shared/types/types.shared';
+import { RolesData, SignUpFormData } from '../shared/types/types.shared';
 import { stripMask } from '../utils/helpers.util';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
@@ -129,8 +122,7 @@ const SignUpPage: React.FC = () => {
         }),
       });
 
-      const data: SignUpResponse = await response.json();
-      await handleSignUp(data, response.ok);
+      await handleSignUp(response.ok);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
@@ -173,26 +165,12 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleSignUp = async (data: SignUpResponse, success: boolean) => {
+  const handleSignUp = async (success: boolean) => {
     if (success) {
-      const userResponse = await fetch('http://localhost:3000/user/me', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.access_token}`,
-        },
-      });
-
-      if (!userResponse.ok) throw new Error();
-
-      const userData: UserData = await userResponse.json();
-      dispatch(setUser(userData));
-
-      localStorage.setItem('access_token', data.access_token);
       toast.success('Account created successfully! Welcome to ArtiGate.');
       setTimeout(() => navigate('/home'), 1000);
     } else {
-      toast.error(data.message);
+      toast.error('Signup failed. Please try again.');
     }
   };
 

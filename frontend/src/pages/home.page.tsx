@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
-import { clearUser } from '../store/slices/user.slice';
+import { clearUser, setUser } from '../store/slices/user.slice';
 import { setRoles } from '../store/slices/roles.slice';
 import { RolesData } from '../shared/types/types.shared';
 import Container from '../components/container.component';
@@ -38,6 +38,7 @@ const HomePage: React.FC = () => {
           token,
           userData?._id
         );
+        dispatch(setUser(userData));
         dispatch(setRoles(rolesData));
       } catch {
         toast.error(

@@ -33,20 +33,11 @@ const HomePage: React.FC = () => {
       }
 
       try {
-        const rolesResponse = await fetch(
-          `http://localhost:3000/role/${userData?._id}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${token}`,
-            },
-          }
+        const userData = await fetchUserData(token);
+        const rolesData: RolesData[] = await fetchRolesData(
+          token,
+          userData?._id
         );
-
-        if (!rolesResponse.ok) throw new Error();
-
-        const rolesData: RolesData[] = await rolesResponse.json();
         dispatch(setRoles(rolesData));
       } catch {
         toast.error(
@@ -59,6 +50,34 @@ const HomePage: React.FC = () => {
 
     fetchData();
   }, [navigate, dispatch, userData?._id]);
+
+  const fetchUserData = async (token: string) => {
+    const userResponse = await fetch('http://localhost:3000/user/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!userResponse.ok) throw new Error();
+
+    return await userResponse.json();
+  };
+
+  const fetchRolesData = async (token: string, userId: string) => {
+    const rolesResponse = await fetch(`http://localhost:3000/role/${userId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!rolesResponse.ok) throw new Error();
+
+    return await rolesResponse.json();
+  };
 
   const handleLogout = () => {
     dispatch(clearUser());

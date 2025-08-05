@@ -129,8 +129,8 @@ const SignUpPage: React.FC = () => {
         }),
       });
 
-      const data: SignUpResponse = await response.json();
-      await handleSignUp(data, response.ok);
+      const userData: UserData = await response.json();
+      await handleSignUp(userData, response.ok);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
@@ -173,26 +173,13 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleSignUp = async (data: SignUpResponse, success: boolean) => {
+  const handleSignUp = async (data: UserData, success: boolean) => {
     if (success) {
-      const userResponse = await fetch('http://localhost:3000/user/me', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${data.access_token}`,
-        },
-      });
-
-      if (!userResponse.ok) throw new Error();
-
-      const userData: UserData = await userResponse.json();
-      dispatch(setUser(userData));
-
-      localStorage.setItem('access_token', data.access_token);
+      dispatch(setUser(data));
       toast.success('Account created successfully! Welcome to ArtiGate.');
       setTimeout(() => navigate('/home'), 1000);
     } else {
-      toast.error(data.message);
+      toast.error('Signup failed. Please try again.');
     }
   };
 

@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { LogOut, FileText, Eye } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
-import { clearUser, setUser } from '../store/slices/user.slice';
+import { clearUser } from '../store/slices/user.slice';
 import { setRoles } from '../store/slices/roles.slice';
 import { RolesData } from '../shared/types/types.shared';
 import Container from '../components/container.component';
@@ -17,54 +17,34 @@ const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const userData = useSelector((state: RootState) => state.user.data);
   const rolesData = useSelector((state: RootState) => state.roles.data);
-  const [isLoading, setIsLoading] = useState(false);
 
   const isReviewer =
     rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
+    const initializeRolesData = async () => {
       const token = localStorage.getItem('access_token');
 
-      if (!token) {
+      if (!token || !userData) {
         navigate('/');
         return;
       }
 
       try {
-        const userData = await fetchUserData(token);
         const rolesData: RolesData[] = await fetchRolesData(
           token,
-          userData?._id
+          userData._id
         );
-        dispatch(setUser(userData));
         dispatch(setRoles(rolesData));
       } catch {
         toast.error(
-          'An error occurred loading your data. Please refresh the page.'
+          'An error occurred loading your roles. Please refresh the page.'
         );
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    fetchData();
-  }, [navigate, dispatch, userData?._id]);
-
-  const fetchUserData = async (token: string) => {
-    const userResponse = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!userResponse.ok) throw new Error();
-
-    return await userResponse.json();
-  };
+    initializeRolesData();
+  }, [navigate, dispatch, userData, rolesData]);
 
   const fetchRolesData = async (token: string, userId: string) => {
     const rolesResponse = await fetch(`http://localhost:3000/role/${userId}`, {
@@ -86,18 +66,6 @@ const HomePage: React.FC = () => {
     toast.success('Logged out successfully');
     setTimeout(() => navigate('/'), 1000);
   };
-
-  if (isLoading) {
-    return (
-      <Wrapper>
-        <Container size="lg" className="py-8">
-          <div className="flex justify-center items-center h-64">
-            <div className="text-gray-600">Loading...</div>
-          </div>
-        </Container>
-      </Wrapper>
-    );
-  }
 
   return (
     <Wrapper>

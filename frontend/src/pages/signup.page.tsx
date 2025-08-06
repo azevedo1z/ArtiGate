@@ -23,11 +23,17 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Select from '../components/select.component';
 import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
-import { RolesData, SignUpFormData } from '../shared/types/types.shared';
+import {
+  RolesData,
+  SignUpFormData,
+  SignInResponse,
+} from '../shared/types/types.shared';
 import { stripMask } from '../utils/helpers.util';
+import { setUser } from '../store/slices/user.slice';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirmation, setShowPasswordConfirmation] =
     useState(false);
@@ -90,39 +96,45 @@ const SignUpPage: React.FC = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/user/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          phone: stripMask(formData.phone),
-          password: formData.password,
-          roleIds: roleIds,
-          homeAddress: {
-            zipCode: stripMask(formData.homeZipCode),
-            street: formData.homeStreet,
-            complement: formData.homeComplement,
-            neighborhood: formData.homeNeighborhood,
-            city: formData.homeCity,
-            state: formData.homeState,
-          },
-          jobAddress: {
-            zipCode: stripMask(formData.jobZipCode),
-            street: formData.jobStreet,
-            complement: formData.jobComplement,
-            neighborhood: formData.jobNeighborhood,
-            city: formData.jobCity,
-            state: formData.jobState,
-          },
-          badgeUrl: '',
-          cardNumber: stripMask(formData.cardNumber),
-          cardExpiry: stripMask(formData.cardExpiry),
-          cardBrand: formData.cardBrand,
-        }),
-      });
+      const createUserResponse = await fetch(
+        'http://localhost:3000/user/create',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: formData.name,
+            email: formData.email,
+            phone: stripMask(formData.phone),
+            password: formData.password,
+            roleIds: roleIds,
+            homeAddress: {
+              zipCode: stripMask(formData.homeZipCode),
+              street: formData.homeStreet,
+              complement: formData.homeComplement,
+              neighborhood: formData.homeNeighborhood,
+              city: formData.homeCity,
+              state: formData.homeState,
+            },
+            jobAddress: {
+              zipCode: stripMask(formData.jobZipCode),
+              street: formData.jobStreet,
+              complement: formData.jobComplement,
+              neighborhood: formData.jobNeighborhood,
+              city: formData.jobCity,
+              state: formData.jobState,
+            },
+            badgeUrl: '',
+            cardNumber: stripMask(formData.cardNumber),
+            cardExpiry: stripMask(formData.cardExpiry),
+            cardBrand: formData.cardBrand,
+          }),
+        }
+      );
 
-      await handleSignUp(response.ok);
+      if (!createUserResponse.ok) throw new Error();
+
+      const authData = await authSignUp(formData.email, formData.password);
+      await handleSignUp(authData.data, authData.success);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
@@ -146,16 +158,16 @@ const SignUpPage: React.FC = () => {
 
   const fetchRoleIds = async (roleNames: string[]): Promise<string[]> => {
     try {
-      const response = await fetch('http://localhost:3000/role/all');
+      const rolesResponse = await fetch('http://localhost:3000/role/all');
 
-      if (!response.ok) {
+      if (!rolesResponse.ok) {
         toast.error('Failed to fetch roles');
         return [];
       }
 
-      const roles: RolesData[] = await response.json();
+      const rolesData: RolesData[] = await rolesResponse.json();
       const roleIds = roleNames
-        .map((name) => roles.find((role) => role._name === name)?._id)
+        .map((name) => rolesData.find((role) => role._name === name)?._id)
         .filter(Boolean) as string[];
 
       return roleIds;
@@ -165,13 +177,43 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const handleSignUp = async (success: boolean) => {
+  const authSignUp = async (email: string, password: string) => {
+    const signInResponse = await fetch('http://localhost:3000/user/signIn', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const signInData: SignInResponse = await signInResponse.json();
+    return { data: signInData, success: signInResponse.ok };
+  };
+
+  const handleSignUp = async (signInData: SignInResponse, success: boolean) => {
     if (success) {
+      const userData = await fetchUserData(signInData.access_token);
+      dispatch(setUser(userData));
+
+      localStorage.setItem('access_token', signInData.access_token);
       toast.success('Account created successfully! Welcome to ArtiGate.');
       setTimeout(() => navigate('/home'), 1000);
     } else {
-      toast.error('Signup failed. Please try again.');
+      throw new Error();
     }
+  };
+
+  const fetchUserData = async (token: string) => {
+    const userResponse = await fetch('http://localhost:3000/user/me', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!userResponse.ok) throw new Error();
+
+    const userData = await userResponse.json();
+    return userData;
   };
 
   return (

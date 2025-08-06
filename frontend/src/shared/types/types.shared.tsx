@@ -1,11 +1,4 @@
-export interface SignUpResponse {
-  access_token: string;
-  statusCode: number;
-  message: string;
-  error: string;
-}
-
-export interface LoginResponse {
+export interface SignInResponse {
   access_token: string;
   statusCode: number;
   message: string;

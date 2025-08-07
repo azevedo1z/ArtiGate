@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import {
   Mail,
   Lock,
@@ -84,7 +84,10 @@ const SignUpPage: React.FC = () => {
   const handleRegistration = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!isFormValid()) return;
+    if (!isPasswordMatching()) {
+      toast.error('Passwords do not match');
+      return;
+    }
 
     setIsLoading(true);
 
@@ -142,28 +145,15 @@ const SignUpPage: React.FC = () => {
     }
   };
 
-  const isFormValid = (): boolean => {
-    if (formData.password !== formData.passwordConfirmation) {
-      toast.error('Passwords do not match');
-      return false;
-    }
-
-    if (formData.roles.length === 0) {
-      toast.error('Please select at least one role');
-      return false;
-    }
-
-    return true;
+  const isPasswordMatching = (): boolean => {
+    return formData.password !== formData.passwordConfirmation ? false : true;
   };
 
   const fetchRoleIds = async (roleNames: string[]): Promise<string[]> => {
     try {
       const rolesResponse = await fetch('http://localhost:3000/role/all');
 
-      if (!rolesResponse.ok) {
-        toast.error('Failed to fetch roles');
-        return [];
-      }
+      if (!rolesResponse.ok) throw new Error();
 
       const rolesData: RolesData[] = await rolesResponse.json();
       const roleIds = roleNames

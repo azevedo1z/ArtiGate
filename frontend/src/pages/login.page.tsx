@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import { setUser } from '../store/slices/user.slice';
 import Input from '../components/input.component';

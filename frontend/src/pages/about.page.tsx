@@ -43,8 +43,8 @@ const AboutPage: React.FC = () => {
           <p className="text-gray-700 leading-relaxed mb-6">
             ArtiGate is a sophisticated software solution that controls the
             execution of academic conferences, managing both participant
-            registration and article selection processes. Our platform ensures
-            a seamless experience from initial registration to final article
+            registration and article selection processes. Our platform ensures a
+            seamless experience from initial registration to final article
             approval.
           </p>
         </div>
@@ -196,7 +196,10 @@ const AboutPage: React.FC = () => {
           <div className="space-y-4 text-gray-700">
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="memo">📝</span> Submission Requirements
+                <span role="img" aria-label="memo">
+                  📝
+                </span>{' '}
+                Submission Requirements
               </h3>
               <p className="text-sm">
                 Only registered participants can submit articles. Each
@@ -207,7 +210,10 @@ const AboutPage: React.FC = () => {
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="reviewers">👥</span> Reviewer Selection
+                <span role="img" aria-label="reviewers">
+                  👥
+                </span>{' '}
+                Reviewer Selection
               </h3>
               <p className="text-sm">
                 Volunteer reviewers are randomly assigned 5 articles each.
@@ -218,7 +224,10 @@ const AboutPage: React.FC = () => {
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="clock">⏰</span> Review Timeline
+                <span role="img" aria-label="clock">
+                  ⏰
+                </span>{' '}
+                Review Timeline
               </h3>
               <p className="text-sm">
                 5-day review period with automatic reassignment if no response.
@@ -229,7 +238,10 @@ const AboutPage: React.FC = () => {
 
             <div className="bg-white p-4 rounded-lg shadow-sm">
               <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="trophy">🏆</span> Final Selection
+                <span role="img" aria-label="trophy">
+                  🏆
+                </span>{' '}
+                Final Selection
               </h3>
               <p className="text-sm">
                 Top 20 articles selected based on average scores in descending

@@ -57,11 +57,6 @@ const Navbar: React.FC = () => {
             </Link>
           </>
         )}
-
-        {/* TODO: Mobile responsivity */}
-        {/* <button aria-label="Open menu">
-          <Menu className="h-6 w-6" />
-        </button> */}
       </Container>
     </nav>
   );

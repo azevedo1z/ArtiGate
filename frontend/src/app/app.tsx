@@ -5,6 +5,7 @@ import LandingPage from '../pages/landing.page';
 import LoginPage from '../pages/login.page';
 import SignUpPage from '../pages/signup.page';
 import HomePage from '../pages/home.page';
+import AboutPage from '../pages/about.page';
 
 export function App() {
   return (
@@ -15,6 +16,7 @@ export function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
       </Layout>
     </Toaster>

@@ -60,6 +60,7 @@ const Navbar: React.FC = () => {
 
             <Button
               variantClassName="secondary"
+              sizeClassName='sm'
               onClick={handleLogout}
               leadingIcon={<LogOut className="h-5 w-5" />}
             >

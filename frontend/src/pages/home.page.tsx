@@ -1,16 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { LogOut, FileText, Eye } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
-import { clearUser } from '../store/slices/user.slice';
 import { setRoles } from '../store/slices/roles.slice';
 import { RolesData } from '../shared/types/types.shared';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import Button from '../components/button.component';
 import Card from '../components/card.component';
+import { Eye, FileText } from 'lucide-react';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -60,13 +58,6 @@ const HomePage: React.FC = () => {
     return await rolesResponse.json();
   };
 
-  const handleLogout = () => {
-    dispatch(clearUser());
-    localStorage.removeItem('access_token');
-    toast.success('Logged out successfully');
-    setTimeout(() => navigate('/'), 1000);
-  };
-
   return (
     <Wrapper>
       <Container size="lg" className="space-y-8 py-8">
@@ -81,13 +72,6 @@ const HomePage: React.FC = () => {
                 : 'Oops, something went wrong... :('}
             </p>
           </div>
-          <Button
-            variantClassName="secondary"
-            onClick={handleLogout}
-            leadingIcon={<LogOut className="h-4 w-4" />}
-          >
-            Logout
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">

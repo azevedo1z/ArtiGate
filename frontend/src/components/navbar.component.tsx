@@ -1,13 +1,18 @@
 import React from 'react';
 import Container from './container.component';
-import { Link } from 'react-router-dom';
-import { Settings } from 'lucide-react';
-import { useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { LogOut } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
+import { clearUser } from '../store/slices/user.slice';
+import Button from './button.component';
+import toast from 'react-hot-toast';
 
 const Navbar: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
   const userId = useSelector((state: RootState) => state.user.data?._id);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', path: '/home' },
@@ -24,8 +29,13 @@ const Navbar: React.FC = () => {
   const navLinksClassName = 'flex gap-6 items-center';
   const navLinksContentClassName =
     'text-sm font-medium hover:text-blue-400 transition duration-200';
-  const settingsButtonClassName =
-    'ml-4 p-2 rounded-lg hover:bg-gray-800 transition duration-200';
+
+  const handleLogout = () => {
+    dispatch(clearUser());
+    localStorage.removeItem('access_token');
+    toast.success('Logged out successfully');
+    setTimeout(() => navigate('/'), 1000);
+  };
 
   return (
     <nav className={baseClassName}>
@@ -48,13 +58,13 @@ const Navbar: React.FC = () => {
               ))}
             </div>
 
-            <Link
-              to="/settings"
-              className={settingsButtonClassName}
-              aria-label="Settings"
+            <Button
+              variantClassName="secondary"
+              onClick={handleLogout}
+              leadingIcon={<LogOut className="h-5 w-5" />}
             >
-              <Settings className="h-5 w-5" />
-            </Link>
+              Logout
+            </Button>
           </>
         )}
       </Container>

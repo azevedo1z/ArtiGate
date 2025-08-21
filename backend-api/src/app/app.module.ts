@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import SecurityConfig from './shared/config/security.config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaService } from './infrastructure/services/prisma.service';
 import {
   AddressDatabaseAdapter,
@@ -51,9 +55,22 @@ import { CreateArticleAuthorService } from './application/services/articleAuthor
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    ThrottlerModule.forRoot([
+      {
+        ttl: SecurityConfig.rateLimit.windowMs,
+        limit: SecurityConfig.rateLimit.max,
+      },
+    ]),
     JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+      secret: SecurityConfig.jwt.secret,
+      signOptions: {
+        expiresIn: SecurityConfig.jwt.expiresIn,
+        algorithm: SecurityConfig.jwt.algorithm,
+      },
     }),
   ],
   controllers: [
@@ -64,6 +81,10 @@ import { CreateArticleAuthorService } from './application/services/articleAuthor
     ReviewController,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
     PrismaService,
     AuthService,
     AuthGuardService,

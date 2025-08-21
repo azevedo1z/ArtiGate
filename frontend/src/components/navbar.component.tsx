@@ -10,13 +10,14 @@ import toast from 'react-hot-toast';
 
 const Navbar: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
-  const userId = useSelector((state: RootState) => state.user.data?._id);
+  // const userId = useSelector((state: RootState) => state.user.data?._id);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', path: '/home' },
-    { name: 'My Articles', path: `/articles/${userId}` },
+    // { name: 'My Articles', path: `/articles/${userId}` },
+    { name: 'My Articles', path: `#` },
     { name: 'About', path: '/about' },
   ];
 

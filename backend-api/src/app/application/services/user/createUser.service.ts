@@ -6,6 +6,7 @@ import * as bcrypt from 'bcrypt';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { GetRoleService } from '../role/getRole.service';
 import { GetUserService } from './getUser.service';
+import SecurityConfig from '../../../shared/config/security.config';
 
 @Injectable()
 export class CreateUserService {
@@ -17,7 +18,7 @@ export class CreateUserService {
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
-    data.password = await bcrypt.hash(data.password, 10);
+    data.password = await bcrypt.hash(data.password, SecurityConfig.password.saltRounds);
 
     const existingUser = await this.getUserService.getByEmail(data.email);
 

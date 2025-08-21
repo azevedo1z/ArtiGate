@@ -9,7 +9,11 @@ import {
   Put,
   Delete,
   Request,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
+import SecurityConfig from '../../shared/config/security.config';
 import { CreateUserService } from '../../application/services/user/createUser.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { GetUserService } from '../../application/services/user/getUser.service';
@@ -33,6 +37,13 @@ export class UserController {
   ) {}
 
   @Post('signIn')
+  @Throttle({ 
+    default: { 
+      limit: SecurityConfig.rateLimit.login.max, 
+      ttl: SecurityConfig.rateLimit.login.windowMs 
+    } 
+  })
+  @HttpCode(HttpStatus.OK)
   async signIn(@Body() data: AuthUserDTO) {
     try {
       return await this.authService.signIn(data);
@@ -42,6 +53,12 @@ export class UserController {
   }
 
   @Post('create')
+  @Throttle({ 
+    default: { 
+      limit: SecurityConfig.rateLimit.register.max, 
+      ttl: SecurityConfig.rateLimit.register.windowMs 
+    } 
+  })
   async create(@Body() data: CreateUserDTO) {
     try {
       return await this.createUserService.execute(data);

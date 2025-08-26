@@ -2,13 +2,16 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
+import { apiClient, TokenManager, APIError } from '../services/api.service';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
 import { setUser } from '../store/slices/user.slice';
 import Input from '../components/input.component';
 import Button from '../components/button.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import { SignInResponse } from '../shared/types/types.shared';
+import { SignInResponse, UserData } from '../shared/types/types.shared';
+import { validateField } from '../utils/validation.util';
+import { rateLimiter } from '../utils/rateLimiter.util';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -50,10 +53,9 @@ const LoginPage: React.FC = () => {
     setErrors({});
 
     try {
-      const signInResponse = await fetch('http://localhost:3000/user/signIn', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+      const signInData: SignInResponse = await apiClient.post('/user/signIn', {
+        email: email.trim().toLowerCase(),
+        password,
       });
 
       await handleLogin(signInData);
@@ -79,27 +81,13 @@ const LoginPage: React.FC = () => {
       const userData = await apiClient.get<UserData>('/user/me');
       dispatch(setUser(userData));
 
-      localStorage.setItem('access_token', signInData.access_token);
+      TokenManager.setToken(signInData.access_token);
       toast.success('Login successful! Welcome back.');
       setTimeout(() => navigate('/home'), 1000);
-    } else {
-      throw new Error();
+    } catch (error) {
+      setErrors({ general: 'Failed to fetch user data. Please try again.' });
+      throw error;
     }
-  };
-
-  const fetchUserData = async (token: string) => {
-    const userResponse = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!userResponse.ok) throw new Error();
-
-    const userData = await userResponse.json();
-    return userData;
   };
 
   return (
@@ -116,6 +104,12 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+          {errors.general && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm">{errors.general}</p>
+            </div>
+          )}
+
           <form
             className="space-y-6"
             onSubmit={(e) => {
@@ -129,9 +123,15 @@ const LoginPage: React.FC = () => {
               label="Email address"
               placeholder="Enter your email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (errors.email) {
+                  setErrors((prev) => ({ ...prev, email: '' }));
+                }
+              }}
               leadingIcon={<Mail className="h-4 w-4 text-gray-500" />}
               required
+              error={errors.email}
             />
 
             <Input
@@ -140,7 +140,12 @@ const LoginPage: React.FC = () => {
               label="Password"
               placeholder="Enter your password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (errors.password) {
+                  setErrors((prev) => ({ ...prev, password: '' }));
+                }
+              }}
               leadingIcon={<Lock className="h-4 w-4 text-gray-500" />}
               trailingIcon={
                 showPassword ? (
@@ -151,6 +156,7 @@ const LoginPage: React.FC = () => {
               }
               onTrailingIconClick={() => setShowPassword(!showPassword)}
               required
+              error={errors.password}
             />
 
             <div className="space-y-4">

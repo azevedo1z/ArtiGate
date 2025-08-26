@@ -24,7 +24,7 @@ const LoginPage: React.FC = () => {
       const signInResponse = await fetch('http://localhost:3000/user/signIn', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
       });
 
       const signInData: SignInResponse = await signInResponse.json();

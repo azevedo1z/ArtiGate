@@ -34,7 +34,21 @@ const LoginPage: React.FC = () => {
   };
 
   const authLogin = async (email: string, password: string) => {
+    if (!validateForm()) return;
+
+    if (!rateLimiter.isAllowed('login', 5, 300000)) {
+      const remainingTime = Math.ceil(
+        rateLimiter.getRemainingTime('login') / 60000
+      );
+      toast.error(
+        `Too many login attempts. Please try again in ${remainingTime} minutes.`
+      );
+      return;
+    }
+
     setIsLoading(true);
+    setErrors({});
+
     try {
       const signInResponse = await fetch('http://localhost:3000/user/signIn', {
         method: 'POST',
@@ -42,18 +56,27 @@ const LoginPage: React.FC = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const signInData: SignInResponse = await signInResponse.json();
-      await handleLogin(signInData, signInResponse.ok);
-    } catch {
-      toast.error('An error occurred during login. Please try again.');
+      await handleLogin(signInData);
+    } catch (error) {
+      if (error instanceof APIError) {
+        if (error.status === 401) {
+          setErrors({ general: 'Invalid email or password' });
+        } else {
+          setErrors({
+            general: 'An error occurred during login. Please try again.',
+          });
+        }
+      } else {
+        setErrors({ general: 'Network error. Please check your connection.' });
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleLogin = async (signInData: SignInResponse, success: boolean) => {
-    if (success) {
-      const userData = await fetchUserData(signInData.access_token);
+  const handleLogin = async (signInData: SignInResponse) => {
+    try {
+      const userData = await apiClient.get<UserData>('/user/me');
       dispatch(setUser(userData));
 
       localStorage.setItem('access_token', signInData.access_token);

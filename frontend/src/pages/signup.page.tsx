@@ -28,7 +28,7 @@ import {
   SignUpFormData,
   SignInResponse,
 } from '../shared/types/types.shared';
-import { stripMask } from '../utils/helpers.util';
+import { prepareUserData } from '../utils/helpers.util';
 import { setUser } from '../store/slices/user.slice';
 
 const SignUpPage: React.FC = () => {
@@ -104,33 +104,7 @@ const SignUpPage: React.FC = () => {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: formData.name,
-            email: formData.email,
-            phone: stripMask(formData.phone),
-            password: formData.password,
-            roleIds: roleIds,
-            homeAddress: {
-              zipCode: stripMask(formData.homeZipCode),
-              street: formData.homeStreet,
-              complement: formData.homeComplement,
-              neighborhood: formData.homeNeighborhood,
-              city: formData.homeCity,
-              state: formData.homeState,
-            },
-            jobAddress: {
-              zipCode: stripMask(formData.jobZipCode),
-              street: formData.jobStreet,
-              complement: formData.jobComplement,
-              neighborhood: formData.jobNeighborhood,
-              city: formData.jobCity,
-              state: formData.jobState,
-            },
-            badgeUrl: '',
-            cardNumber: stripMask(formData.cardNumber),
-            cardExpiry: stripMask(formData.cardExpiry),
-            cardBrand: formData.cardBrand,
-          }),
+          body: JSON.stringify(prepareUserData(formData, roleIds)),
         }
       );
 

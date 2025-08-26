@@ -14,14 +14,14 @@ export class AuthService {
   async signIn(data: AuthUserDTO): Promise<{ access_token: string }> {
     const existingUser = await this.getUserService.getByEmail(data.email);
 
-    if (existingUser == null) throw new BadRequestException('User not found.');
+    if (existingUser == null) throw new BadRequestException('Invalid credentials.');
 
     const isPasswordValid = await bcrypt.compare(
       data.password,
       existingUser.passwordHash
     );
 
-    if (!isPasswordValid) throw new BadRequestException('Invalid password.');
+    if (!isPasswordValid) throw new BadRequestException('Invalid credentials.');
 
     const payload = { sub: existingUser.id };
 

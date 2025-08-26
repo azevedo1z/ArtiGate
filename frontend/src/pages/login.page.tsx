@@ -17,6 +17,21 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    const emailValidation = validateField(email, 'email');
+
+    if (!emailValidation.isValid && emailValidation.message)
+      newErrors.email = emailValidation.message;
+
+    if (!password.trim()) newErrors.password = 'Password is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const authLogin = async (email: string, password: string) => {
     setIsLoading(true);

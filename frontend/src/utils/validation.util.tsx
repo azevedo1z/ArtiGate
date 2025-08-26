@@ -46,19 +46,17 @@ export const validateField = (
   if ('pattern' in rule && !rule.pattern.test(sanitizedInput))
     return { isValid: false, message: rule.message };
 
-  if ('minLength' in rule && sanitizedInput.length < rule.minLength) {
+  if ('minLength' in rule && sanitizedInput.length < rule.minLength)
     return {
       isValid: false,
       message: `${fieldName} must be at least ${rule.minLength} characters`,
     };
-  }
 
-  if ('maxLength' in rule && sanitizedInput.length > rule.maxLength) {
+  if ('maxLength' in rule && sanitizedInput.length > rule.maxLength)
     return {
       isValid: false,
       message: `${fieldName} must be no more than ${rule.maxLength} characters`,
     };
-  }
 
   return { isValid: true };
 };

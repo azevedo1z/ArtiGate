@@ -73,7 +73,7 @@
     "@nestjs/swagger": "^11.0.4",
     "@prisma/client": "^6.4.1",
     "@tailwindcss/postcss": "^4.1.8",
-    "axios": "^1.6.0",
+    "axios": "^1.12.2",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "lucide-react": "^0.525.0",

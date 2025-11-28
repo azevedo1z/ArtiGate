@@ -17,14 +17,14 @@ const Layout: React.FC<LayoutProps> = ({
   const baseClassName = 'min-h-screen grid grid-rows-[auto_1fr_auto]';
 
   const mainClassName =
-    'row-start-2 bg-gradient-to-br from-gray-50 via-white to-blue-50';
+    'row-start-2 bg-gray-50';
 
   const footerClassName =
-    'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white border-t border-gray-700';
+    'bg-gray-900 text-white border-t border-gray-700';
   const footerContentClassName = 'text-center text-sm text-gray-300';
 
   const linkClassName =
-    'inline-flex items-center gap-1 text-blue-400 hover:text-blue-300 transition duration-200 font-medium';
+    'inline-flex items-center gap-1 text-blue-500 hover:text-blue-400 transition duration-200 font-medium';
   const currentYear = new Date().getFullYear();
 
   return (

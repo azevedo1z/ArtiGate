@@ -23,7 +23,7 @@ const AboutPage: React.FC = () => {
     <Wrapper>
       <Container size="lg" className="space-y-8 py-8">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
+          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
             <Info className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -189,7 +189,7 @@ const AboutPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-8 rounded-2xl border border-blue-100">
+        <div className="bg-blue-50 p-8 rounded-2xl border border-blue-200">
           <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
             Review Process Details
           </h2>

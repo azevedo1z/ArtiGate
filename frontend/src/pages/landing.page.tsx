@@ -18,7 +18,7 @@ const LandingPage: React.FC = () => {
     <Wrapper>
       <Container size="lg" className="text-center space-y-8">
         <div
-          className="mx-auto h-20 w-20 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex
+          className="mx-auto h-20 w-20 bg-blue-600 rounded-full flex
         items-center justify-center mb-8 shadow-lg"
         >
           <BookOpen className="h-10 w-10 text-white" />
@@ -27,7 +27,7 @@ const LandingPage: React.FC = () => {
         <header className="space-y-4">
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
             Welcome to{' '}
-            <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-blue-600">
               ArtiGate
             </span>
           </h1>
@@ -40,7 +40,7 @@ const LandingPage: React.FC = () => {
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
           <Button
             onClick={() => navigate('/signup')}
-            variantClassName="gradient"
+            variantClassName="primary"
             sizeClassName="lg"
             leadingIcon={<UserPlus className="h-5 w-5" />}
             trailingIcon={<ArrowRight className="h-5 w-5" />}

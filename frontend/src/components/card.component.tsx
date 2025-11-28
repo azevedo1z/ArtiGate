@@ -10,12 +10,12 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 const iconColorClasses: Record<IconColor, string> = {
-  blue: 'bg-gradient-to-r from-blue-500 to-blue-600',
-  purple: 'bg-gradient-to-r from-purple-500 to-purple-600',
-  indigo: 'bg-gradient-to-r from-indigo-500 to-indigo-600',
-  green: 'bg-gradient-to-r from-green-500 to-green-600',
-  red: 'bg-gradient-to-r from-red-500 to-red-600',
-  yellow: 'bg-gradient-to-r from-yellow-500 to-yellow-600',
+  blue: 'bg-blue-600 shadow-md',
+  purple: 'bg-purple-600 shadow-md',
+  indigo: 'bg-indigo-600 shadow-md',
+  green: 'bg-green-600 shadow-md',
+  red: 'bg-red-600 shadow-md',
+  yellow: 'bg-yellow-500 shadow-md',
 };
 
 const Card: React.FC<CardProps> = ({

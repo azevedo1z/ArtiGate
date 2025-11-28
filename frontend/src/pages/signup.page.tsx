@@ -188,7 +188,7 @@ const SignUpPage: React.FC = () => {
         className="max-w-4xl space-y-8 px-4 py-8"
       >
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
+          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
             <UserPlus className="h-8 w-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -548,7 +548,7 @@ const SignUpPage: React.FC = () => {
             <div className="space-y-4 pt-6">
               <Button
                 type="submit"
-                variantClassName="gradient"
+                variantClassName="primary"
                 fullWidth
                 isLoading={isLoading}
                 loadingText="Creating account..."

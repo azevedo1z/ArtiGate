@@ -22,14 +22,14 @@ const Navbar: React.FC = () => {
   ];
 
   const baseClassName =
-    'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white shadow-lg border-b border-gray-700';
+    'bg-gray-900 text-white shadow-lg border-b border-gray-700';
   const containerClassName = 'py-2 flex items-center justify-between';
   const logoClassName =
-    'text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent';
+    'text-2xl font-bold text-blue-500';
 
   const navLinksClassName = 'flex gap-6 items-center';
   const navLinksContentClassName =
-    'text-sm font-medium hover:text-blue-400 transition duration-200';
+    'text-sm font-medium hover:text-blue-500 transition duration-200';
 
   const handleLogout = () => {
     dispatch(clearUser());

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-type Variant = 'primary' | 'secondary' | 'danger' | 'gradient';
+type Variant = 'primary' | 'secondary' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -15,11 +15,9 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+  primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-md hover:shadow-lg',
   secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500',
   danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-  gradient:
-    'bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 focus:ring-blue-500',
 };
 
 const sizeClasses: Record<Size, string> = {

@@ -9,9 +9,8 @@ export class GetReviewService {
   async getById(id: string) {
     const existingReview = await this.adapter.findById(id);
 
-    if (existingReview == null) {
+    if (existingReview == null)
       throw new BadRequestException(`There is no review with the ID "${id}".`);
-    }
 
     return existingReview;
   }

@@ -68,7 +68,7 @@ const LoginPage: React.FC = () => {
     <Wrapper>
       <Container size="sm" noDefaultPadding className="max-w-md space-y-8 px-4">
         <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
+          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
             <LogIn className="h-8 w-8 text-white" />
           </div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -118,7 +118,7 @@ const LoginPage: React.FC = () => {
             <div className="space-y-4">
               <Button
                 type="submit"
-                variantClassName="gradient"
+                variantClassName="primary"
                 fullWidth
                 isLoading={isLoading}
                 loadingText="Signing in..."

@@ -7,9 +7,8 @@ import {
   Eye,
   Award,
   CheckCircle,
-  Mail,
   Clock,
-  Star,
+  Mail,
 } from 'lucide-react';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
@@ -36,20 +35,7 @@ const AboutPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-2">
-            System Overview
-          </h2>
-          <p className="text-gray-700 leading-relaxed mb-6">
-            ArtiGate is a sophisticated software solution that controls the
-            execution of academic conferences, managing both participant
-            registration and article selection processes. Our platform ensures a
-            seamless experience from initial registration to final article
-            approval.
-          </p>
-        </div>
-
-        <div className="space-y-8">
+        <div className="space-y-6">
           <h2 className="text-2xl font-bold text-gray-900 text-center">
             How It Works
           </h2>
@@ -99,13 +85,12 @@ const AboutPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b border-gray-200 pb-2">
-            <Star className="inline h-6 w-6 mr-2 text-yellow-500" />
+        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
             Key Features
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
                 <div>
@@ -146,7 +131,7 @@ const AboutPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               <div className="flex items-start space-x-3">
                 <Mail className="h-5 w-5 text-blue-500 mt-1 flex-shrink-0" />
                 <div>
@@ -189,64 +174,44 @@ const AboutPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="bg-blue-50 p-8 rounded-2xl border border-blue-200">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4 text-center">
-            Review Process Details
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
+          <h2 className="text-xl font-bold text-gray-900 mb-3">
+            Review Process
           </h2>
-          <div className="space-y-4 text-gray-700">
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="memo">
-                  📝
-                </span>{' '}
-                Submission Requirements
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-gray-700">
+            <div className="bg-white p-3 rounded-lg">
+              <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <span role="img" aria-label="memo">📝</span> Submission
               </h3>
-              <p className="text-sm">
-                Only registered participants can submit articles. Each
-                submission requires author details, registration numbers, email
-                verification, abstract, and PDF upload.
+              <p className="text-xs">
+                Registered participants submit articles with author details, abstracts, and PDFs.
               </p>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="reviewers">
-                  👥
-                </span>{' '}
-                Reviewer Selection
+            <div className="bg-white p-3 rounded-lg">
+              <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <span role="img" aria-label="reviewers">👥</span> Reviewers
               </h3>
-              <p className="text-sm">
-                Volunteer reviewers are randomly assigned 5 articles each.
-                Reviewers must be registered participants who opted to volunteer
-                during registration.
+              <p className="text-xs">
+                5 volunteer reviewers randomly assigned per article.
               </p>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="clock">
-                  ⏰
-                </span>{' '}
-                Review Timeline
+            <div className="bg-white p-3 rounded-lg">
+              <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <span role="img" aria-label="clock">⏰</span> Timeline
               </h3>
-              <p className="text-sm">
-                5-day review period with automatic reassignment if no response.
-                Minimum 3 reviews required for consideration, target of 5
-                reviews per article.
+              <p className="text-xs">
+                5-day review period with minimum 3 reviews required.
               </p>
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                <span role="img" aria-label="trophy">
-                  🏆
-                </span>{' '}
-                Final Selection
+            <div className="bg-white p-3 rounded-lg">
+              <h3 className="font-semibold text-gray-900 text-sm mb-1">
+                <span role="img" aria-label="trophy">🏆</span> Selection
               </h3>
-              <p className="text-sm">
-                Top 20 articles selected based on average scores in descending
-                order. Articles with fewer than 3 reviews are automatically
-                excluded from final consideration.
+              <p className="text-xs">
+                Top 20 articles selected by average scores.
               </p>
             </div>
           </div>

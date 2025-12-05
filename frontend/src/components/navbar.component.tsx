@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
     'bg-gray-950 text-white shadow-2xl border-b-2 border-blue-500/20 backdrop-blur-sm';
   const containerClassName = 'py-4 flex items-center justify-between';
   const logoClassName =
-    'text-3xl font-bold text-blue-400 hover:text-blue-300 transition-colors duration-300 tracking-tight';
+    'text-3xl font-bold text-blue-500 hover:text-blue-400 transition-colors duration-300 tracking-tight';
 
   const navLinksClassName = 'flex gap-8 items-center';
   const navLinksContentClassName =

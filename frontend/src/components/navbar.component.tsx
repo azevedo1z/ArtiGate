@@ -5,7 +5,6 @@ import { LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 import { clearUser } from '../store/slices/user.slice';
-import Button from './button.component';
 import toast from 'react-hot-toast';
 
 const Navbar: React.FC = () => {
@@ -16,7 +15,7 @@ const Navbar: React.FC = () => {
 
   const navLinks = [
     { name: 'Home', path: '/home' },
- // { name: 'My Articles', path: `/articles/${userId}` },
+    // { name: 'My Articles', path: `/articles/${userId}` },
     { name: 'My Articles', path: `#` },
     { name: 'About', path: '/about' },
   ];
@@ -29,7 +28,10 @@ const Navbar: React.FC = () => {
 
   const navLinksClassName = 'flex gap-8 items-center';
   const navLinksContentClassName =
-    'text-sm font-semibold text-gray-300 hover:text-blue-400 transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full';
+    'text font-semibold text-gray-300 hover:text-blue-400 transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full';
+
+  const logoutClassName =
+    'flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-300 hover:text-blue-400 border border-gray-700 hover:border-blue-400 rounded-lg transition-all duration-300 hover:bg-gray-900/50';
 
   const handleLogout = () => {
     dispatch(clearUser());
@@ -59,14 +61,13 @@ const Navbar: React.FC = () => {
               ))}
             </div>
 
-            <Button
-              variantClassName="secondary"
-              sizeClassName='sm'
+            <button
               onClick={handleLogout}
-              leadingIcon={<LogOut className="h-5 w-5" />}
+              className={logoutClassName}
             >
+              <LogOut className="h-4 w-4" />
               Logout
-            </Button>
+            </button>
           </>
         )}
       </Container>

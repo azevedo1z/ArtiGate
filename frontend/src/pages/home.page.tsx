@@ -28,12 +28,14 @@ const HomePage: React.FC = () => {
         return;
       }
 
+      if (rolesData?.length) return;
+
       try {
-        const rolesData: RolesData[] = await fetchRolesData(
+        const fetchedRoles: RolesData[] = await fetchRolesData(
           token,
           userData._id
         );
-        dispatch(setRoles(rolesData));
+        dispatch(setRoles(fetchedRoles));
       } catch {
         toast.error(
           'An error occurred loading your roles. Please refresh the page.'

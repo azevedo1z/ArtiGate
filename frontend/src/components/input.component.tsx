@@ -64,15 +64,17 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
         </label>
         <div className={wrapperClassName}>
           {mask ? (
-            <InputMask mask={mask} {...props}>
-              {(inputProps) => (
+            <InputMask mask={mask} value={props.value} onChange={props.onChange}>
+              {(inputProps: InputHTMLAttributes<HTMLInputElement>) => (
                 <input
+                  {...inputProps}
                   ref={ref}
                   id={id}
                   className={finalClassName}
                   placeholder={placeholder}
-                  {...props}
-                  {...inputProps}
+                  type={props.type}
+                  disabled={props.disabled}
+                  required={props.required}
                 />
               )}
             </InputMask>

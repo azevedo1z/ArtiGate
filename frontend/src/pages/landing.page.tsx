@@ -62,7 +62,7 @@ const LandingPage: React.FC = () => {
             icon={<BookOpen className="h-6 w-6 text-white" />}
             title="Article Submissions"
             description="Submit and manage conference articles with our streamlined submission system."
-            iconColor="blue"
+            iconColor="purple"
           />
 
           <Card
@@ -76,7 +76,7 @@ const LandingPage: React.FC = () => {
             icon={<Star className="h-6 w-6 text-white" />}
             title="Registration"
             description="Seamless participant registration and management for conference attendees."
-            iconColor="indigo"
+            iconColor="purple"
           />
         </div>
       </Container>

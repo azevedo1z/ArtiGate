@@ -81,7 +81,7 @@ Want to help? Feel free to open an issue or submit a pull request.
 
 <img width="1366" height="3431" alt="image" src="https://github.com/user-attachments/assets/6fecda52-4e9e-4cce-87a7-7c1f9d49ed34" />
 
-<img width="1340" height="635" alt="image" src="https://github.com/user-attachments/assets/bcf09051-bf2e-4b51-9a00-d410d61608ad" />
+<img width="1347" height="628" alt="image" src="https://github.com/user-attachments/assets/c9257295-b248-4daa-ba8c-11856028d0af" />
 
 ## 📝 License
 

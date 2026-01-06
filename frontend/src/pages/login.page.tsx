@@ -8,7 +8,7 @@ import Input from '../components/input.component';
 import Button from '../components/button.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import { SignInResponse } from '../shared/types/types.shared';
+import { authService } from '../services/auth.service';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,50 +18,23 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const authLogin = async (email: string, password: string) => {
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
     try {
-      const signInResponse = await fetch('http://localhost:3000/user/signIn', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
-      });
+      const signInData = await authService.signIn(email, password);
+      authService.setToken(signInData.access_token);
 
-      const signInData: SignInResponse = await signInResponse.json();
-      await handleLogin(signInData, signInResponse.ok);
+      const userData = await authService.getCurrentUser();
+      dispatch(setUser(userData));
+
+      toast.success('Login successful! Welcome back.');
+      setTimeout(() => navigate('/home'), 1000);
     } catch {
-      toast.error('An error occurred during login. Please try again.');
+      toast.error('An error occurred during login. Please try again or check your credentials.');
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleLogin = async (signInData: SignInResponse, success: boolean) => {
-    if (success) {
-      const userData = await fetchUserData(signInData.access_token);
-      dispatch(setUser(userData));
-
-      localStorage.setItem('access_token', signInData.access_token);
-      toast.success('Login successful! Welcome back.');
-      setTimeout(() => navigate('/home'), 1000);
-    } else {
-      throw new Error();
-    }
-  };
-
-  const fetchUserData = async (token: string) => {
-    const userResponse = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!userResponse.ok) throw new Error();
-
-    const userData = await userResponse.json();
-    return userData;
   };
 
   return (
@@ -78,13 +51,7 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <form
-            className="space-y-6"
-            onSubmit={(e) => {
-              e.preventDefault();
-              authLogin(email, password);
-            }}
-          >
+          <form className="space-y-6" onSubmit={handleLogin}>
             <Input
               id="email"
               type="email"

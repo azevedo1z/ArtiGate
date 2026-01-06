@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -31,64 +30,36 @@ export class ReviewController {
 
   @Post('create')
   async create(@Body() data: CreateReviewDTO) {
-    try {
-      return await this.createReviewService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.createReviewService.execute(data);
   }
 
   @Put('update')
   async update(@Body() data: UpdateReviewDTO) {
-    try {
-      return await this.updateReviewService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.updateReviewService.execute(data);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    try {
-      return await this.deleteReviewService.execute(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.deleteReviewService.execute(id);
   }
 
   @Get('all')
   async getAll() {
-    try {
-      return await this.getReviewService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getReviewService.getAll();
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    try {
-      return await this.getReviewService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getReviewService.getById(id);
   }
 
   @Get(':userId')
   async getByUserId(@Param('userId') userId: string) {
-    try {
-      return await this.getReviewService.getByReviewerId(userId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getReviewService.getByReviewerId(userId);
   }
 
   @Get(':articleId')
   async getByArticleId(@Param('articleId') articleId: string) {
-    try {
-      return await this.getReviewService.getByArticleId(articleId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getReviewService.getByArticleId(articleId);
   }
 }

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RolesData } from '../../shared/types/types.shared';
+import { Role } from '../../shared/types/types.shared';
 
 export interface RolesState {
-  data: RolesData[];
+  data: Role[];
 }
 
 const initialState: RolesState = {
@@ -13,7 +13,7 @@ const rolesSlice = createSlice({
   name: 'role',
   initialState,
   reducers: {
-    setRoles: (state, action: PayloadAction<RolesData[]>) => {
+    setRoles: (state, action: PayloadAction<Role[]>) => {
       state.data = action.payload;
     },
     clearRoles: (state) => {

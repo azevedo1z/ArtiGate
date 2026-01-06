@@ -23,13 +23,12 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Select from '../components/select.component';
 import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
-import {
-  RolesData,
-  SignUpFormData,
-  SignInResponse,
-} from '../shared/types/types.shared';
+import { SignUpFormData } from '../shared/types/types.shared';
 import { prepareUserData } from '../utils/helpers.util';
 import { setUser } from '../store/slices/user.slice';
+import { authService } from '../services/auth.service';
+import { userService } from '../services/user.service';
+import { roleService } from '../services/role.service';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -99,19 +98,16 @@ const SignUpPage: React.FC = () => {
         return;
       }
 
-      const createUserResponse = await fetch(
-        'http://localhost:3000/user/create',
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(prepareUserData(formData, roleIds)),
-        }
-      );
+      await userService.createUser(prepareUserData(formData, roleIds));
 
-      if (!createUserResponse.ok) throw new Error();
+      const signInData = await authService.signIn(formData.email, formData.password);
+      authService.setToken(signInData.access_token);
+      
+      const userData = await authService.getCurrentUser();
+      dispatch(setUser(userData));
 
-      const authData = await authSignUp(formData.email, formData.password);
-      await handleSignUp(authData.data, authData.success);
+      toast.success('Account created successfully! Welcome to ArtiGate.');
+      setTimeout(() => navigate('/home'), 1000);
     } catch {
       toast.error('An error occurred during signup. Please try again.');
     } finally {
@@ -125,11 +121,7 @@ const SignUpPage: React.FC = () => {
 
   const fetchRoleIds = async (roleNames: string[]): Promise<string[]> => {
     try {
-      const rolesResponse = await fetch('http://localhost:3000/role/all');
-
-      if (!rolesResponse.ok) throw new Error();
-
-      const rolesData: RolesData[] = await rolesResponse.json();
+      const rolesData = await roleService.getAllRoles();
       const roleIds = roleNames
         .map((name) => rolesData.find((role) => role._name === name)?._id)
         .filter(Boolean) as string[];
@@ -139,45 +131,6 @@ const SignUpPage: React.FC = () => {
       toast.error('Failed to load roles');
       return [];
     }
-  };
-
-  const authSignUp = async (email: string, password: string) => {
-    const signInResponse = await fetch('http://localhost:3000/user/signIn', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const signInData: SignInResponse = await signInResponse.json();
-    return { data: signInData, success: signInResponse.ok };
-  };
-
-  const handleSignUp = async (signInData: SignInResponse, success: boolean) => {
-    if (success) {
-      const userData = await fetchUserData(signInData.access_token);
-      dispatch(setUser(userData));
-
-      localStorage.setItem('access_token', signInData.access_token);
-      toast.success('Account created successfully! Welcome to ArtiGate.');
-      setTimeout(() => navigate('/home'), 1000);
-    } else {
-      throw new Error();
-    }
-  };
-
-  const fetchUserData = async (token: string) => {
-    const userResponse = await fetch('http://localhost:3000/user/me', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!userResponse.ok) throw new Error();
-
-    const userData = await userResponse.json();
-    return userData;
   };
 
   return (

@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { UserData } from '../../shared/types/types.shared';
+import { User } from '../../shared/types/types.shared';
 
 export interface UserState {
-  data: UserData | null;
+  data: Pick<User, '_id' | '_name' | '_email'> | null;
   isLoggedIn: boolean;
 }
 
@@ -15,7 +15,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserData>) => {
+    setUser: (state, action: PayloadAction<Pick<User, '_id' | '_name' | '_email'>>) => {
       state.data = action.payload;
       state.isLoggedIn = true;
     },

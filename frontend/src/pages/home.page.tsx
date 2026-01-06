@@ -4,11 +4,11 @@ import { toast } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 import { setRoles } from '../store/slices/roles.slice';
-import { RolesData } from '../shared/types/types.shared';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Card from '../components/card.component';
 import { Eye, FileText } from 'lucide-react';
+import { roleService } from '../services/role.service';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -31,10 +31,7 @@ const HomePage: React.FC = () => {
       if (rolesData?.length) return;
 
       try {
-        const fetchedRoles: RolesData[] = await fetchRolesData(
-          token,
-          userData._id
-        );
+        const fetchedRoles = await roleService.getRolesByUserId(userData._id);
         dispatch(setRoles(fetchedRoles));
       } catch {
         toast.error(
@@ -45,20 +42,6 @@ const HomePage: React.FC = () => {
 
     initializeRolesData();
   }, [navigate, dispatch, userData, rolesData]);
-
-  const fetchRolesData = async (token: string, userId: string) => {
-    const rolesResponse = await fetch(`http://localhost:3000/role/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    if (!rolesResponse.ok) throw new Error();
-
-    return await rolesResponse.json();
-  };
 
   return (
     <Wrapper>

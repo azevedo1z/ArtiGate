@@ -1,4 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import configuration from './config/configuration';
+import { configValidationSchema } from './config/config.validation';
 import { PrismaService } from './infrastructure/services/prisma.service';
 import {
   AddressDatabaseAdapter,
@@ -51,6 +54,11 @@ import { CreateArticleAuthorService } from './application/services/articleAuthor
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [configuration],
+      validationSchema: configValidationSchema,
+    }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: '1d' },

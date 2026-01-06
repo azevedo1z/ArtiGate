@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -31,46 +30,26 @@ export class AddressController {
 
   @Post('create')
   async create(@Body() data: CreateAddressDTO) {
-    try {
-      return await this.createAddressService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.createAddressService.execute(data);
   }
 
   @Put('update')
   async update(@Body() data: UpdateAddressDTO) {
-    try {
-      return await this.updateAddressService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.updateAddressService.execute(data);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    try {
-      return await this.deleteAddressService.execute(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.deleteAddressService.execute(id);
   }
 
   @Get('all')
   async getAll() {
-    try {
-      return await this.getAddressService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getAddressService.getAll();
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    try {
-      return await this.getAddressService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getAddressService.getById(id);
   }
 }

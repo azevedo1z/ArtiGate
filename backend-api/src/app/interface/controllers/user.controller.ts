@@ -5,7 +5,6 @@ import {
   Get,
   Param,
   UseGuards,
-  BadRequestException,
   Put,
   Delete,
   Request,
@@ -34,74 +33,46 @@ export class UserController {
 
   @Post('signIn')
   async signIn(@Body() data: AuthUserDTO) {
-    try {
-      return await this.authService.signIn(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.authService.signIn(data);
   }
 
   @Post('create')
   async create(@Body() data: CreateUserDTO) {
-    try {
-      return await this.createUserService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.createUserService.execute(data);
   }
 
   @Put('update')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateUserDTO) {
-    try {
-      return await this.updateUserService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.updateUserService.execute(data);
   }
 
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async delete(@Param('id') id: string) {
-    try {
-      return await this.deleteUserService.execute(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.deleteUserService.execute(id);
   }
 
   @Get('all')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAll() {
-    try {
-      return await this.getUserService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getUserService.getAll();
   }
 
   @Get('me')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getAuthenticatedUser(@Request() req: AuthenticatedRequest) {
-    try {
-      return await this.getUserService.getById(req.user.id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getUserService.getById(req.user.id);
   }
 
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
-    try {
-      return await this.getUserService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getUserService.getById(id);
   }
 }

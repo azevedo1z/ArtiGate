@@ -1,11 +1,12 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { User } from '../../../domain/models/user.model';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { GetRoleService } from '../role/getRole.service';
 import { GetUserService } from './getUser.service';
+import { ConflictException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class CreateUserService {
@@ -24,7 +25,7 @@ export class CreateUserService {
     await this.validateRoles(data.roleIds);
 
     if (existingUser != null)
-      throw new BadRequestException(
+      throw new ConflictException(
         'There is already a user with this e-mail.'
       );
 

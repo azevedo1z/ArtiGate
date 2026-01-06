@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -31,59 +30,35 @@ export class RoleController {
   @Post('create')
   @UseGuards(AuthGuardService)
   async create(@Body() data: CreateRoleDTO) {
-    try {
-      return await this.createRoleService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.createRoleService.execute(data);
   }
 
   @Put('update')
   @UseGuards(AuthGuardService)
   async update(@Body() data: UpdateRoleDTO) {
-    try {
-      return await this.updateRoleService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.updateRoleService.execute(data);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuardService)
   async delete(@Param('id') id: string) {
-    try {
-      return await this.deleteRoleService.execute(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.deleteRoleService.execute(id);
   }
 
   @Get('all')
   async getAll() {
-    try {
-      return await this.getRoleService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getRoleService.getAll();
   }
 
   @Get(':userId')
   @UseGuards(AuthGuardService)
   async getByUserId(@Param('userId') userId: string) {
-    try {
-      return await this.getRoleService.getRoleByUserId(userId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getRoleService.getRoleByUserId(userId);
   }
   
   @Get(':id')
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {
-    try {
-      return await this.getRoleService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getRoleService.getById(id);
   }
 }

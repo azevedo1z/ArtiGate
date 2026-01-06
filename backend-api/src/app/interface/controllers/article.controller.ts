@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -31,55 +30,31 @@ export class ArticleController {
 
   @Post('create')
   async create(@Body() data: CreateArticleDTO) {
-    try {
-      return await this.createArticleService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.createArticleService.execute(data);
   }
 
   @Put('update')
   async update(@Body() data: UpdateArticleDTO) {
-    try {
-      return await this.updateArticleService.execute(data);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.updateArticleService.execute(data);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: string) {
-    try {
-      return await this.deleteArticleService.execute(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.deleteArticleService.execute(id);
   }
 
   @Get('all')
   async getAll() {
-    try {
-      return await this.getArticleService.getAll();
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getArticleService.getAll();
   }
 
   @Get(':id')
   async getById(@Param('id') id: string) {
-    try {
-      return await this.getArticleService.getById(id);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getArticleService.getById(id);
   }
 
   @Get(':authorId')
   async getByAuthorId(@Param('authorId') authorId: string) {
-    try {
-      return await this.getArticleService.getByAuthorId(authorId);
-    } catch (error) {
-      throw new BadRequestException(error);
-    }
+    return await this.getArticleService.getByAuthorId(authorId);
   }
 }

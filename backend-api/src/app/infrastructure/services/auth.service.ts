@@ -1,8 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GetUserService } from '../../application/services/user/getUser.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthUserDTO } from '../../application/dtos/user/authUser.dto';
+import { UnauthorizedException } from '../../shared/exceptions/app.exception';
 
 @Injectable()
 export class AuthService {
@@ -14,14 +15,14 @@ export class AuthService {
   async signIn(data: AuthUserDTO): Promise<{ access_token: string }> {
     const existingUser = await this.getUserService.getByEmail(data.email);
 
-    if (existingUser == null) throw new BadRequestException('Invalid credentials.');
+    if (existingUser == null) throw new UnauthorizedException('Invalid credentials.');
 
     const isPasswordValid = await bcrypt.compare(
       data.password,
       existingUser.passwordHash
     );
 
-    if (!isPasswordValid) throw new BadRequestException('Invalid credentials.');
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials.');
 
     const payload = { sub: existingUser.id };
 

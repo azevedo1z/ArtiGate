@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { User } from '../../../domain/models/user.model';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class GetUserService {
@@ -10,7 +11,7 @@ export class GetUserService {
     const existingUser = await this.adapter.findById(id);
 
     if (existingUser == null)
-      throw new BadRequestException(`There is no user with the ID "${id}".`);
+      throw new NotFoundException(`There is no user with the ID "${id}".`);
 
     return User.factory(
       existingUser.id,
@@ -62,7 +63,7 @@ export class GetUserService {
     const existingUser = await this.adapter.findByReviewId?.(reviewId);
 
     if (existingUser == null)
-      throw new BadRequestException(
+      throw new NotFoundException(
         `There is no user with the reviewId "${reviewId}".`
       );
 

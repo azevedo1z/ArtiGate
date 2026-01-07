@@ -1,22 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString, IsOptional } from 'class-validator';
 
 export class CreateAddressDTO {
   @ApiProperty()
+  @IsString()
   zipCode: string;
 
   @ApiProperty()
+  @IsString()
   street: string;
 
   @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
   complement?: string;
 
   @ApiProperty()
+  @IsString()
   neighborhood: string;
 
   @ApiProperty()
+  @IsString()
   city: string;
 
   @ApiProperty()
+  @IsString()
   state: string;
 
   constructor(

@@ -30,8 +30,5 @@ export const prepareUserData = (
       state: formData.jobState.trim(),
     },
     badgeUrl: '',
-    cardNumber: stripMask(formData.cardNumber),
-    cardExpiry: stripMask(formData.cardExpiry),
-    cardBrand: formData.cardBrand,
   };
 };

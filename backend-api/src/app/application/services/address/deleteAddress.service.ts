@@ -1,24 +1,30 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetAddressService } from './getAddress.service';
-import { GetUserService } from '../user/getUser.service';
-import { AddressDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Injectable } from '@nestjs/common';
+import {
+  AddressDatabaseAdapter,
+  UserDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import {
+  NotFoundException,
+  ConflictException,
+} from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class DeleteAddressService {
   constructor(
     private readonly adapter: AddressDatabaseAdapter,
-    private readonly getAddressService: GetAddressService,
-    private readonly getUserService: GetUserService
+    private readonly userAdapter: UserDatabaseAdapter
   ) {}
 
   async execute(id: string): Promise<boolean> {
-    await this.getAddressService.getById(id);
-    const user = await this.getUserService.getByAddressId(id);
+    const address = await this.adapter.findById(id);
+    if (!address)
+      throw new NotFoundException(`Address with ID "${id}" not found`);
 
-    const hasConstraint = user?.homeAddressId === id || user?.jobAddressId === id;
+    const user = await this.userAdapter.findByAddressId?.(id);
 
-    if (hasConstraint)
-      throw new BadRequestException('The address is associated with a user.');
+    if (user && (user.homeAddressId === id || user.jobAddressId === id)) {
+      throw new ConflictException('The address is associated with a user.');
+    }
 
     return await this.adapter.delete(id);
   }

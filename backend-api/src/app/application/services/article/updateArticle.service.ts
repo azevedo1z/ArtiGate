@@ -1,25 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
 import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
-import { GetArticleService } from './getArticle.service';
-import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { UpdateArticleAuthorService } from '../articleAuthor/updateArticleAuthor.service';
+import {
+  ArticleDatabaseAdapter,
+  ArticleAuthorDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class UpdateArticleService {
   constructor(
     private readonly adapter: ArticleDatabaseAdapter,
-    private readonly getArticleService: GetArticleService,
-    private readonly updateArticleAuthorService: UpdateArticleAuthorService
+    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
   ) {}
 
   async execute(data: UpdateArticleDTO): Promise<Article> {
-    await this.getArticleService.getById(data.id);
+    const existingArticle = await this.adapter.findById(data.id);
+    if (!existingArticle)
+      throw new NotFoundException(`Article with ID "${data.id}" not found`);
 
     const articleRecord = await this.adapter.update(data);
 
-    if (data.authorIds?.length)
-      await this.updateArticleAuthorService.execute(data);
+    if (data.authorIds?.length) {
+      const existingAuthors = await this.articleAuthorAdapter.findMany(data.id);
+
+      for (const author of existingAuthors)
+        await this.articleAuthorAdapter.delete(author.id);
+
+      for (const authorId of data.authorIds)
+        await this.articleAuthorAdapter.create({
+          articleId: data.id,
+          userId: authorId,
+        });
+    }
 
     return Article.factory(
       articleRecord.id,

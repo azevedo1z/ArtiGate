@@ -1,44 +1,45 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetUserService } from './getUser.service';
-import { GetReviewService } from '../review/getReview.service';
-import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetArticleAuthorService } from '../articleAuthor/getArticleAuthor.service';
+import { Injectable } from '@nestjs/common';
+import {
+  UserDatabaseAdapter,
+  ReviewDatabaseAdapter,
+  ArticleAuthorDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import {
+  NotFoundException,
+  ConflictException,
+} from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class DeleteUserService {
   constructor(
     private readonly adapter: UserDatabaseAdapter,
-    private readonly getUserService: GetUserService,
-    private readonly getReviewService: GetReviewService,
-    private readonly getArticleAuthorService: GetArticleAuthorService
+    private readonly reviewAdapter: ReviewDatabaseAdapter,
+    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
   ) {}
+
   async execute(id: string): Promise<boolean> {
-    await this.getUserService.getById(id);
+    const user = await this.adapter.findById(id);
+    if (!user) throw new NotFoundException(`User with ID "${id}" not found`);
 
     await this.validateConstraints(id);
 
+    await this.adapter.delete(id);
     return true;
   }
 
   private async validateConstraints(id: string) {
-    let hasConstraint = false;
+    const reviews = await this.reviewAdapter.findMany(id);
 
-    const reviews = await this.getReviewService.getByReviewerId(id);
-    const articles = await this.getArticleAuthorService.getArticleByAuthorId(
-      id
-    );
+    const articles = await this.articleAuthorAdapter.findManyByUserId?.(id);
 
-    if (reviews?.some((review) => review.reviewerId === id))
-      hasConstraint = true;
-
-    if (articles?.some((article) => article.userId === id))
-      hasConstraint = true;
-
-    if (hasConstraint)
-      throw new BadRequestException(
-        'The user is associated with a review or an article.'
+    if (reviews?.length)
+      throw new ConflictException(
+        'The user is associated with one or more reviews.'
       );
 
-    return await this.adapter.delete(id);
+    if (articles?.length)
+      throw new ConflictException(
+        'The user is associated with one or more articles.'
+      );
   }
 }

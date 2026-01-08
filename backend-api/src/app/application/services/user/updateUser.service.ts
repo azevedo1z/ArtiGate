@@ -1,27 +1,29 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDTO } from '../../dtos/user/updateUser.dto';
-import { GetUserService } from './getUser.service';
-import { CreateAddressService } from '../address/createAddress.service';
 import * as bcrypt from 'bcrypt';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
-import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetRoleService } from '../role/getRole.service';
+import {
+  UserDatabaseAdapter,
+  AddressDatabaseAdapter,
+  RoleDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class UpdateUserService {
   constructor(
     private readonly adapter: UserDatabaseAdapter,
-    private readonly getUserService: GetUserService,
-    private readonly createAddressService: CreateAddressService,
-    private readonly getRoleService: GetRoleService
+    private readonly addressAdapter: AddressDatabaseAdapter,
+    private readonly roleAdapter: RoleDatabaseAdapter
   ) {}
 
   async execute(data: UpdateUserDTO) {
-    await this.getUserService.getById(data.id);
+    const existingUser = await this.adapter.findById(data.id);
+    if (!existingUser)
+      throw new NotFoundException(`User with ID "${data.id}" not found`);
 
-    if (data.password != null)
-      data.password = await bcrypt.hash(data.password, 10);
+    if (data.password) data.password = await bcrypt.hash(data.password, 10);
 
     const homeAddressId = await this.handleNewAddressCreation(data.homeAddress);
     const jobAddressId = await this.handleNewAddressCreation(data.jobAddress);
@@ -47,20 +49,23 @@ export class UpdateUserService {
   }
 
   private async validateRoles(roleIds: string[]): Promise<boolean> {
-    if (roleIds != null) {
-      for (const roleId of roleIds) await this.getRoleService.getById(roleId);
+    if (roleIds?.length) {
+      for (const roleId of roleIds) {
+        const role = await this.roleAdapter.findById(roleId);
+        if (!role)
+          throw new NotFoundException(`Role with ID "${roleId}" not found`);
+      }
       return true;
     }
     return false;
   }
 
-  private async handleNewAddressCreation(address: CreateAddressDTO) {
-    if (address === null) return;
+  private async handleNewAddressCreation(
+    address: CreateAddressDTO
+  ): Promise<string | undefined> {
+    if (!address) return;
 
-    const { id: newAddressId } = await this.createAddressService.execute(
-      address
-    );
-
-    return newAddressId;
+    const newAddress = await this.addressAdapter.create(address);
+    return newAddress.id;
   }
 }

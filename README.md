@@ -16,33 +16,49 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 ## 📦 Project Structure
 
 ```
-/apps
-  ├── backend-api     # NestJS backend
-  └── frontend         # React frontend
+/backend-api              # NestJS backend API
+  └── src/
+      ├── main.ts
+      └── app/
+          ├── app.module.ts
+          ├── application/     # Application layer (Use Cases)
+          │   ├── dtos/
+          │   └── services/
+          ├── config/          # Configuration files
+          │   ├── config.validation.ts
+          │   └── configuration.ts
+          ├── domain/          # Domain layer (Business logic)
+          │   └── models/
+          ├── infrastructure/  # Infrastructure layer (External services)
+          │   ├── repositories/
+          │   └── services/
+          ├── interface/       # Interface layer (Controllers & adapters)
+          │   └── adapter/
+          ├── modules/
+          └── shared/
 
-Backend:
-- /interface
-  - controllers/
-  - adapters/
-- /application
-  - dto/
-  - services/
-- /domain
-  - models/
-- /infrastructure
-  - repositories/
-  - services/
-- /shared
-  - types/
+/frontend                 # React frontend application
+  └── src/
+      ├── main.tsx
+      ├── styles.css
+      └── app/
+          ├── app.tsx
+          ├── components/  # Reusable UI components
+          ├── config/      # Frontend configuration
+          ├── pages/       # Page components
+          ├── providers/   # Context providers
+          ├── services/    # API services
+          ├── shared/
+          │   └── types/
+          ├── store/       # State management
+          │   └── slices/
+          └── utils/       # Helper functions
 
-Frontend:
-- components/
-- pages/
-- providers/
-- store/
-- utils/
-- /shared
-  - types/
+/prisma                   # Database schema and migrations
+  ├── schema.prisma
+  └── migrations/
+
+/docs                     # Documentation
 ```
 
 ## 🚀 Getting Started

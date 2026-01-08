@@ -1,6 +1,7 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Review } from '../../../domain/models/review.model';
 import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class GetReviewService {
@@ -9,8 +10,8 @@ export class GetReviewService {
   async getById(id: string) {
     const existingReview = await this.adapter.findById(id);
 
-    if (existingReview == null)
-      throw new BadRequestException(`There is no review with the ID "${id}".`);
+    if (!existingReview)
+      throw new NotFoundException(`There is no review with the ID "${id}".`);
 
     return existingReview;
   }
@@ -32,8 +33,8 @@ export class GetReviewService {
   async getByReviewerId(reviewerId: string) {
     const reviews = await this.adapter.findManyByUserId?.(reviewerId);
 
-    if (reviews == null || reviews.length == 0)
-      throw new BadRequestException(
+    if (!reviews || reviews.length == 0)
+      throw new NotFoundException(
         `There is no review associated with the userId "${reviewerId}".`
       );
 

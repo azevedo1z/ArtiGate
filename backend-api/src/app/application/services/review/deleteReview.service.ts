@@ -1,25 +1,29 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetReviewService } from './getReview.service';
-import { GetUserService } from '../user/getUser.service';
-import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Injectable } from '@nestjs/common';
+import {
+  ReviewDatabaseAdapter,
+  UserDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import {
+  NotFoundException,
+  ConflictException,
+} from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class DeleteReviewService {
   constructor(
     private readonly adapter: ReviewDatabaseAdapter,
-    private readonly getReviewService: GetReviewService,
-    private readonly getUserService: GetUserService
+    private readonly userAdapter: UserDatabaseAdapter
   ) {}
 
   async execute(id: string): Promise<boolean> {
-    await this.getReviewService.getById(id);
+    const review = await this.adapter.findById(id);
+    if (!review)
+      throw new NotFoundException(`Review with ID "${id}" not found`);
 
-    const reviewer = await this.getUserService.getByReviewId(id);
+    const reviewer = await this.userAdapter.findByReviewId?.(id);
 
-    const hasConstraint = !!reviewer;
-
-    if (hasConstraint)
-      throw new BadRequestException('The review is associated with a user.');
+    if (reviewer)
+      throw new ConflictException('The review is associated with a user.');
 
     return await this.adapter.delete(id);
   }

@@ -1,24 +1,20 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateRoleDTO } from '../../dtos/role/createRole.dto';
 import { Role } from '../../../domain/models/role.model';
 import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ConflictException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class CreateRoleService {
   constructor(private readonly adapter: RoleDatabaseAdapter) {}
 
   async execute(data: CreateRoleDTO): Promise<Role> {
-    if (!this.adapter.findByName)
-      throw new BadRequestException(
-        'The Database Adapter was not properly configured.'
-      );
-
-    const roleExists = await this.adapter.findByName(
+    const roleExists = await this.adapter.findByName?.(
       data.name.toUpperCase().trim()
     );
 
     if (roleExists)
-      throw new BadRequestException('There is already a role with this name.');
+      throw new ConflictException('There is already a role with this name.');
 
     const roleRecord = await this.adapter.create(data);
 

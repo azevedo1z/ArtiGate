@@ -1,27 +1,31 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { GetRoleService } from './getRole.service';
-import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetUserRoleService } from '../userRole/getUserRole.service';
+import { Injectable } from '@nestjs/common';
+import {
+  RoleDatabaseAdapter,
+  UserRoleDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import {
+  NotFoundException,
+  ConflictException,
+} from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class DeleteRoleService {
   constructor(
     private readonly adapter: RoleDatabaseAdapter,
-    private readonly getRoleService: GetRoleService,
-    private readonly getUserRoleService: GetUserRoleService
+    private readonly userRoleAdapter: UserRoleDatabaseAdapter
   ) {}
 
   async execute(id: string): Promise<boolean> {
-    await this.getRoleService.getById(id);
+    const role = await this.adapter.findById(id);
+    if (!role) throw new NotFoundException(`Role with ID "${id}" not found`);
 
-    const participants = await this.getUserRoleService.getAll();
-
-    const hasConstraint = participants.some(
-      (participant) => participant.roleId === id
-    );
+    const userRoles = await this.userRoleAdapter.findAll();
+    const hasConstraint = userRoles.some((userRole) => userRole.roleId === id);
 
     if (hasConstraint)
-      throw new BadRequestException('The role is associated with a user.');
+      throw new ConflictException(
+        'The role is associated with one or more users.'
+      );
 
     return await this.adapter.delete(id);
   }

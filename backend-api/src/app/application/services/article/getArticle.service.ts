@@ -1,20 +1,23 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
-import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { GetArticleAuthorService } from '../articleAuthor/getArticleAuthor.service';
+import {
+  ArticleDatabaseAdapter,
+  ArticleAuthorDatabaseAdapter,
+} from '../../../interface/adapter/database.adapter';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class GetArticleService {
   constructor(
     private readonly adapter: ArticleDatabaseAdapter,
-    private readonly getArticleAuthorService: GetArticleAuthorService
+    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
   ) {}
 
   async getById(id: string): Promise<Article | null> {
     const existingArticle = await this.adapter.findById(id);
 
     if (existingArticle == null)
-      throw new BadRequestException(`There is no article with the ID "${id}".`);
+      throw new NotFoundException(`There is no article with the ID "${id}".`);
 
     return Article.factory(
       existingArticle.id,
@@ -36,8 +39,11 @@ export class GetArticleService {
   }
 
   async getByAuthorId(authorId: string): Promise<Article[]> {
-    const articleAuthors =
-      await this.getArticleAuthorService.getArticleByAuthorId(authorId);
+    const articleAuthors = await this.articleAuthorAdapter.findManyByUserId?.(
+      authorId
+    );
+
+    if (!articleAuthors || articleAuthors.length === 0) return [];
 
     const articles = await Promise.all(
       articleAuthors.map((existingArticleAuthor) =>

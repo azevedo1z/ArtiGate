@@ -1,28 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { GetUserService } from '../../application/services/user/getUser.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthUserDTO } from '../../application/dtos/user/authUser.dto';
 import { UnauthorizedException } from '../../shared/exceptions/app.exception';
+import { UserDatabaseAdapter } from '../../interface/adapter/database.adapter';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly getUserService: GetUserService,
+    private readonly userRepository: UserDatabaseAdapter,
     private readonly jwtService: JwtService
   ) {}
 
   async signIn(data: AuthUserDTO): Promise<{ access_token: string }> {
-    const existingUser = await this.getUserService.getByEmail(data.email);
+    const existingUser = await this.userRepository.findByEmail?.(data.email);
 
-    if (existingUser == null) throw new UnauthorizedException('Invalid credentials.');
+    if (existingUser == null)
+      throw new UnauthorizedException('Invalid credentials.');
 
     const isPasswordValid = await bcrypt.compare(
       data.password,
       existingUser.passwordHash
     );
 
-    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials.');
+    if (!isPasswordValid)
+      throw new UnauthorizedException('Invalid credentials.');
 
     const payload = { sub: existingUser.id };
 

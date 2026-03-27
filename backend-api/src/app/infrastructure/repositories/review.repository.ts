@@ -1,6 +1,6 @@
 import { Review } from '@prisma/client';
 import { PrismaService } from '../services/prisma.service';
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
 import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
 import { ReviewDatabaseAdapter } from '../../interface/adapter/database.adapter';
@@ -36,8 +36,8 @@ export class ReviewRepository implements ReviewDatabaseAdapter{
     return await this.prisma.review.findMany();
   }
 
-  async findMany(contextParam: string): Promise<Review[]> {
-    throw new NotImplementedException();
+  async findMany(articleId: string): Promise<Review[]> {
+    return await this.prisma.review.findMany({ where: { articleId } });
   }
 
   async findManyByUserId(reviewerId: string): Promise<Review[]> {

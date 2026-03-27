@@ -40,16 +40,23 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
   }
 
   async delete(id: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    await this.prisma.articleAuthor.update({
+      where: { id },
+      data: { deletedOn: new Date() },
+    });
+    return true;
   }
+
   async findById(id: string): Promise<ArticleAuthor | null> {
-    throw new Error('Method not implemented.');
+    return await this.prisma.articleAuthor.findUnique({ where: { id } });
   }
+
   async findAll(): Promise<ArticleAuthor[]> {
     return await this.prisma.articleAuthor.findMany();
   }
-  async findMany(contextParam: string): Promise<ArticleAuthor[]> {
-    throw new Error('Method not implemented.');
+
+  async findMany(articleId: string): Promise<ArticleAuthor[]> {
+    return await this.prisma.articleAuthor.findMany({ where: { articleId } });
   }
   async findManyByUserId(userId: string): Promise<ArticleAuthor[]> {
     return await this.prisma.articleAuthor.findMany({ where: { userId } });

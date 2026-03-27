@@ -53,7 +53,7 @@ export class ArticleController {
     return await this.getArticleService.getById(id);
   }
 
-  @Get(':authorId')
+  @Get('author/:authorId')
   async getByAuthorId(@Param('authorId') authorId: string) {
     return await this.getArticleService.getByAuthorId(authorId);
   }

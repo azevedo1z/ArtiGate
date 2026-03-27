@@ -1,5 +1,5 @@
 import { Module, Global } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import configuration from '../config/configuration';
 import { configValidationSchema } from '../config/config.validation';
@@ -13,9 +13,15 @@ import { PrismaService } from '../infrastructure/services/prisma.service';
       load: [configuration],
       validationSchema: configValidationSchema,
     }),
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.secret'),
+        signOptions: {
+          expiresIn: configService.get<string>('jwt.expiresIn', '1d'),
+        },
+      }),
     }),
   ],
   providers: [PrismaService],

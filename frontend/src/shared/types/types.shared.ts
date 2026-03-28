@@ -40,6 +40,32 @@ export interface CreateUserData {
   badgeUrl: string;
 }
 
+export interface Article {
+  _id: string;
+  _summary: string;
+  _scoreAvg: number;
+}
+
+export interface Review {
+  _id: string;
+  _articleId: string;
+  _reviewerId: string;
+  _score: number;
+  _commentary: string | null;
+}
+
+export interface CreateArticleData {
+  summary: string;
+  authorIds: string[];
+}
+
+export interface CreateReviewData {
+  articleId: string;
+  reviewerId: string;
+  score: number;
+  commentary: string;
+}
+
 export interface SignUpFormData {
   name: string;
   email: string;

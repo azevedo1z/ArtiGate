@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from './container.component';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
@@ -9,14 +9,12 @@ import toast from 'react-hot-toast';
 
 const Navbar: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
-  // const userId = useSelector((state: RootState) => state.user.data?._id);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const navLinks = [
     { name: 'Home', path: '/home' },
-    // { name: 'My Articles', path: `/articles/${userId}` },
-    { name: 'My Articles', path: `#` },
+    { name: 'My Articles', path: '/my-articles' },
     { name: 'About', path: '/about' },
   ];
 
@@ -27,7 +25,9 @@ const Navbar: React.FC = () => {
     'text-3xl font-bold text-blue-500 hover:text-blue-400 transition-colors duration-300 tracking-tight';
 
   const navLinksClassName = 'flex gap-8 items-center';
-  const navLinksContentClassName =
+  const navLinkActiveClassName =
+    'text-sm font-semibold text-blue-400 relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-blue-400';
+  const navLinkInactiveClassName =
     'text font-semibold text-gray-300 hover:text-blue-400 transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full';
 
   const logoutClassName =
@@ -43,7 +43,7 @@ const Navbar: React.FC = () => {
   return (
     <nav className={baseClassName}>
       <Container noDefaultPadding className={containerClassName}>
-        <Link to="/home" className={logoClassName}>
+        <Link to={isLoggedIn ? '/home' : '/'} className={logoClassName}>
           ArtiGate
         </Link>
 
@@ -51,20 +51,19 @@ const Navbar: React.FC = () => {
           <>
             <div className={navLinksClassName}>
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.name}
                   to={link.path}
-                  className={navLinksContentClassName}
+                  className={({ isActive }) =>
+                    isActive ? navLinkActiveClassName : navLinkInactiveClassName
+                  }
                 >
                   {link.name}
-                </Link>
+                </NavLink>
               ))}
             </div>
 
-            <button
-              onClick={handleLogout}
-              className={logoutClassName}
-            >
+            <button onClick={handleLogout} className={logoutClassName}>
               <LogOut className="h-4 w-4" />
               Logout
             </button>

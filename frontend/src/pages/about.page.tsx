@@ -19,7 +19,7 @@ const AboutPage: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <Wrapper>
+    <Wrapper centered={false}>
       <Container size="lg" className="space-y-8 py-8">
         <div className="text-center">
           <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">

@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
-import Container from './container.component';
 import Navbar from './navbar.component';
+import Container from './container.component';
 import { ExternalLink } from 'lucide-react';
 
 interface LayoutProps {
@@ -32,7 +32,7 @@ const Layout: React.FC<LayoutProps> = ({
       {showHeader && <Navbar />}
 
       <main className={mainClassName}>
-        <Container>{children}</Container>
+        {children}
       </main>
 
       {showFooter && (

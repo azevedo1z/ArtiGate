@@ -7,7 +7,7 @@ import { setRoles } from '../store/slices/roles.slice';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Card from '../components/card.component';
-import { Eye, FileText } from 'lucide-react';
+import { Eye, FileText, BookOpen } from 'lucide-react';
 import { roleService } from '../services/role.service';
 
 const HomePage: React.FC = () => {
@@ -44,43 +44,45 @@ const HomePage: React.FC = () => {
   }, [navigate, dispatch, userData, rolesData]);
 
   return (
-    <Wrapper>
-      <Container size="lg" className="space-y-8 py-8">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              Welcome to ArtiGate
-            </h1>
-            <p className="text-gray-600 mt-2">
-              {userData?._name
-                ? `Hello, ${userData._name}.`
-                : 'Oops, something went wrong... :('}
-            </p>
-          </div>
+    <Wrapper centered={false}>
+      <Container size="lg" className="space-y-10 py-10">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+            Welcome
+            {userData?._name ? `, ${userData._name.split(' ')[0]}` : ''}.
+          </h1>
+          <p className="text-gray-500 mt-1 text-sm">
+            What would you like to do today?
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <Card
             icon={<FileText className="h-6 w-6 text-white" />}
-            title="Submit your article"
-            description="Submit new articles for conference review and publication."
+            title="Submit Article"
+            description="Submit a new article for conference review and publication."
             iconColor="blue"
-            className="cursor-pointer hover:scale-105 transform transition-all duration-200"
-            onClick={() =>
-              toast('Article submission coming soon!', { icon: 'ℹ️' })
-            }
+            className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+            onClick={() => navigate('/submit-article')}
+          />
+
+          <Card
+            icon={<BookOpen className="h-6 w-6 text-white" />}
+            title="My Articles"
+            description="View and manage the articles you have submitted so far."
+            iconColor="indigo"
+            className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+            onClick={() => navigate('/my-articles')}
           />
 
           {isReviewer && (
             <Card
               icon={<Eye className="h-6 w-6 text-white" />}
-              title="Review an article"
-              description="Review submitted articles and provide feedback to authors."
+              title="Review Article"
+              description="Review submitted articles and provide your expert feedback."
               iconColor="purple"
-              className="cursor-pointer hover:scale-105 transform transition-all duration-200"
-              onClick={() =>
-                toast('Article review coming soon!', { icon: 'ℹ️' })
-              }
+              className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+              onClick={() => navigate('/submit-review')}
             />
           )}
         </div>

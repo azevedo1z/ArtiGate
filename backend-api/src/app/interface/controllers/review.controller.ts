@@ -48,18 +48,18 @@ export class ReviewController {
     return await this.getReviewService.getAll();
   }
 
-  @Get(':id')
-  async getById(@Param('id') id: string) {
-    return await this.getReviewService.getById(id);
-  }
-
-  @Get(':userId')
+  @Get('reviewer/:userId')
   async getByUserId(@Param('userId') userId: string) {
     return await this.getReviewService.getByReviewerId(userId);
   }
 
-  @Get(':articleId')
+  @Get('article/:articleId')
   async getByArticleId(@Param('articleId') articleId: string) {
     return await this.getReviewService.getByArticleId(articleId);
+  }
+
+  @Get(':id')
+  async getById(@Param('id') id: string) {
+    return await this.getReviewService.getById(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { ArticleController } from '../interface/controllers/article.controller';
 import { ArticleRepository } from '../infrastructure/repositories/article.repository';
 import { ArticleAuthorRepository } from '../infrastructure/repositories/articleAuthor.repository';
@@ -16,7 +16,7 @@ import { UpdateArticleAuthorService } from '../application/services/articleAutho
 import { ReviewModule } from './review.module';
 
 @Module({
-  imports: [ReviewModule],
+  imports: [forwardRef(() => ReviewModule)],
   controllers: [ArticleController],
   providers: [
     CreateArticleService,

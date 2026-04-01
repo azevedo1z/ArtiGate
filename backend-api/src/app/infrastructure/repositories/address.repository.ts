@@ -14,13 +14,13 @@ export class AddressRepository implements AddressDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Address | null> {
-    return await this.prisma.address.findUnique({
-      where: { id },
+    return await this.prisma.address.findFirst({
+      where: { id, deletedOn: null },
     });
   }
 
   async findAll(): Promise<Address[]> {
-    return await this.prisma.address.findMany();
+    return await this.prisma.address.findMany({ where: { deletedOn: null } });
   }
 
   async delete(id: string): Promise<boolean> {
@@ -38,7 +38,7 @@ export class AddressRepository implements AddressDatabaseAdapter {
     });
   }
 
-  async findMany(contextParam: string): Promise<Address[]> {
+  async findMany(_contextParam: string): Promise<Address[]> {
     throw new NotImplementedException();
   }
 }

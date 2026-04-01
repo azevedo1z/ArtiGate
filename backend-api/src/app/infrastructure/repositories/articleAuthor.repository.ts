@@ -2,6 +2,10 @@ import { ArticleAuthor } from '@prisma/client';
 import { ArticleAuthorDatabaseAdapter } from '../../interface/adapter/database.adapter';
 import { PrismaService } from '../services/prisma.service';
 import { Injectable } from '@nestjs/common';
+import {
+  ValidationException,
+  NotFoundException,
+} from '../../shared/exceptions/app.exception';
 
 @Injectable()
 export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
@@ -9,7 +13,7 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
 
   async create(data: Partial<ArticleAuthor>): Promise<ArticleAuthor> {
     if (!data.articleId || !data.userId) {
-      throw new Error(
+      throw new ValidationException(
         'Both articleId and userId are required to create an ArticleAuthor'
       );
     }
@@ -23,15 +27,15 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
 
   async update(data: Partial<ArticleAuthor>): Promise<ArticleAuthor> {
     if (!data.articleId || !data.userId) {
-      throw new Error(
-        'Both articleId and userId are required to create an ArticleAuthor'
+      throw new ValidationException(
+        'Both articleId and userId are required to update an ArticleAuthor'
       );
     }
     const articleAuthor = await this.prisma.articleAuthor.findFirst({
       where: { userId: data.userId, articleId: data.articleId },
     });
 
-    if (articleAuthor == null) throw new Error('Not found ArticleAuthor');
+    if (articleAuthor == null) throw new NotFoundException('ArticleAuthor not found');
 
     return await this.prisma.articleAuthor.update({
       where: { id: articleAuthor.id },
@@ -40,18 +44,26 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
   }
 
   async delete(id: string): Promise<boolean> {
-    throw new Error('Method not implemented.');
+    await this.prisma.articleAuthor.update({
+      where: { id },
+      data: { deletedOn: new Date() },
+    });
+    return true;
   }
+
   async findById(id: string): Promise<ArticleAuthor | null> {
-    throw new Error('Method not implemented.');
+    return await this.prisma.articleAuthor.findFirst({ where: { id, deletedOn: null } });
   }
+
   async findAll(): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany();
+    return await this.prisma.articleAuthor.findMany({ where: { deletedOn: null } });
   }
-  async findMany(contextParam: string): Promise<ArticleAuthor[]> {
-    throw new Error('Method not implemented.');
+
+  async findMany(articleId: string): Promise<ArticleAuthor[]> {
+    return await this.prisma.articleAuthor.findMany({ where: { articleId, deletedOn: null } });
   }
+
   async findManyByUserId(userId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { userId } });
+    return await this.prisma.articleAuthor.findMany({ where: { userId, deletedOn: null } });
   }
 }

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNumber, IsOptional, Min, Max } from 'class-validator';
 
 export class UpdateReviewDTO {
   @ApiProperty()
@@ -16,9 +16,11 @@ export class UpdateReviewDTO {
   @IsOptional()
   reviewerId: string;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ minimum: 1, maximum: 10, required: false })
   @IsNumber()
   @IsOptional()
+  @Min(1)
+  @Max(10)
   score: number;
 
   @ApiProperty({ required: false })

@@ -48,13 +48,13 @@ export class ArticleController {
     return await this.getArticleService.getAll();
   }
 
+  @Get('author/:authorId')
+  async getByAuthorId(@Param('authorId') authorId: string) {
+    return await this.getArticleService.getByAuthorId(authorId);
+  }
+
   @Get(':id')
   async getById(@Param('id') id: string) {
     return await this.getArticleService.getById(id);
-  }
-
-  @Get(':authorId')
-  async getByAuthorId(@Param('authorId') authorId: string) {
-    return await this.getArticleService.getByAuthorId(authorId);
   }
 }

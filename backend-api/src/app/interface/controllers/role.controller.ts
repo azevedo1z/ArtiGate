@@ -50,12 +50,12 @@ export class RoleController {
     return await this.getRoleService.getAll();
   }
 
-  @Get(':userId')
+  @Get('user/:userId')
   @UseGuards(AuthGuardService)
   async getByUserId(@Param('userId') userId: string) {
     return await this.getRoleService.getRoleByUserId(userId);
   }
-  
+
   @Get(':id')
   @UseGuards(AuthGuardService)
   async getById(@Param('id') id: string) {

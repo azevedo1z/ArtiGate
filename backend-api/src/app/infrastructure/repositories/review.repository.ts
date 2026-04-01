@@ -29,18 +29,18 @@ export class ReviewRepository implements ReviewDatabaseAdapter{
     return true;
   }
   async findById(id: string): Promise<Review | null> {
-    return await this.prisma.review.findUnique({ where: { id } });
+    return await this.prisma.review.findFirst({ where: { id, deletedOn: null } });
   }
 
   async findAll(): Promise<Review[]> {
-    return await this.prisma.review.findMany();
+    return await this.prisma.review.findMany({ where: { deletedOn: null } });
   }
 
   async findMany(articleId: string): Promise<Review[]> {
-    return await this.prisma.review.findMany({ where: { articleId } });
+    return await this.prisma.review.findMany({ where: { articleId, deletedOn: null } });
   }
 
   async findManyByUserId(reviewerId: string): Promise<Review[]> {
-    return await this.prisma.review.findMany({ where: { reviewerId } });
+    return await this.prisma.review.findMany({ where: { reviewerId, deletedOn: null } });
   }
 }

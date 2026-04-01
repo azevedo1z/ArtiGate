@@ -30,13 +30,11 @@ export class RoleRepository implements RoleDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Role | null> {
-    return await this.prisma.role.findUnique({
-      where: { id },
-    });
+    return await this.prisma.role.findFirst({ where: { id, deletedOn: null } });
   }
 
   async findAll(): Promise<Role[]> {
-    return await this.prisma.role.findMany();
+    return await this.prisma.role.findMany({ where: { deletedOn: null } });
   }
 
   async findMany(): Promise<Role[]> {
@@ -44,6 +42,6 @@ export class RoleRepository implements RoleDatabaseAdapter {
   }
 
   async findByName(name: string): Promise<Role | null> {
-    return await this.prisma.role.findUnique({ where: { name } });
+    return await this.prisma.role.findFirst({ where: { name, deletedOn: null } });
   }
 }

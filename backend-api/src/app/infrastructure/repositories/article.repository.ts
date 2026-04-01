@@ -18,10 +18,9 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
   }
 
   async update(data: UpdateArticleDTO): Promise<Article> {
-    const article = {
-      id: data.id,
-      summary: data.summary,
-    };
+    const article: Partial<Article> = {};
+    if (data.summary !== undefined) article.summary = data.summary;
+    if (data.scoreAvg !== undefined) article.scoreAvg = data.scoreAvg;
 
     return await this.prisma.article.update({
       where: { id: data.id },
@@ -38,14 +37,14 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Article | null> {
-    return await this.prisma.article.findUnique({ where: { id } });
+    return await this.prisma.article.findFirst({ where: { id, deletedOn: null } });
   }
 
   async findAll(): Promise<Article[]> {
-    return await this.prisma.article.findMany();
+    return await this.prisma.article.findMany({ where: { deletedOn: null } });
   }
 
-  async findMany(id: string): Promise<Article[]> {
+  async findMany(_id: string): Promise<Article[]> {
     throw new NotImplementedException();
   }
 }

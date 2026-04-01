@@ -7,19 +7,19 @@ import { Injectable } from '@nestjs/common';
 export class UserRoleRepository implements UserRoleDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Partial<UserRole>): Promise<UserRole> {
+  async create(_data: Partial<UserRole>): Promise<UserRole> {
     throw new Error('Method not implemented.');
   }
 
-  async update(data: Partial<UserRole>): Promise<UserRole> {
+  async update(_data: Partial<UserRole>): Promise<UserRole> {
     throw new Error('Method not implemented.');
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(_id: string): Promise<boolean> {
     throw new Error('Method not implemented.');
   }
 
-  async findById(id: string): Promise<UserRole | null> {
+  async findById(_id: string): Promise<UserRole | null> {
     throw new Error('Method not implemented.');
   }
 
@@ -27,7 +27,7 @@ export class UserRoleRepository implements UserRoleDatabaseAdapter {
     return await this.prisma.userRole.findMany();
   }
 
-  async findMany(id: string): Promise<UserRole[]> {
+  async findMany(_id: string): Promise<UserRole[]> {
     throw new Error('Method not implemented.');
   }
 

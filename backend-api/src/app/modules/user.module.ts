@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { UserController } from '../interface/controllers/user.controller';
 import { UserRepository } from '../infrastructure/repositories/user.repository';
 import { UserDatabaseAdapter } from '../interface/adapter/database.adapter';
@@ -15,7 +15,7 @@ import { ReviewModule } from './review.module';
 import { ArticleModule } from './article.module';
 
 @Module({
-  imports: [AddressModule, RoleModule, ReviewModule, ArticleModule],
+  imports: [AddressModule, RoleModule, forwardRef(() => ReviewModule), forwardRef(() => ArticleModule)],
   controllers: [UserController],
   providers: [
     AuthService,

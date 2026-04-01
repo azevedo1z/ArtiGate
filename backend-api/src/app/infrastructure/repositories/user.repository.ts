@@ -53,8 +53,8 @@ export class UserRepository implements UserDatabaseAdapter{
     };
     
     if (roleChanged) {
+      await this.prisma.userRole.deleteMany({ where: { userId: data.id } });
       for (const roleId of data.roleIds) {
-        await this.prisma.userRole.delete({ where: { id: data.id } });
         await this.prisma.userRole.create({
           data: { userId: data.id, roleId },
         });
@@ -77,13 +77,11 @@ export class UserRepository implements UserDatabaseAdapter{
   }
   
   async findById(id: string): Promise<User | null> {
-    return await this.prisma.user.findUnique({
-      where: { id },
-    });
+    return await this.prisma.user.findFirst({ where: { id, deletedOn: null } });
   }
-  
+
   async findAll(): Promise<User[]> {
-    return await this.prisma.user.findMany();
+    return await this.prisma.user.findMany({ where: { deletedOn: null } });
   }
   
   async findMany(): Promise<User[]> {
@@ -91,22 +89,21 @@ export class UserRepository implements UserDatabaseAdapter{
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findUnique({
-      where: { email },
-    });
+    return this.prisma.user.findFirst({ where: { email, deletedOn: null } });
   }
   
   async findByAddressId(addressId: string): Promise<User | null> {
     return await this.prisma.user.findFirst({
       where: {
         OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
+        deletedOn: null,
       },
     });
   }
 
   async findByReviewId(reviewId: string): Promise<User | null> {
     return await this.prisma.user.findFirst({
-      where: { reviews: { some: { id: reviewId } } },
+      where: { reviews: { some: { id: reviewId } }, deletedOn: null },
     });
   }
 }

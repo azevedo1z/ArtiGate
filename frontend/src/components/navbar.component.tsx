@@ -5,16 +5,22 @@ import { LogOut } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store/my.store';
 import { clearUser } from '../store/slices/user.slice';
-import toast from 'react-hot-toast';
+import { clearRoles } from '../store/slices/roles.slice';
+import { toast } from 'react-hot-toast';
 
 const Navbar: React.FC = () => {
   const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
+  const rolesData = useSelector((state: RootState) => state.roles.data);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const isReviewer =
+    rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
 
   const navLinks = [
     { name: 'Home', path: '/home' },
     { name: 'My Articles', path: '/my-articles' },
+    ...(isReviewer ? [{ name: 'My Reviews', path: '/my-reviews' }] : []),
     { name: 'About', path: '/about' },
   ];
 
@@ -35,6 +41,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     dispatch(clearUser());
+    dispatch(clearRoles());
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
     setTimeout(() => navigate('/'), 1000);

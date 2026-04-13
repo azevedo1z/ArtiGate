@@ -7,6 +7,9 @@ import {
   Post,
   Put,
   UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateRoleService } from '../../application/services/role/createRole.service';
 import { CreateRoleDTO } from '../../application/dtos/role/createRole.dto';
@@ -28,6 +31,7 @@ export class RoleController {
   ) {}
 
   @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   @UseGuards(AuthGuardService)
   async create(@Body() data: CreateRoleDTO) {
     return await this.createRoleService.execute(data);
@@ -41,7 +45,7 @@ export class RoleController {
 
   @Delete(':id')
   @UseGuards(AuthGuardService)
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return await this.deleteRoleService.execute(id);
   }
 
@@ -52,13 +56,13 @@ export class RoleController {
 
   @Get('user/:userId')
   @UseGuards(AuthGuardService)
-  async getByUserId(@Param('userId') userId: string) {
+  async getByUserId(@Param('userId', ParseUUIDPipe) userId: string) {
     return await this.getRoleService.getRoleByUserId(userId);
   }
 
   @Get(':id')
   @UseGuards(AuthGuardService)
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.getRoleService.getById(id);
   }
 }

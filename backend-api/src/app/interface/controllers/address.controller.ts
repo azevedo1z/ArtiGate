@@ -7,6 +7,9 @@ import {
   Post,
   Put,
   UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateAddressDTO } from '../../application/dtos/address/createAddress.dto';
 import { CreateAddressService } from '../../application/services/address/createAddress.service';
@@ -29,6 +32,7 @@ export class AddressController {
   ) {}
 
   @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() data: CreateAddressDTO) {
     return await this.createAddressService.execute(data);
   }
@@ -39,7 +43,7 @@ export class AddressController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return await this.deleteAddressService.execute(id);
   }
 
@@ -49,7 +53,7 @@ export class AddressController {
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.getAddressService.getById(id);
   }
 }

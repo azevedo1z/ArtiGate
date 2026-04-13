@@ -33,10 +33,7 @@ export class GetReviewService {
   async getByReviewerId(reviewerId: string) {
     const reviews = await this.adapter.findManyByUserId?.(reviewerId);
 
-    if (!reviews || reviews.length == 0)
-      throw new NotFoundException(
-        `There is no review associated with the userId "${reviewerId}".`
-      );
+    if (!reviews) return [];
 
     return reviews.map((existingReview) =>
       Review.factory(

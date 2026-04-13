@@ -31,15 +31,13 @@ export class GetRoleService {
   }
 
   async getRoleByUserId(userId: string): Promise<Role[]> {
-    const existingUserRoles = await this.userRoleAdapter.findAll();
+    const userRoles = await this.userRoleAdapter.findManyByUserId?.(userId);
 
-    const userRolesForUser = existingUserRoles.filter(
-      (userRole) => userRole.userId === userId
-    );
+    if (!userRoles?.length) return [];
 
     const roles: Role[] = [];
 
-    for (const userRole of userRolesForUser) {
+    for (const userRole of userRoles) {
       const role = await this.adapter.findById(userRole.roleId);
 
       if (role != null) roles.push(Role.factory(role.id, role.name));

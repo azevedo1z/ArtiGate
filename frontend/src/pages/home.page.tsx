@@ -85,6 +85,17 @@ const HomePage: React.FC = () => {
               onClick={() => navigate('/submit-review')}
             />
           )}
+
+          {isReviewer && (
+            <Card
+              icon={<Eye className="h-6 w-6 text-white" />}
+              title="My Reviews"
+              description="See all reviews you have submitted for conference articles."
+              iconColor="indigo"
+              className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+              onClick={() => navigate('/my-reviews')}
+            />
+          )}
         </div>
       </Container>
     </Wrapper>

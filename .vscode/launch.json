@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Backend API (Nx Serve)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npx nx serve backend-api"
+    },
+    {
+      "name": "Frontend (Nx Serve)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "npx nx serve frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Run Backend + Frontend",
+      "configurations": [
+        "Backend API (Nx Serve)",
+        "Frontend (Nx Serve)"
+      ],
+      "stopAll": true
+    }
+  ]
+}

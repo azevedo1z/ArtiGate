@@ -15,25 +15,30 @@ export class UserRepository implements UserDatabaseAdapter{
     homeAddressId: string,
     jobAddressId: string
   ): Promise<User> {
-    const user = {
-      name: data.name,
-      phone: data.phone,
-      email: data.email,
-      badgeUrl: data.badgeUrl,
-      homeAddressId,
-      jobAddressId,
-      passwordHash: data.password,
-    };
-    
-    const userRecord = await this.prisma.user.create({ data: user });
-    
-    for (const roleId of data.roleIds) {
-      await this.prisma.userRole.create({
-        data: { userId: userRecord.id, roleId },
+    return await this.prisma.$transaction(async (tx) => {
+      const userRecord = await tx.user.create({
+        data: {
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          badgeUrl: data.badgeUrl,
+          homeAddressId,
+          jobAddressId,
+          passwordHash: data.password,
+        },
       });
-    }
-    
-    return userRecord;
+
+      if (data.roleIds.length > 0) {
+        await tx.userRole.createMany({
+          data: data.roleIds.map((roleId) => ({
+            userId: userRecord.id,
+            roleId,
+          })),
+        });
+      }
+
+      return userRecord;
+    });
   }
   
   async update(
@@ -42,28 +47,29 @@ export class UserRepository implements UserDatabaseAdapter{
     jobAddressId: string | undefined,
     roleChanged: boolean
   ): Promise<User> {
-    const user = {
-      name: data.name,
-      phone: data.phone,
-      email: data.email,
-      badgeUrl: data.badgeUrl,
-      homeAddressId,
-      jobAddressId,
-      passwordHash: data.password,
-    };
-    
-    if (roleChanged) {
-      await this.prisma.userRole.deleteMany({ where: { userId: data.id } });
-      for (const roleId of data.roleIds) {
-        await this.prisma.userRole.create({
-          data: { userId: data.id, roleId },
+    return await this.prisma.$transaction(async (tx) => {
+      if (roleChanged) {
+        await tx.userRole.deleteMany({ where: { userId: data.id } });
+        await tx.userRole.createMany({
+          data: data.roleIds.map((roleId) => ({
+            userId: data.id,
+            roleId,
+          })),
         });
       }
-    }
-    
-    return await this.prisma.user.update({
-      where: { id: data.id },
-      data: user,
+
+      return await tx.user.update({
+        where: { id: data.id },
+        data: {
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          badgeUrl: data.badgeUrl,
+          homeAddressId,
+          jobAddressId,
+          passwordHash: data.password,
+        },
+      });
     });
   }
   

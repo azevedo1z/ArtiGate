@@ -19,7 +19,7 @@ export class GetUserRoleService {
   async getAll(): Promise<UserRole[]> {
     const userRoles = await this.adapter.findAll();
 
-    return [...userRoles];
+    return userRoles;
   }
 
   async getByUserId(userId: string): Promise<UserRole[]> {
@@ -37,6 +37,6 @@ export class GetUserRoleService {
         'There is no role associated with this user.'
       );
 
-    return [...existingUserRoles];
+    return existingUserRoles;
   }
 }

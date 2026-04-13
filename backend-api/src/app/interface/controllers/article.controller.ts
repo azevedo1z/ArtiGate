@@ -7,6 +7,9 @@ import {
   Post,
   Put,
   UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateArticleService } from '../../application/services/article/createArticle.service';
 import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
@@ -29,6 +32,7 @@ export class ArticleController {
   ) {}
 
   @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() data: CreateArticleDTO) {
     return await this.createArticleService.execute(data);
   }
@@ -39,7 +43,7 @@ export class ArticleController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return await this.deleteArticleService.execute(id);
   }
 
@@ -49,12 +53,12 @@ export class ArticleController {
   }
 
   @Get('author/:authorId')
-  async getByAuthorId(@Param('authorId') authorId: string) {
+  async getByAuthorId(@Param('authorId', ParseUUIDPipe) authorId: string) {
     return await this.getArticleService.getByAuthorId(authorId);
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.getArticleService.getById(id);
   }
 }

@@ -19,8 +19,8 @@ export class DeleteRoleService {
     const role = await this.adapter.findById(id);
     if (!role) throw new NotFoundException(`Role with ID "${id}" not found`);
 
-    const userRoles = await this.userRoleAdapter.findAll();
-    const hasConstraint = userRoles.some((userRole) => userRole.roleId === id);
+    const constraintCount = await this.userRoleAdapter.countByField?.('roleId', id) ?? 0;
+    const hasConstraint = constraintCount > 0;
 
     if (hasConstraint)
       throw new ConflictException(

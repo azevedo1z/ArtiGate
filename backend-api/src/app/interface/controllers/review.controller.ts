@@ -7,6 +7,9 @@ import {
   Post,
   Put,
   UseGuards,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateReviewService } from '../../application/services/review/createReview.service';
 import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
@@ -29,6 +32,7 @@ export class ReviewController {
   ) {}
 
   @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() data: CreateReviewDTO) {
     return await this.createReviewService.execute(data);
   }
@@ -39,7 +43,7 @@ export class ReviewController {
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return await this.deleteReviewService.execute(id);
   }
 
@@ -49,17 +53,17 @@ export class ReviewController {
   }
 
   @Get('reviewer/:userId')
-  async getByUserId(@Param('userId') userId: string) {
+  async getByUserId(@Param('userId', ParseUUIDPipe) userId: string) {
     return await this.getReviewService.getByReviewerId(userId);
   }
 
   @Get('article/:articleId')
-  async getByArticleId(@Param('articleId') articleId: string) {
+  async getByArticleId(@Param('articleId', ParseUUIDPipe) articleId: string) {
     return await this.getReviewService.getByArticleId(articleId);
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.getReviewService.getById(id);
   }
 }

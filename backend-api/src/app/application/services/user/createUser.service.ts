@@ -2,6 +2,7 @@ import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { User } from '../../../domain/models/user.model';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
 import {
   UserDatabaseAdapter,
   AddressDatabaseAdapter,
@@ -21,7 +22,7 @@ export class CreateUserService {
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
-    data.password = await bcrypt.hash(data.password, 10);
+    data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
 
     const existingUser = await this.adapter.findByEmail?.(data.email);
     if (existingUser)
@@ -51,10 +52,11 @@ export class CreateUserService {
   }
 
   private async validateRoles(roleIds: string[]): Promise<void> {
-    for (const roleId of roleIds) {
-      const role = await this.roleAdapter.findById(roleId);
-      if (!role)
-        throw new NotFoundException(`Role with ID "${roleId}" not found`);
+    const roles = await this.roleAdapter.findByIds?.(roleIds) ?? [];
+    if (roles.length !== roleIds.length) {
+      const foundIds = new Set(roles.map((r) => r.id));
+      const missing = roleIds.filter((id) => !foundIds.has(id));
+      throw new NotFoundException(`Role(s) not found: ${missing.join(', ')}`);
     }
   }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserDTO } from '../../dtos/user/updateUser.dto';
 import * as bcrypt from 'bcrypt';
+import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
 import {
@@ -23,7 +24,7 @@ export class UpdateUserService {
     if (!existingUser)
       throw new NotFoundException(`User with ID "${data.id}" not found`);
 
-    if (data.password) data.password = await bcrypt.hash(data.password, 10);
+    if (data.password) data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
 
     const homeAddressId = await this.handleNewAddressCreation(data.homeAddress);
     const jobAddressId = await this.handleNewAddressCreation(data.jobAddress);
@@ -50,10 +51,11 @@ export class UpdateUserService {
 
   private async validateRoles(roleIds: string[]): Promise<boolean> {
     if (roleIds?.length) {
-      for (const roleId of roleIds) {
-        const role = await this.roleAdapter.findById(roleId);
-        if (!role)
-          throw new NotFoundException(`Role with ID "${roleId}" not found`);
+      const roles = await this.roleAdapter.findByIds?.(roleIds) ?? [];
+      if (roles.length !== roleIds.length) {
+        const foundIds = new Set(roles.map((r) => r.id));
+        const missing = roleIds.filter((id) => !foundIds.has(id));
+        throw new NotFoundException(`Role(s) not found: ${missing.join(', ')}`);
       }
       return true;
     }

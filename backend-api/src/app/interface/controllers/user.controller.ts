@@ -8,6 +8,9 @@ import {
   Put,
   Delete,
   Request,
+  HttpCode,
+  HttpStatus,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { CreateUserService } from '../../application/services/user/createUser.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
@@ -32,11 +35,13 @@ export class UserController {
   ) {}
 
   @Post('signIn')
+  @HttpCode(HttpStatus.OK)
   async signIn(@Body() data: AuthUserDTO) {
     return await this.authService.signIn(data);
   }
 
   @Post('create')
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() data: CreateUserDTO) {
     return await this.createUserService.execute(data);
   }
@@ -51,7 +56,7 @@ export class UserController {
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', ParseUUIDPipe) id: string) {
     return await this.deleteUserService.execute(id);
   }
 
@@ -72,7 +77,7 @@ export class UserController {
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', ParseUUIDPipe) id: string) {
     return await this.getUserService.getById(id);
   }
 }

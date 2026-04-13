@@ -9,7 +9,7 @@ export class GetArticleAuthorService {
   async getArticleByAuthorId(authorId: string): Promise<ArticleAuthor[]> {
     const articleAuthors = await this.adapter.findMany(authorId);
 
-    return [...articleAuthors];
+    return articleAuthors;
   }
 
   async getByArticleId(articleId: string): Promise<ArticleAuthor[]> {

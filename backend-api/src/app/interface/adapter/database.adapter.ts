@@ -28,6 +28,8 @@ export abstract class DatabaseAdapter<T> {
 
   abstract delete(id: string): Promise<boolean>;
 
+  abstract findByIds?(ids: string[]): Promise<T[]>;
+  abstract countByField?(field: string, value: string): Promise<number>;
   abstract findManyByUserId?(userId: string): Promise<T[]>;
   abstract findByName?(name: string): Promise<T | null>;
   abstract findByEmail?(email: string): Promise<T | null>;

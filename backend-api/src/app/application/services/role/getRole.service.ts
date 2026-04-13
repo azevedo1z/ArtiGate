@@ -35,14 +35,9 @@ export class GetRoleService {
 
     if (!userRoles?.length) return [];
 
-    const roles: Role[] = [];
+    const roleIds = userRoles.map((ur) => ur.roleId);
+    const roles = await this.adapter.findByIds?.(roleIds) ?? [];
 
-    for (const userRole of userRoles) {
-      const role = await this.adapter.findById(userRole.roleId);
-
-      if (role != null) roles.push(Role.factory(role.id, role.name));
-    }
-
-    return roles;
+    return roles.map((role) => Role.factory(role.id, role.name));
   }
 }

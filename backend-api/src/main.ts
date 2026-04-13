@@ -8,11 +8,11 @@ import {
 } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { GlobalExceptionFilter } from './app/shared/filters/http-exception.filter';
+import cors from 'cors';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
-  const cors = require('cors');
 
   app.useGlobalFilters(new GlobalExceptionFilter());
 

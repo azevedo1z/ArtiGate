@@ -1,23 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsArray, IsOptional, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsString, IsEmail, IsArray, IsOptional, ValidateNested, MinLength, IsUrl } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 import { CreateAddressDTO } from '../address/createAddress.dto';
 
 export class CreateUserDTO {
   @ApiProperty()
   @IsString()
+  @Transform(({ value }) => value?.trim())
   name: string;
 
   @ApiProperty()
   @IsEmail()
+  @Transform(({ value }) => value?.trim().toLowerCase())
   email: string;
 
   @ApiProperty()
   @IsString()
+  @Transform(({ value }) => value?.trim())
   phone: string;
 
   @ApiProperty()
-  @IsString()
+  @IsUrl()
   @IsOptional()
   badgeUrl: string;
 
@@ -38,6 +41,7 @@ export class CreateUserDTO {
 
   @ApiProperty()
   @IsString()
+  @MinLength(8)
   password: string;
 
   constructor(

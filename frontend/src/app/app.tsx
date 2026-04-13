@@ -10,6 +10,7 @@ import AboutPage from '../pages/about.page';
 import SubmitArticlePage from '../pages/submit-article.page';
 import MyArticlesPage from '../pages/my-articles.page';
 import SubmitReviewPage from '../pages/submit-review.page';
+import MyReviewsPage from '../pages/my-reviews.page';
 
 export function App() {
   return (
@@ -49,6 +50,14 @@ export function App() {
             element={
               <PrivateRoute>
                 <SubmitReviewPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/my-reviews"
+            element={
+              <PrivateRoute>
+                <MyReviewsPage />
               </PrivateRoute>
             }
           />

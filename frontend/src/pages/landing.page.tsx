@@ -11,6 +11,7 @@ import {
   Users,
   Star,
 } from 'lucide-react';
+import { ROUTES } from '../config/routes.config';
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const LandingPage: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <Button
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate(ROUTES.SIGNUP)}
             variantClassName="primary"
             sizeClassName="lg"
             leadingIcon={<UserPlus className="h-5 w-5" />}
@@ -48,7 +49,7 @@ const LandingPage: React.FC = () => {
             Get Started
           </Button>
           <Button
-            onClick={() => navigate('/login')}
+            onClick={() => navigate(ROUTES.LOGIN)}
             variantClassName="secondary"
             sizeClassName="lg"
             leadingIcon={<LogIn className="h-5 w-5" />}

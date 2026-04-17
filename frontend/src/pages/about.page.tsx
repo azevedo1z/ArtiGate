@@ -14,6 +14,7 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Button from '../components/button.component';
 import Card from '../components/card.component';
+import { ROUTES } from '../config/routes.config';
 
 const AboutPage: React.FC = () => {
   const navigate = useNavigate();
@@ -220,7 +221,7 @@ const AboutPage: React.FC = () => {
         <div className="text-center">
           <Button
             variantClassName="secondary"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate(ROUTES.HOME)}
             leadingIcon={<ArrowLeft className="h-5 w-5" />}
           >
             Back to Home

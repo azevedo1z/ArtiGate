@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-type Variant = 'primary' | 'secondary' | 'danger';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type Size = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -15,15 +15,20 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantClasses: Record<Variant, string> = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-md hover:shadow-lg',
-  secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+  primary:
+    'bg-primary-500 text-snow hover:bg-primary-600 active:bg-primary-700 focus-visible:ring-primary-500',
+  secondary:
+    'bg-snow text-ink-700 border border-ink-200 hover:bg-ink-50 hover:border-ink-300 focus-visible:ring-ink-300',
+  ghost:
+    'bg-transparent text-primary-500 hover:bg-primary-50 focus-visible:ring-primary-500',
+  danger:
+    'bg-red-600 text-snow hover:bg-red-700 focus-visible:ring-red-500',
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: 'px-3 py-2 text-sm',
-  md: 'px-4 py-3',
-  lg: 'px-6 py-4 text-lg',
+  sm: 'px-3 py-1.5 text-sm',
+  md: 'px-4 py-2.5 text-sm',
+  lg: 'px-6 py-3 text-base',
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -36,14 +41,15 @@ const Button: React.FC<ButtonProps> = ({
   trailingIcon,
   fullWidth = false,
   disabled = false,
+  className = '',
   ...props
 }) => {
   const baseClassName =
-    'rounded-lg font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 transform transition duration-200 hover:scale-[1.02] flex items-center justify-center gap-2';
+    'inline-flex items-center justify-center gap-2 rounded-md font-medium tracking-tight transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-snow';
   const fullWidthClassName = 'w-full';
-  const disabledClassName = 'opacity-50 cursor-not-allowed transform-none';
+  const disabledClassName = 'opacity-50 cursor-not-allowed';
   const loadingSpinnerClassName =
-    'animate-spin rounded-full h-5 w-5 border-b-2 border-white';
+    'animate-spin rounded-full h-4 w-4 border-2 border-current border-t-transparent';
 
   const finalClassName = [
     baseClassName,
@@ -51,6 +57,7 @@ const Button: React.FC<ButtonProps> = ({
     sizeClasses[sizeClassName],
     fullWidth && fullWidthClassName,
     (disabled || isLoading) && disabledClassName,
+    className,
   ]
     .filter(Boolean)
     .join(' ');
@@ -63,7 +70,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       {isLoading ? (
         <>
-          <div className={loadingSpinnerClassName}></div>
+          <span className={loadingSpinnerClassName}></span>
           {loadingText}
         </>
       ) : (

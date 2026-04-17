@@ -49,54 +49,57 @@ const HomePage: React.FC = () => {
 
   return (
     <Wrapper centered={false}>
-      <Container size="lg" className="space-y-10 py-10">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+      <Container size="lg" className="space-y-10 py-12">
+        <div className="space-y-1.5">
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+            Dashboard
+          </p>
+          <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
             Welcome
             {userData?._name ? `, ${userData._name.split(' ')[0]}` : ''}.
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-ink-500 text-sm">
             What would you like to do today?
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <Card
-            icon={<FileText className="h-6 w-6 text-white" />}
+            icon={<FileText className="h-5 w-5" />}
             title="Submit Article"
             description="Submit a new article for conference review and publication."
-            iconColor="blue"
-            className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+            iconTone="primary"
+            className="cursor-pointer"
             onClick={() => navigate(ROUTES.SUBMIT_ARTICLE)}
           />
 
           <Card
-            icon={<BookOpen className="h-6 w-6 text-white" />}
+            icon={<BookOpen className="h-5 w-5" />}
             title="My Articles"
             description="View and manage the articles you have submitted so far."
-            iconColor="indigo"
-            className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+            iconTone="ink"
+            className="cursor-pointer"
             onClick={() => navigate(ROUTES.MY_ARTICLES)}
           />
 
           {isReviewer && (
             <Card
-              icon={<Eye className="h-6 w-6 text-white" />}
+              icon={<Eye className="h-5 w-5" />}
               title="Review Article"
               description="Review submitted articles and provide your expert feedback."
-              iconColor="purple"
-              className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+              iconTone="accent"
+              className="cursor-pointer"
               onClick={() => navigate(ROUTES.SUBMIT_REVIEW)}
             />
           )}
 
           {isReviewer && (
             <Card
-              icon={<Eye className="h-6 w-6 text-white" />}
+              icon={<Eye className="h-5 w-5" />}
               title="My Reviews"
               description="See all reviews you have submitted for conference articles."
-              iconColor="indigo"
-              className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
+              iconTone="accent"
+              className="cursor-pointer"
               onClick={() => navigate(ROUTES.MY_REVIEWS)}
             />
           )}

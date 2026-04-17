@@ -66,7 +66,7 @@ const SubmitReviewPage: React.FC = () => {
         score,
         commentary,
       });
-      toast.success('Review submitted successfully!');
+      toast.success('Review submitted successfully.');
       navigate(ROUTES.HOME);
     } catch (error) {
       toast.error(
@@ -81,7 +81,7 @@ const SubmitReviewPage: React.FC = () => {
     return (
       <Wrapper centered={false}>
         <Container size="sm" className="flex justify-center items-center py-24">
-          <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-purple-600 border-t-transparent" />
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
         </Container>
       </Wrapper>
     );
@@ -90,28 +90,31 @@ const SubmitReviewPage: React.FC = () => {
   return (
     <Wrapper centered={false}>
       <Container size="sm" noDefaultPadding className="space-y-8 px-4 py-10">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+            Peer review
+          </p>
+          <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
             Submit Review
           </h1>
-          <p className="text-gray-500 mt-1 text-sm">
+          <p className="text-ink-500 text-sm">
             Evaluate a submitted article and provide your feedback.
           </p>
         </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 divide-y divide-gray-100">
+        <div className="bg-snow rounded-lg border border-ink-100 divide-y divide-ink-100">
           <form onSubmit={handleSubmit}>
             <section className="p-6 space-y-4">
-              <div className="flex items-center gap-2 mb-1">
-                <FileText className="h-4 w-4 text-gray-400" />
-                <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-ink-400" />
+                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
                   Article
                 </h2>
               </div>
               <div className="space-y-1.5">
                 <label
                   htmlFor="articleSelect"
-                  className="text-sm font-medium text-gray-700 block"
+                  className="text-xs font-medium text-ink-600 uppercase tracking-wide block"
                 >
                   Select article <span className="text-red-500">*</span>
                 </label>
@@ -126,22 +129,22 @@ const SubmitReviewPage: React.FC = () => {
               </div>
             </section>
 
-            <section className="p-6 space-y-4">
-              <div className="flex items-center gap-2 mb-1">
-                <Eye className="h-4 w-4 text-gray-400" />
-                <h2 className="text-sm font-semibold text-gray-700 uppercase tracking-wide">
+            <section className="p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <Eye className="h-4 w-4 text-ink-400" />
+                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
                   Evaluation
                 </h2>
               </div>
 
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-700">
+                  <label className="text-xs font-medium text-ink-600 uppercase tracking-wide">
                     Score <span className="text-red-500">*</span>
                   </label>
-                  <span className="text-2xl font-bold text-purple-600">
+                  <span className="text-2xl font-semibold text-primary-600 tabular-nums">
                     {score}
-                    <span className="text-sm font-normal text-gray-400">
+                    <span className="text-sm font-normal text-ink-400">
                       /10
                     </span>
                   </span>
@@ -153,9 +156,9 @@ const SubmitReviewPage: React.FC = () => {
                   step={1}
                   value={score}
                   onChange={(e) => setScore(Number(e.target.value))}
-                  className="w-full h-2 accent-purple-600 cursor-pointer"
+                  className="w-full h-1.5 accent-primary-500 cursor-pointer"
                 />
-                <div className="flex justify-between text-xs text-gray-400">
+                <div className="flex justify-between text-[11px] text-ink-400">
                   <span>1 — Poor</span>
                   <span>10 — Excellent</span>
                 </div>

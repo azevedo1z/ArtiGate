@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
-  Info,
   Users,
   FileText,
   Eye,
@@ -21,208 +20,218 @@ const AboutPage: React.FC = () => {
 
   return (
     <Wrapper centered={false}>
-      <Container size="lg" className="space-y-8 py-8">
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
-            <Info className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            About ArtiGate
+      <Container size="lg" className="space-y-12 py-12">
+        <div className="space-y-2 max-w-2xl">
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+            About
+          </p>
+          <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
+            A conference platform built for{' '}
+            <span className="text-primary-500">thoughtful review</span>
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            A comprehensive conference management system designed to streamline
-            participant registration and article selection processes for
-            academic conferences.
+          <p className="text-ink-500 text-sm leading-relaxed">
+            ArtiGate streamlines participant registration and article selection
+            for academic conferences, connecting authors, reviewers, and
+            organizers through a single clean workflow.
           </p>
         </div>
 
-        <div className="space-y-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center">
-            How It Works
-          </h2>
+        <div className="space-y-5">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+              Workflow
+            </p>
+            <h2 className="text-2xl font-semibold text-ink-800 tracking-tight">
+              How it works
+            </h2>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card
-              icon={<Users className="h-6 w-6 text-white" />}
+              icon={<Users className="h-5 w-5" />}
               title="Participant Registration"
-              description="Participants register through web forms providing personal information, contact details, employment data, and payment information."
-              iconColor="blue"
+              description="Participants register through web forms providing personal, contact, and payment information."
+              iconTone="primary"
             />
-
             <Card
-              icon={<CheckCircle className="h-6 w-6 text-white" />}
+              icon={<CheckCircle className="h-5 w-5" />}
               title="Instant Confirmation"
-              description="Upon registration, participants receive immediate confirmation with a unique registration number and printed badges/certificates."
-              iconColor="green"
+              description="Upon registration, participants receive a unique number and printed badges or certificates."
+              iconTone="accent"
             />
-
             <Card
-              icon={<FileText className="h-6 w-6 text-white" />}
+              icon={<FileText className="h-5 w-5" />}
               title="Article Submission"
-              description="Registered participants can submit articles with author details, abstracts, and PDF uploads through our secure web interface."
-              iconColor="purple"
+              description="Registered participants submit articles with author details, abstracts, and PDF uploads."
+              iconTone="primary"
             />
-
             <Card
-              icon={<Eye className="h-6 w-6 text-white" />}
-              title="Peer Review Process"
-              description="Articles are distributed to 5 randomly selected volunteer reviewers for comprehensive evaluation and feedback."
-              iconColor="indigo"
+              icon={<Eye className="h-5 w-5" />}
+              title="Peer Review"
+              description="Articles are distributed to 5 randomly selected volunteer reviewers for evaluation."
+              iconTone="accent"
             />
-
             <Card
-              icon={<Clock className="h-6 w-6 text-white" />}
+              icon={<Clock className="h-5 w-5" />}
               title="5-Day Review Period"
-              description="Reviewers have 5 business days to provide ratings (1-10) and detailed comments for authors via our review portal."
-              iconColor="red"
+              description="Reviewers have 5 business days to provide ratings (1-10) and detailed comments."
+              iconTone="ink"
             />
-
             <Card
-              icon={<Award className="h-6 w-6 text-white" />}
+              icon={<Award className="h-5 w-5" />}
               title="Final Selection"
-              description="Top 20 articles are selected based on average scores from at least 3 reviews, ensuring quality and fairness."
-              iconColor="yellow"
+              description="Top 20 articles are selected based on average scores from at least 3 reviews."
+              iconTone="primary"
             />
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Key Features
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Automated Registration
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Streamlined web-based registration with instant confirmation
-                    and unique participant numbering.
-                  </p>
-                </div>
-              </div>
+        <div className="bg-snow rounded-lg border border-ink-100 p-6 space-y-5">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+              Capabilities
+            </p>
+            <h2 className="text-2xl font-semibold text-ink-800 tracking-tight">
+              Key features
+            </h2>
+          </div>
 
-              <div className="flex items-start space-x-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Multi-Author Support
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Support for articles with multiple authors, with automatic
-                    validation against registration data.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start space-x-3">
-                <CheckCircle className="h-5 w-5 text-green-500 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Random Reviewer Assignment
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Fair and unbiased article distribution to qualified
-                    volunteer reviewers.
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-4 w-4 text-accent-500 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  Automated Registration
+                </h3>
+                <p className="text-ink-500 text-sm mt-0.5">
+                  Web-based registration with instant confirmation and unique
+                  participant numbering.
+                </p>
               </div>
             </div>
 
-            <div className="space-y-3">
-              <div className="flex items-start space-x-3">
-                <Mail className="h-5 w-5 text-blue-500 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Automated Email Notifications
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Instant feedback delivery to authors and automated reviewer
-                    assignment notifications.
-                  </p>
-                </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-4 w-4 text-accent-500 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  Multi-Author Support
+                </h3>
+                <p className="text-ink-500 text-sm mt-0.5">
+                  Support for articles with multiple authors, validated against
+                  registration data.
+                </p>
               </div>
+            </div>
 
-              <div className="flex items-start space-x-3">
-                <Clock className="h-5 w-5 text-orange-500 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Deadline Management
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Automatic deadline tracking with fallback reviewer
-                    assignment for timely reviews.
-                  </p>
-                </div>
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-4 w-4 text-accent-500 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  Random Reviewer Assignment
+                </h3>
+                <p className="text-ink-500 text-sm mt-0.5">
+                  Fair and unbiased article distribution to qualified volunteer
+                  reviewers.
+                </p>
               </div>
+            </div>
 
-              <div className="flex items-start space-x-3">
-                <Award className="h-5 w-5 text-purple-500 mt-1 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-gray-900">
-                    Merit-Based Selection
-                  </h3>
-                  <p className="text-gray-600 text-sm">
-                    Transparent ranking system based on average reviewer scores
-                    with minimum review requirements.
-                  </p>
-                </div>
+            <div className="flex items-start gap-3">
+              <Mail className="h-4 w-4 text-primary-500 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  Email Notifications
+                </h3>
+                <p className="text-ink-500 text-sm mt-0.5">
+                  Instant feedback delivery to authors and automated reviewer
+                  assignment notifications.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Clock className="h-4 w-4 text-primary-500 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  Deadline Management
+                </h3>
+                <p className="text-ink-500 text-sm mt-0.5">
+                  Automatic deadline tracking with fallback reviewer assignment
+                  for timely reviews.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <Award className="h-4 w-4 text-accent-500 mt-1 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  Merit-Based Selection
+                </h3>
+                <p className="text-ink-500 text-sm mt-0.5">
+                  Transparent ranking system based on average reviewer scores.
+                </p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
-          <h2 className="text-xl font-bold text-gray-900 mb-3">
-            Review Process
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-gray-700">
-            <div className="bg-white p-3 rounded-lg">
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                <span role="img" aria-label="memo">📝</span> Submission
-              </h3>
-              <p className="text-xs">
-                Registered participants submit articles with author details, abstracts, and PDFs.
-              </p>
-            </div>
+        <div className="space-y-5">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+              Process
+            </p>
+            <h2 className="text-2xl font-semibold text-ink-800 tracking-tight">
+              Review cycle
+            </h2>
+          </div>
 
-            <div className="bg-white p-3 rounded-lg">
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                <span role="img" aria-label="reviewers">👥</span> Reviewers
-              </h3>
-              <p className="text-xs">
-                5 volunteer reviewers randomly assigned per article.
-              </p>
-            </div>
-
-            <div className="bg-white p-3 rounded-lg">
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                <span role="img" aria-label="clock">⏰</span> Timeline
-              </h3>
-              <p className="text-xs">
-                5-day review period with minimum 3 reviews required.
-              </p>
-            </div>
-
-            <div className="bg-white p-3 rounded-lg">
-              <h3 className="font-semibold text-gray-900 text-sm mb-1">
-                <span role="img" aria-label="trophy">🏆</span> Selection
-              </h3>
-              <p className="text-xs">
-                Top 20 articles selected by average scores.
-              </p>
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {[
+              {
+                step: '01',
+                title: 'Submission',
+                body: 'Participants submit articles with author details, abstracts, and PDFs.',
+              },
+              {
+                step: '02',
+                title: 'Reviewers',
+                body: '5 volunteer reviewers are randomly assigned per article.',
+              },
+              {
+                step: '03',
+                title: 'Timeline',
+                body: '5-day review period with a minimum of 3 reviews required.',
+              },
+              {
+                step: '04',
+                title: 'Selection',
+                body: 'Top 20 articles are selected by average reviewer score.',
+              },
+            ].map((item) => (
+              <div
+                key={item.step}
+                className="bg-snow rounded-lg border border-ink-100 p-5 space-y-2"
+              >
+                <p className="text-[11px] font-mono text-primary-500 tracking-wider">
+                  {item.step}
+                </p>
+                <h3 className="text-sm font-semibold text-ink-800">
+                  {item.title}
+                </h3>
+                <p className="text-ink-500 text-xs leading-relaxed">
+                  {item.body}
+                </p>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="text-center">
+        <div className="pt-2">
           <Button
-            variantClassName="secondary"
+            variantClassName="ghost"
             onClick={() => navigate(ROUTES.HOME)}
-            leadingIcon={<ArrowLeft className="h-5 w-5" />}
+            leadingIcon={<ArrowLeft className="h-4 w-4" />}
           >
             Back to Home
           </Button>

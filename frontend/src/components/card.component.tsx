@@ -1,36 +1,34 @@
 import React, { ReactNode } from 'react';
 
-type IconColor = 'blue' | 'purple' | 'indigo' | 'green' | 'red' | 'yellow';
+type IconTone = 'primary' | 'accent' | 'ink';
 
 interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   icon: ReactNode;
   title: string;
   description: string;
-  iconColor?: IconColor;
+  iconTone?: IconTone;
 }
 
-const iconColorClasses: Record<IconColor, string> = {
-  blue: 'bg-blue-600 shadow-md',
-  purple: 'bg-purple-600 shadow-md',
-  indigo: 'bg-indigo-600 shadow-md',
-  green: 'bg-green-600 shadow-md',
-  red: 'bg-red-600 shadow-md',
-  yellow: 'bg-yellow-500 shadow-md',
+const iconToneClasses: Record<IconTone, string> = {
+  primary: 'bg-primary-50 text-primary-600',
+  accent: 'bg-accent-50 text-accent-600',
+  ink: 'bg-ink-50 text-ink-700',
 };
 
 const Card: React.FC<CardProps> = ({
   icon,
   title,
   description,
-  iconColor = 'blue',
+  iconTone = 'primary',
   className = '',
   ...props
 }) => {
   const baseClassName =
-    'bg-white p-6 rounded-2xl shadow-xl border border-gray-100 hover:shadow-2xl transition duration-300';
-  const iconClassName = `h-12 w-12 rounded-lg flex items-center justify-center mb-4 mx-auto ${iconColorClasses[iconColor]}`;
-  const titleClassName = 'text-lg font-semibold text-gray-900 mb-2';
-  const descriptionClassName = 'text-gray-600 text-sm';
+    'bg-snow p-6 rounded-lg border border-ink-100 hover:border-primary-200 transition-colors duration-150';
+  const iconClassName = `h-10 w-10 rounded-md flex items-center justify-center mb-4 ${iconToneClasses[iconTone]}`;
+  const titleClassName =
+    'text-base font-semibold text-ink-800 mb-1.5 tracking-tight';
+  const descriptionClassName = 'text-ink-500 text-sm leading-relaxed';
 
   const finalClassName = [baseClassName, className].filter(Boolean).join(' ');
 

@@ -13,7 +13,7 @@ const Wrapper: React.FC<WrapperProps> = ({
   className = '',
   ...props
 }) => {
-  const baseClassName = 'w-full';
+  const baseClassName = 'w-full bg-snow';
   const heightClassName = 'min-h-screen';
   const centerClassName = 'flex items-center justify-center';
 

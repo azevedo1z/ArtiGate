@@ -5,6 +5,12 @@ import {
   ArticleAuthorDatabaseAdapter,
 } from '../../../interface/adapter/database.adapter';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
+import {
+  PaginatedResult,
+  PaginationDTO,
+  buildPaginatedResult,
+  normalizePagination,
+} from '../../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class GetArticleService {
@@ -26,16 +32,22 @@ export class GetArticleService {
     );
   }
 
-  async getAll(): Promise<Article[]> {
-    const articles = await this.adapter.findAll();
+  async getAll(pagination?: PaginationDTO): Promise<PaginatedResult<Article>> {
+    const { page, limit } = normalizePagination(pagination);
+    const [articles, total] = await Promise.all([
+      this.adapter.findAll(pagination),
+      this.adapter.countAll?.() ?? Promise.resolve(0),
+    ]);
 
-    return articles.map((existingArticle) =>
+    const data = articles.map((existingArticle) =>
       Article.factory(
         existingArticle.id,
         existingArticle.summary,
         existingArticle.scoreAvg
       )
     );
+
+    return buildPaginatedResult(data, total, page, limit);
   }
 
   async getByAuthorId(authorId: string): Promise<Article[]> {

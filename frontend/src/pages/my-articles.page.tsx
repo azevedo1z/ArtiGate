@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import {
   FileText,
@@ -16,14 +15,17 @@ import {
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Button from '../components/button.component';
-import { RootState } from '../store/my.store';
 import { articleService } from '../services/article.service';
 import { reviewService } from '../services/review.service';
 import { Article, Review } from '../shared/types/types.shared';
+import { useUser } from '../hooks/useUser';
+import { ROUTES } from '../config/routes.config';
+import { scoreColor } from '../utils/score.util';
+import { extractErrorMessage } from '../utils/error.util';
 
 const MyArticlesPage: React.FC = () => {
   const navigate = useNavigate();
-  const userData = useSelector((state: RootState) => state.user.data);
+  const userData = useUser();
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,8 +40,8 @@ const MyArticlesPage: React.FC = () => {
       try {
         const data = await articleService.getMyArticles(userData._id);
         setArticles(data);
-      } catch {
-        toast.error('Failed to load your articles.');
+      } catch (error) {
+        toast.error(extractErrorMessage(error, 'Failed to load your articles.'));
       } finally {
         setIsLoading(false);
       }
@@ -62,17 +64,13 @@ const MyArticlesPage: React.FC = () => {
     try {
       const data = await reviewService.getByArticleId(articleId);
       setReviewsMap((prev) => ({ ...prev, [articleId]: data }));
-    } catch {
-      toast.error('Failed to load reviews for this article.');
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(error, 'Failed to load reviews for this article.')
+      );
     } finally {
       setLoadingReviews(null);
     }
-  };
-
-  const scoreColor = (score: number) => {
-    if (score >= 8) return 'text-green-700 bg-green-50 border-green-200';
-    if (score >= 5) return 'text-amber-700 bg-amber-50 border-amber-200';
-    return 'text-red-700 bg-red-50 border-red-200';
   };
 
   return (
@@ -93,7 +91,7 @@ const MyArticlesPage: React.FC = () => {
           </div>
           <Button
             variantClassName="primary"
-            onClick={() => navigate('/submit-article')}
+            onClick={() => navigate(ROUTES.SUBMIT_ARTICLE)}
             leadingIcon={<Plus className="h-4 w-4" />}
           >
             Submit New
@@ -117,7 +115,7 @@ const MyArticlesPage: React.FC = () => {
             </div>
             <Button
               variantClassName="primary"
-              onClick={() => navigate('/submit-article')}
+              onClick={() => navigate(ROUTES.SUBMIT_ARTICLE)}
               leadingIcon={<Plus className="h-4 w-4" />}
             >
               Submit your first article
@@ -240,7 +238,7 @@ const MyArticlesPage: React.FC = () => {
         <div className="pt-2">
           <Button
             variantClassName="secondary"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate(ROUTES.HOME)}
             leadingIcon={<ArrowLeft className="h-4 w-4" />}
           >
             Back to Home

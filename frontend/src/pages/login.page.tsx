@@ -9,6 +9,8 @@ import Button from '../components/button.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import { authService } from '../services/auth.service';
+import { ROUTES } from '../config/routes.config';
+import { extractErrorMessage } from '../utils/error.util';
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -29,9 +31,14 @@ const LoginPage: React.FC = () => {
       dispatch(setUser(userData));
 
       toast.success('Login successful! Welcome back.');
-      setTimeout(() => navigate('/home'), 1000);
-    } catch {
-      toast.error('An error occurred during login. Please try again or check your credentials.');
+      navigate(ROUTES.HOME);
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(
+          error,
+          'An error occurred during login. Please try again or check your credentials.'
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -98,7 +105,7 @@ const LoginPage: React.FC = () => {
                 type="button"
                 variantClassName="secondary"
                 fullWidth
-                onClick={() => navigate('/')}
+                onClick={() => navigate(ROUTES.LANDING)}
                 leadingIcon={<ArrowLeft className="h-5 w-5" />}
               >
                 Go back
@@ -111,7 +118,7 @@ const LoginPage: React.FC = () => {
           <p className="text-sm text-gray-600">
             Don't have an account?{' '}
             <button
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate(ROUTES.SIGNUP)}
               className="font-medium text-blue-600 hover:text-blue-500 transition duration-200"
             >
               Sign up here

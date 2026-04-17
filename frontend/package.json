@@ -2,6 +2,10 @@
   "name": "@arti-gate/frontend",
   "version": "0.0.1",
   "private": true,
+  "nx": {
+    "name": "frontend",
+    "tags": ["scope:frontend", "type:app"]
+  },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "react-redux": "^9.2.0"

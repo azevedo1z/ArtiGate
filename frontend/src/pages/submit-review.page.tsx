@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { Eye, ArrowLeft, Send, FileText } from 'lucide-react';
 import Button from '../components/button.component';
@@ -8,15 +7,16 @@ import Textarea from '../components/textarea.component';
 import Select from '../components/select.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import { RootState } from '../store/my.store';
 import { articleService } from '../services/article.service';
 import { reviewService } from '../services/review.service';
 import { Article } from '../shared/types/types.shared';
+import { useUser } from '../hooks/useUser';
+import { ROUTES } from '../config/routes.config';
+import { extractErrorMessage } from '../utils/error.util';
 
 const SubmitReviewPage: React.FC = () => {
   const navigate = useNavigate();
-  const userData = useSelector((state: RootState) => state.user.data);
-  const rolesData = useSelector((state: RootState) => state.roles.data);
+  const userData = useUser();
 
   const [articles, setArticles] = useState<Article[]>([]);
   const [articleId, setArticleId] = useState('');
@@ -25,29 +25,20 @@ const SubmitReviewPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
 
-  const isReviewer =
-    rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
-
   useEffect(() => {
-    if (!isReviewer) {
-      toast.error('Only reviewers can access this page.');
-      navigate('/home');
-      return;
-    }
-
     const fetchArticles = async () => {
       try {
-        const data = await articleService.getAll();
-        setArticles(data);
-      } catch {
-        toast.error('Failed to load articles.');
+        const response = await articleService.getAll({ limit: 100 });
+        setArticles(response.data);
+      } catch (error) {
+        toast.error(extractErrorMessage(error, 'Failed to load articles.'));
       } finally {
         setIsFetching(false);
       }
     };
 
     fetchArticles();
-  }, [isReviewer, navigate]);
+  }, []);
 
   const articleOptions = articles.map((a) => ({
     label: a._summary.length > 70 ? `${a._summary.slice(0, 70)}…` : a._summary,
@@ -76,9 +67,11 @@ const SubmitReviewPage: React.FC = () => {
         commentary,
       });
       toast.success('Review submitted successfully!');
-      navigate('/home');
-    } catch {
-      toast.error('Failed to submit review. Please try again.');
+      navigate(ROUTES.HOME);
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(error, 'Failed to submit review. Please try again.')
+      );
     } finally {
       setIsLoading(false);
     }
@@ -194,7 +187,7 @@ const SubmitReviewPage: React.FC = () => {
                 type="button"
                 variantClassName="secondary"
                 fullWidth
-                onClick={() => navigate('/home')}
+                onClick={() => navigate(ROUTES.HOME)}
                 leadingIcon={<ArrowLeft className="h-4 w-4" />}
               >
                 Cancel

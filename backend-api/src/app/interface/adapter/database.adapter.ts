@@ -7,6 +7,7 @@ import {
   User,
   UserRole,
 } from '@prisma/client';
+import { PaginationDTO } from '../../shared/dtos/pagination.dto';
 
 export abstract class DatabaseAdapter<T> {
   abstract create(
@@ -23,7 +24,8 @@ export abstract class DatabaseAdapter<T> {
   ): Promise<T>;
 
   abstract findById(id: string): Promise<T | null>;
-  abstract findAll(): Promise<T[]>;
+  abstract findAll(pagination?: PaginationDTO): Promise<T[]>;
+  abstract countAll?(): Promise<number>;
   abstract findMany(contextParam: string): Promise<T[]>;
 
   abstract delete(id: string): Promise<boolean>;

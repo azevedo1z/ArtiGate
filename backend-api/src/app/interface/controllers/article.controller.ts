@@ -6,11 +6,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { PaginationDTO } from '../../shared/dtos/pagination.dto';
 import { CreateArticleService } from '../../application/services/article/createArticle.service';
 import { CreateArticleDTO } from '../../application/dtos/article/createArticle.dto';
 import { GetArticleService } from '../../application/services/article/getArticle.service';
@@ -48,8 +50,8 @@ export class ArticleController {
   }
 
   @Get('all')
-  async getAll() {
-    return await this.getArticleService.getAll();
+  async getAll(@Query() pagination: PaginationDTO) {
+    return await this.getArticleService.getAll(pagination);
   }
 
   @Get('author/:authorId')

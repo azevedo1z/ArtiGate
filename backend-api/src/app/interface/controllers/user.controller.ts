@@ -4,6 +4,7 @@ import {
   Body,
   Get,
   Param,
+  Query,
   UseGuards,
   Put,
   Delete,
@@ -12,6 +13,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { PaginationDTO } from '../../shared/dtos/pagination.dto';
 import { CreateUserService } from '../../application/services/user/createUser.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { GetUserService } from '../../application/services/user/getUser.service';
@@ -63,8 +65,8 @@ export class UserController {
   @Get('all')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async getAll() {
-    return await this.getUserService.getAll();
+  async getAll(@Query() pagination: PaginationDTO) {
+    return await this.getUserService.getAll(pagination);
   }
 
   @Get('me')

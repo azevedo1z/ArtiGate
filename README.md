@@ -77,6 +77,26 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 | Article | CRUD, find by author |
 | Review | CRUD, find by reviewer, find by article |
 
+## Screenshots
+
+### Landing Page
+![Landing Page](docs/screenshots/1.png)
+
+### Login
+![Login](docs/screenshots/2.png)
+
+### Dashboard
+![Dashboard](docs/screenshots/3.png)
+
+### Submit Article
+![Submit Article](docs/screenshots/4.png)
+
+### Submit Review
+![Submit Review](docs/screenshots/5.png)
+
+### About
+![About](docs/screenshots/6.png)
+
 ## Getting Started
 
 ### Prerequisites

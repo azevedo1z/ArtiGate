@@ -102,13 +102,16 @@ const SignUpPage: React.FC = () => {
 
       await userService.createUser(prepareUserData(formData, roleIds));
 
-      const signInData = await authService.signIn(formData.email, formData.password);
+      const signInData = await authService.signIn(
+        formData.email,
+        formData.password
+      );
       authService.setToken(signInData.access_token);
-      
+
       const userData = await authService.getCurrentUser();
       dispatch(setUser(userData));
 
-      toast.success('Account created successfully! Welcome to ArtiGate.');
+      toast.success('Account created successfully. Welcome to ArtiGate.');
       navigate(ROUTES.HOME);
     } catch (error) {
       toast.error(
@@ -140,35 +143,39 @@ const SignUpPage: React.FC = () => {
     }
   };
 
+  const iconClass = 'h-4 w-4 text-ink-400';
+
   return (
-    <Wrapper>
+    <Wrapper centered={false}>
       <Container
         size="md"
         noDefaultPadding
-        className="max-w-4xl space-y-8 px-4 py-8"
+        className="max-w-4xl space-y-8 px-4 py-10"
       >
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
-            <UserPlus className="h-8 w-8 text-white" />
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+            Create account
+          </p>
+          <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
             Join ArtiGate
           </h1>
-          <p className="text-gray-600">
-            Create your account to start submitting and reviewing articles.
-            You're an author by default though ;D
+          <p className="text-ink-500 text-sm">
+            Set up your account to submit and review articles. You're an author
+            by default.
           </p>
         </div>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <form className="space-y-8" onSubmit={handleRegistration}>
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                <User className="inline h-5 w-5 mr-2" />
-                Personal Information
-              </h3>
+        <div className="bg-snow rounded-lg border border-ink-100 divide-y divide-ink-100">
+          <form onSubmit={handleRegistration}>
+            <section className="p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-ink-400" />
+                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
+                  Personal Information
+                </h2>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   id="name"
                   type="text"
@@ -176,7 +183,7 @@ const SignUpPage: React.FC = () => {
                   placeholder="Enter your full name"
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  leadingIcon={<User className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<User className={iconClass} />}
                   required
                 />
 
@@ -187,12 +194,12 @@ const SignUpPage: React.FC = () => {
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  leadingIcon={<Mail className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<Mail className={iconClass} />}
                   required
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   id="phone"
                   type="tel"
@@ -200,38 +207,40 @@ const SignUpPage: React.FC = () => {
                   placeholder="Enter your phone number"
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
-                  leadingIcon={<Phone className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<Phone className={iconClass} />}
                   required
                   mask="+9-999-999-9999"
                 />
 
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
-                    Role(s) *
+                <div className="space-y-1.5">
+                  <label className="text-xs font-medium text-ink-600 uppercase tracking-wide block">
+                    Role(s) <span className="text-red-500">*</span>
                   </label>
-                  <div className="flex flex-wrap gap-3">
+                  <div className="flex flex-wrap gap-x-4 gap-y-2 pt-1">
                     {ROLE_OPTIONS.map((role) => (
                       <label
                         key={role.value}
-                        className="flex items-center space-x-2"
+                        className={`flex items-center gap-2 text-sm ${
+                          role.disabled
+                            ? 'cursor-not-allowed opacity-60'
+                            : 'cursor-pointer'
+                        }`}
                       >
                         <input
                           type="checkbox"
                           checked={formData.roles.includes(role.value)}
                           onChange={() => toggleRole(role.value)}
-                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          className="rounded border-ink-300 text-primary-500 focus:ring-primary-500"
                           disabled={role.disabled}
                         />
-                        <span className="text-md text-gray-700">
-                          {role.label}
-                        </span>
+                        <span className="text-ink-700">{role.label}</span>
                       </label>
                     ))}
                   </div>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
@@ -241,12 +250,12 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange('password', e.target.value)
                   }
-                  leadingIcon={<Lock className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<Lock className={iconClass} />}
                   trailingIcon={
                     showPassword ? (
-                      <EyeOff className="h-5 w-5" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-5 w-5" />
+                      <Eye className="h-4 w-4" />
                     )
                   }
                   onTrailingIconClick={() => setShowPassword(!showPassword)}
@@ -262,12 +271,12 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange('passwordConfirmation', e.target.value)
                   }
-                  leadingIcon={<Lock className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<Lock className={iconClass} />}
                   trailingIcon={
                     showPasswordConfirmation ? (
-                      <EyeOff className="h-5 w-5" />
+                      <EyeOff className="h-4 w-4" />
                     ) : (
-                      <Eye className="h-5 w-5" />
+                      <Eye className="h-4 w-4" />
                     )
                   }
                   onTrailingIconClick={() =>
@@ -276,15 +285,17 @@ const SignUpPage: React.FC = () => {
                   required
                 />
               </div>
-            </div>
+            </section>
 
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                <HomeIcon className="inline h-5 w-5 mr-2" />
-                Home Address
-              </h3>
+            <section className="p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <HomeIcon className="h-4 w-4 text-ink-400" />
+                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
+                  Home Address
+                </h2>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <Input
                   id="homeZipCode"
                   type="text"
@@ -294,7 +305,7 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange('homeZipCode', e.target.value)
                   }
-                  leadingIcon={<MapPin className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<MapPin className={iconClass} />}
                   required
                   mask="99999-999"
                 />
@@ -314,7 +325,7 @@ const SignUpPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <Input
                   id="homeComplement"
                   type="text"
@@ -351,32 +362,38 @@ const SignUpPage: React.FC = () => {
                 />
               </div>
 
-              <Input
-                id="homeState"
-                type="text"
-                label="State"
-                placeholder="Enter state"
-                value={formData.homeState}
-                onChange={(e) => handleInputChange('homeState', e.target.value)}
-                required
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <Input
+                  id="homeState"
+                  type="text"
+                  label="State"
+                  placeholder="Enter state"
+                  value={formData.homeState}
+                  onChange={(e) =>
+                    handleInputChange('homeState', e.target.value)
+                  }
+                  required
+                />
 
-              <Input
-                id="homeCountry"
-                type="text"
-                label="Country"
-                placeholder="Brasil"
-                disabled
-              />
-            </div>
+                <Input
+                  id="homeCountry"
+                  type="text"
+                  label="Country"
+                  placeholder="Brasil"
+                  disabled
+                />
+              </div>
+            </section>
 
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                <Building className="inline h-5 w-5 mr-2" />
-                Work Address
-              </h3>
+            <section className="p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <Building className="h-4 w-4 text-ink-400" />
+                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
+                  Work Address
+                </h2>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <Input
                   id="jobZipCode"
                   type="text"
@@ -386,7 +403,7 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange('jobZipCode', e.target.value)
                   }
-                  leadingIcon={<MapPin className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<MapPin className={iconClass} />}
                   required
                   mask="99999-999"
                 />
@@ -406,7 +423,7 @@ const SignUpPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <Input
                   id="jobComplement"
                   type="text"
@@ -441,32 +458,41 @@ const SignUpPage: React.FC = () => {
                 />
               </div>
 
-              <Input
-                id="jobState"
-                type="text"
-                label="State"
-                placeholder="Enter state"
-                value={formData.jobState}
-                onChange={(e) => handleInputChange('jobState', e.target.value)}
-                required
-              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <Input
+                  id="jobState"
+                  type="text"
+                  label="State"
+                  placeholder="Enter state"
+                  value={formData.jobState}
+                  onChange={(e) =>
+                    handleInputChange('jobState', e.target.value)
+                  }
+                  required
+                />
 
-              <Input
-                id="jobCountry"
-                type="text"
-                label="Country"
-                placeholder="Brasil"
-                disabled
-              />
-            </div>
+                <Input
+                  id="jobCountry"
+                  type="text"
+                  label="Country"
+                  placeholder="Brasil"
+                  disabled
+                />
+              </div>
+            </section>
 
-            <div className="space-y-6">
-              <h3 className="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">
-                <CreditCard className="inline h-5 w-5 mr-2" />
-                Payment Information (Mock)
-              </h3>
+            <section className="p-6 space-y-5">
+              <div className="flex items-center gap-2">
+                <CreditCard className="h-4 w-4 text-ink-400" />
+                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
+                  Payment Information
+                </h2>
+                <span className="text-[10px] font-medium text-ink-400 bg-ink-50 border border-ink-100 rounded-full px-2 py-0.5 uppercase tracking-wide">
+                  Mock
+                </span>
+              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Input
                   id="cardNumber"
                   type="text"
@@ -476,7 +502,7 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange('cardNumber', e.target.value)
                   }
-                  leadingIcon={<CreditCard className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<CreditCard className={iconClass} />}
                   required
                   mask="9999 9999 9999 9999"
                 />
@@ -490,29 +516,39 @@ const SignUpPage: React.FC = () => {
                   onChange={(e) =>
                     handleInputChange('cardExpiry', e.target.value)
                   }
-                  leadingIcon={<Calendar className="h-4 w-4 text-gray-500" />}
+                  leadingIcon={<Calendar className={iconClass} />}
                   required
                   mask="99/99"
                 />
               </div>
 
-              <Select
-                id="cardBrand"
-                placeholder="Select card brand"
-                options={CARD_BRAND_OPTIONS}
-                value={formData.cardBrand}
-                onChange={(e) => handleInputChange('cardBrand', e.target.value)}
-              />
-            </div>
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="cardBrand"
+                  className="text-xs font-medium text-ink-600 uppercase tracking-wide block"
+                >
+                  Card Brand
+                </label>
+                <Select
+                  id="cardBrand"
+                  placeholder="Select card brand"
+                  options={CARD_BRAND_OPTIONS}
+                  value={formData.cardBrand}
+                  onChange={(e) =>
+                    handleInputChange('cardBrand', e.target.value)
+                  }
+                />
+              </div>
+            </section>
 
-            <div className="space-y-4 pt-6">
+            <section className="p-6 flex gap-3">
               <Button
                 type="submit"
                 variantClassName="primary"
                 fullWidth
                 isLoading={isLoading}
                 loadingText="Creating account..."
-                leadingIcon={<UserPlus className="h-5 w-5" />}
+                leadingIcon={<UserPlus className="h-4 w-4" />}
               >
                 Create Account
               </Button>
@@ -522,11 +558,11 @@ const SignUpPage: React.FC = () => {
                 variantClassName="secondary"
                 fullWidth
                 onClick={() => navigate(ROUTES.LANDING)}
-                leadingIcon={<ArrowLeft className="h-5 w-5" />}
+                leadingIcon={<ArrowLeft className="h-4 w-4" />}
               >
                 Go back
               </Button>
-            </div>
+            </section>
           </form>
         </div>
       </Container>

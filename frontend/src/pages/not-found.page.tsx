@@ -11,24 +11,29 @@ const NotFoundPage: React.FC = () => {
   return (
     <Wrapper>
       <Container size="sm" className="text-center space-y-6 py-24">
-        <div className="mx-auto h-16 w-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-          <Frown className="h-8 w-8 text-gray-400" />
+        <div className="mx-auto h-14 w-14 bg-ink-50 rounded-md flex items-center justify-center">
+          <Frown className="h-7 w-7 text-ink-400" />
         </div>
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
-            404 — Page not found
+        <div className="space-y-1.5">
+          <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+            Error 404
+          </p>
+          <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
+            Page not found
           </h1>
-          <p className="text-gray-500 mt-2">
+          <p className="text-ink-500 text-sm">
             The page you are looking for does not exist.
           </p>
         </div>
-        <Button
-          variantClassName="primary"
-          onClick={() => navigate(ROUTES.HOME)}
-          leadingIcon={<ArrowLeft className="h-4 w-4" />}
-        >
-          Back home
-        </Button>
+        <div className="flex justify-center">
+          <Button
+            variantClassName="primary"
+            onClick={() => navigate(ROUTES.HOME)}
+            leadingIcon={<ArrowLeft className="h-4 w-4" />}
+          >
+            Back home
+          </Button>
+        </div>
       </Container>
     </Wrapper>
   );

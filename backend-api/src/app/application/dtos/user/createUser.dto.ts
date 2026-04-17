@@ -20,7 +20,6 @@ export class CreateUserDTO {
   phone: string;
 
   @ApiProperty()
-  @IsUrl()
   @IsOptional()
   badgeUrl: string;
 

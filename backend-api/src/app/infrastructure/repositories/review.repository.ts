@@ -4,6 +4,10 @@ import { Injectable } from '@nestjs/common';
 import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
 import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
 import { ReviewDatabaseAdapter } from '../../interface/adapter/database.adapter';
+import {
+  PaginationDTO,
+  normalizePagination,
+} from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class ReviewRepository implements ReviewDatabaseAdapter{
@@ -32,8 +36,18 @@ export class ReviewRepository implements ReviewDatabaseAdapter{
     return await this.prisma.review.findFirst({ where: { id, deletedOn: null } });
   }
 
-  async findAll(): Promise<Review[]> {
-    return await this.prisma.review.findMany({ where: { deletedOn: null } });
+  async findAll(pagination?: PaginationDTO): Promise<Review[]> {
+    const { skip, take } = normalizePagination(pagination);
+    return await this.prisma.review.findMany({
+      where: { deletedOn: null },
+      skip,
+      take,
+      orderBy: { createdOn: 'desc' },
+    });
+  }
+
+  async countAll(): Promise<number> {
+    return await this.prisma.review.count({ where: { deletedOn: null } });
   }
 
   async findMany(articleId: string): Promise<Review[]> {

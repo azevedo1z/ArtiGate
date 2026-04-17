@@ -2,6 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { Review } from '../../../domain/models/review.model';
 import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
+import {
+  PaginationDTO,
+  buildPaginatedResult,
+  normalizePagination,
+} from '../../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class GetReviewService {
@@ -16,10 +21,14 @@ export class GetReviewService {
     return existingReview;
   }
 
-  async getAll() {
-    const reviews = await this.adapter.findAll();
+  async getAll(pagination?: PaginationDTO) {
+    const { page, limit } = normalizePagination(pagination);
+    const [reviews, total] = await Promise.all([
+      this.adapter.findAll(pagination),
+      this.adapter.countAll?.() ?? Promise.resolve(0),
+    ]);
 
-    return reviews.map((existingReview) =>
+    const data = reviews.map((existingReview) =>
       Review.factory(
         existingReview.id,
         existingReview.articleId,
@@ -28,6 +37,8 @@ export class GetReviewService {
         existingReview.commentary
       )
     );
+
+    return buildPaginatedResult(data, total, page, limit);
   }
 
   async getByReviewerId(reviewerId: string) {

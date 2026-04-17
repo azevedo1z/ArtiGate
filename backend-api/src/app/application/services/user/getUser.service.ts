@@ -2,6 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../../../domain/models/user.model';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
+import {
+  PaginatedResult,
+  PaginationDTO,
+  buildPaginatedResult,
+  normalizePagination,
+} from '../../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class GetUserService {
@@ -25,10 +31,14 @@ export class GetUserService {
     );
   }
 
-  async getAll(): Promise<User[]> {
-    const users = await this.adapter.findAll();
+  async getAll(pagination?: PaginationDTO): Promise<PaginatedResult<User>> {
+    const { page, limit } = normalizePagination(pagination);
+    const [users, total] = await Promise.all([
+      this.adapter.findAll(pagination),
+      this.adapter.countAll?.() ?? Promise.resolve(0),
+    ]);
 
-    return users.map((existingUser) =>
+    const data = users.map((existingUser) =>
       User.factory(
         existingUser.id,
         existingUser.name,
@@ -40,6 +50,8 @@ export class GetUserService {
         existingUser.passwordHash
       )
     );
+
+    return buildPaginatedResult(data, total, page, limit);
   }
 
   async getByAddressId(addressId: string): Promise<User | null> {

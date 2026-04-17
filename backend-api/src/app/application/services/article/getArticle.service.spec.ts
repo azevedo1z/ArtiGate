@@ -23,6 +23,7 @@ describe('GetArticleService', () => {
     articleAdapter = {
       findById: jest.fn(),
       findAll: jest.fn(),
+      countAll: jest.fn(),
     } as any;
 
     articleAuthorAdapter = {
@@ -53,21 +54,25 @@ describe('GetArticleService', () => {
   });
 
   describe('getAll', () => {
-    it('should return all articles', async () => {
+    it('should return paginated articles', async () => {
       articleAdapter.findAll.mockResolvedValue([articleRecord]);
+      (articleAdapter.countAll as jest.Mock).mockResolvedValue(1);
 
       const result = await service.getAll();
 
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('article-1');
+      expect(result.data).toHaveLength(1);
+      expect(result.data[0].id).toBe('article-1');
+      expect(result.meta.total).toBe(1);
     });
 
-    it('should return empty array when no articles exist', async () => {
+    it('should return empty data when no articles exist', async () => {
       articleAdapter.findAll.mockResolvedValue([]);
+      (articleAdapter.countAll as jest.Mock).mockResolvedValue(0);
 
       const result = await service.getAll();
 
-      expect(result).toEqual([]);
+      expect(result.data).toEqual([]);
+      expect(result.meta.total).toBe(0);
     });
   });
 

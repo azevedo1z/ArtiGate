@@ -1,5 +1,10 @@
 import apiClient from './api.service';
-import { Article, CreateArticleData } from '../shared/types/types.shared';
+import {
+  Article,
+  CreateArticleData,
+  PaginatedResponse,
+  PaginationParams,
+} from '../shared/types/types.shared';
 
 class ArticleService {
   async createArticle(data: CreateArticleData): Promise<Article> {
@@ -7,8 +12,10 @@ class ArticleService {
     return response.data;
   }
 
-  async getAll(): Promise<Article[]> {
-    const response = await apiClient.get('/article/all');
+  async getAll(
+    params?: PaginationParams
+  ): Promise<PaginatedResponse<Article>> {
+    const response = await apiClient.get('/article/all', { params });
     return response.data;
   }
 

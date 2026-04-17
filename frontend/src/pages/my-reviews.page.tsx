@@ -27,7 +27,9 @@ const MyReviewsPage: React.FC = () => {
         const data = await reviewService.getMyReviews(userData._id);
         setReviews(data);
       } catch (error) {
-        toast.error(extractErrorMessage(error, 'Failed to load your reviews.'));
+        toast.error(
+          extractErrorMessage(error, 'Failed to load your reviews.')
+        );
       } finally {
         setIsLoading(false);
       }
@@ -38,13 +40,16 @@ const MyReviewsPage: React.FC = () => {
 
   return (
     <Wrapper centered={false}>
-      <Container size="lg" className="space-y-8 py-8">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+      <Container size="lg" className="space-y-8 py-10">
+        <div className="flex justify-between items-end gap-4 flex-wrap">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+              Activity
+            </p>
+            <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
               My Reviews
             </h1>
-            <p className="text-gray-500 mt-1 text-sm">
+            <p className="text-ink-500 text-sm">
               {isLoading
                 ? 'Loading...'
                 : `${reviews.length} review${
@@ -63,16 +68,16 @@ const MyReviewsPage: React.FC = () => {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-24">
-            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-purple-600 border-t-transparent" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
           </div>
         ) : reviews.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 space-y-5 text-center">
-            <div className="h-16 w-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <Eye className="h-8 w-8 text-gray-400" />
+          <div className="flex flex-col items-center justify-center py-24 space-y-5 text-center border border-dashed border-ink-200 rounded-lg">
+            <div className="h-12 w-12 bg-ink-50 rounded-md flex items-center justify-center">
+              <Eye className="h-6 w-6 text-ink-400" />
             </div>
             <div>
-              <p className="text-gray-700 font-medium">No reviews yet</p>
-              <p className="text-gray-400 text-sm mt-1">
+              <p className="text-ink-800 font-medium">No reviews yet</p>
+              <p className="text-ink-400 text-sm mt-1">
                 Submit your first review to get started.
               </p>
             </div>
@@ -85,19 +90,19 @@ const MyReviewsPage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {reviews.map((review) => (
               <div
                 key={review._id}
-                className="bg-white rounded-xl border border-gray-200 hover:border-purple-200 hover:shadow-lg transition-all duration-200 flex flex-col"
+                className="bg-snow rounded-lg border border-ink-100 hover:border-primary-200 transition-colors duration-150 flex flex-col"
               >
                 <div className="p-5 flex-1 space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className="h-8 w-8 bg-purple-50 rounded-lg flex items-center justify-center">
-                      <Eye className="h-4 w-4 text-purple-600" />
+                    <div className="h-8 w-8 bg-accent-50 rounded-md flex items-center justify-center">
+                      <Eye className="h-4 w-4 text-accent-600" />
                     </div>
                     <div
-                      className={`flex items-center gap-1 border rounded-full px-2.5 py-0.5 ${scoreColor(
+                      className={`inline-flex items-center gap-1 border rounded-full px-2.5 py-0.5 ${scoreColor(
                         review._score
                       )}`}
                     >
@@ -109,12 +114,12 @@ const MyReviewsPage: React.FC = () => {
                   </div>
 
                   {review._commentary && (
-                    <p className="text-gray-700 text-sm leading-relaxed line-clamp-3">
+                    <p className="text-ink-700 text-sm leading-relaxed line-clamp-3">
                       {review._commentary}
                     </p>
                   )}
 
-                  <div className="flex items-center gap-1.5 text-xs text-gray-400">
+                  <div className="flex items-center gap-1.5 text-[11px] text-ink-400">
                     <FileText className="h-3.5 w-3.5 flex-shrink-0" />
                     <span className="font-mono truncate">
                       {review._articleId}
@@ -122,8 +127,8 @@ const MyReviewsPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="px-5 py-3 bg-gray-50 rounded-b-xl border-t border-gray-100">
-                  <p className="text-xs text-gray-400 font-mono truncate">
+                <div className="px-5 py-2.5 border-t border-ink-100">
+                  <p className="text-[11px] text-ink-300 font-mono truncate">
                     {review._id}
                   </p>
                 </div>
@@ -134,7 +139,7 @@ const MyReviewsPage: React.FC = () => {
 
         <div className="pt-2">
           <Button
-            variantClassName="secondary"
+            variantClassName="ghost"
             onClick={() => navigate(ROUTES.HOME)}
             leadingIcon={<ArrowLeft className="h-4 w-4" />}
           >

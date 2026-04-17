@@ -73,7 +73,7 @@ describe('GetReviewService', () => {
 
   describe('getByReviewerId', () => {
     it('should return reviews for a reviewer', async () => {
-      adapter.findManyByUserId?.mockResolvedValue([reviewRecord]);
+      (adapter.findManyByUserId as jest.Mock).mockResolvedValue([reviewRecord]);
 
       const result = await service.getByReviewerId('reviewer-1');
 
@@ -82,7 +82,7 @@ describe('GetReviewService', () => {
     });
 
     it('should return empty array when reviewer has no reviews', async () => {
-      adapter.findManyByUserId?.mockResolvedValue([]);
+      (adapter.findManyByUserId as jest.Mock).mockResolvedValue([]);
 
       const result = await service.getByReviewerId('reviewer-1');
 
@@ -90,7 +90,7 @@ describe('GetReviewService', () => {
     });
 
     it('should return empty array when findManyByUserId returns undefined', async () => {
-      adapter.findManyByUserId?.mockResolvedValue(undefined as any);
+      (adapter.findManyByUserId as jest.Mock).mockResolvedValue(undefined as any);
 
       const result = await service.getByReviewerId('reviewer-1');
 

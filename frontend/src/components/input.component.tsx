@@ -26,24 +26,25 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     },
     ref
   ) => {
-    const containerClassName = 'space-y-2';
+    const containerClassName = 'space-y-1.5';
     const wrapperClassName = 'relative';
 
     const baseClassName =
-      'w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200';
+      'w-full px-3.5 py-2.5 text-sm bg-snow text-ink-800 placeholder:text-ink-300 border border-ink-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors duration-150 disabled:bg-ink-50 disabled:text-ink-400';
     const labelClassName =
-      'text-sm font-medium text-gray-700 flex items-center gap-2';
+      'text-xs font-medium text-ink-600 uppercase tracking-wide flex items-center gap-2';
 
-    const errorClassName = 'border-red-500 focus:ring-red-500';
-    const textErrorClassName = 'text-red-500 text-sm mt-1 block';
+    const errorClassName =
+      'border-red-400 focus:ring-red-500/30 focus:border-red-500';
+    const textErrorClassName = 'text-red-600 text-xs mt-1 block';
 
-    const paddingForLeadingIconClassName = 'pl-11';
-    const paddingForTrailingIconClassName = 'pr-11';
+    const paddingForLeadingIconClassName = 'pl-10';
+    const paddingForTrailingIconClassName = 'pr-10';
 
     const leadingIconClassName =
-      'absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400';
+      'absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-ink-400';
     const trailingIconClassName =
-      'absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition duration-200';
+      'absolute right-3 top-1/2 transform -translate-y-1/2 text-ink-400 hover:text-ink-600 transition-colors duration-150';
 
     const trailingIconButtonClassName =
       trailingIcon && onTrailingIconClick ? 'cursor-pointer' : '';
@@ -59,12 +60,18 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className={containerClassName}>
-        <label htmlFor={id} className={labelClassName}>
-          {label}
-        </label>
+        {label && (
+          <label htmlFor={id} className={labelClassName}>
+            {label}
+          </label>
+        )}
         <div className={wrapperClassName}>
           {mask ? (
-            <InputMask mask={mask} value={props.value} onChange={props.onChange}>
+            <InputMask
+              mask={mask}
+              value={props.value}
+              onChange={props.onChange}
+            >
               {(inputProps: InputHTMLAttributes<HTMLInputElement>) => (
                 <input
                   {...inputProps}

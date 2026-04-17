@@ -23,20 +23,20 @@ const Navbar: React.FC = () => {
     { name: 'About', path: ROUTES.ABOUT },
   ];
 
-  const baseClassName =
-    'bg-gray-950 text-white shadow-2xl border-b-2 border-blue-500/20 backdrop-blur-sm';
+  const baseClassName = 'bg-snow border-b border-ink-100';
   const containerClassName = 'py-4 flex items-center justify-between';
   const logoClassName =
-    'text-3xl font-bold text-blue-500 hover:text-blue-400 transition-colors duration-300 tracking-tight';
+    'text-xl font-semibold text-ink-800 tracking-tight hover:text-primary-500 transition-colors duration-150';
+  const logoMarkClassName = 'text-primary-500';
 
-  const navLinksClassName = 'flex gap-8 items-center';
+  const navLinksClassName = 'hidden md:flex gap-7 items-center';
   const navLinkActiveClassName =
-    'text-sm font-semibold text-blue-400 relative after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-blue-400';
+    'text-sm font-semibold text-primary-600 relative after:absolute after:bottom-[-16px] after:left-0 after:w-full after:h-[2px] after:bg-primary-500';
   const navLinkInactiveClassName =
-    'text font-semibold text-gray-300 hover:text-blue-400 transition-all duration-300 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-0.5 after:bg-blue-400 after:transition-all after:duration-300 hover:after:w-full';
+    'text-sm font-medium text-ink-500 hover:text-ink-800 transition-colors duration-150';
 
   const logoutClassName =
-    'flex items-center gap-2 px-4 py-2 text-sm font-semibold text-gray-300 hover:text-blue-400 border border-gray-700 hover:border-blue-400 rounded-lg transition-all duration-300 hover:bg-gray-900/50';
+    'inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-ink-600 hover:text-ink-800 hover:bg-ink-50 rounded-md transition-colors duration-150';
 
   const handleLogout = () => {
     dispatch(clearUser());
@@ -53,7 +53,7 @@ const Navbar: React.FC = () => {
           to={isLoggedIn ? ROUTES.HOME : ROUTES.LANDING}
           className={logoClassName}
         >
-          ArtiGate
+          <span className={logoMarkClassName}>Arti</span>Gate
         </Link>
 
         {isLoggedIn && (

@@ -30,7 +30,7 @@ const LoginPage: React.FC = () => {
       const userData = await authService.getCurrentUser();
       dispatch(setUser(userData));
 
-      toast.success('Login successful! Welcome back.');
+      toast.success('Welcome back.');
       navigate(ROUTES.HOME);
     } catch (error) {
       toast.error(
@@ -47,26 +47,25 @@ const LoginPage: React.FC = () => {
   return (
     <Wrapper>
       <Container size="sm" noDefaultPadding className="max-w-md space-y-8 px-4">
-        <div className="text-center">
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-full flex items-center justify-center mb-4 shadow-lg">
-            <LogIn className="h-8 w-8 text-white" />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+        <div className="text-center space-y-2">
+          <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
             Welcome back
-          </h2>
-          <p className="text-gray-600">Sign in to your ArtiGate account</p>
+          </h1>
+          <p className="text-ink-500 text-sm">
+            Sign in to continue to your ArtiGate workspace.
+          </p>
         </div>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          <form className="space-y-6" onSubmit={handleLogin}>
+        <div className="bg-snow p-8 rounded-lg border border-ink-100">
+          <form className="space-y-5" onSubmit={handleLogin}>
             <Input
               id="email"
               type="email"
               label="Email address"
-              placeholder="Enter your email"
+              placeholder="you@domain.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              leadingIcon={<Mail className="h-4 w-4 text-gray-500" />}
+              leadingIcon={<Mail className="h-4 w-4" />}
               required
             />
 
@@ -77,26 +76,26 @@ const LoginPage: React.FC = () => {
               placeholder="Enter your password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              leadingIcon={<Lock className="h-4 w-4 text-gray-500" />}
+              leadingIcon={<Lock className="h-4 w-4" />}
               trailingIcon={
                 showPassword ? (
-                  <EyeOff className="h-5 w-5" />
+                  <EyeOff className="h-4 w-4" />
                 ) : (
-                  <Eye className="h-5 w-5" />
+                  <Eye className="h-4 w-4" />
                 )
               }
               onTrailingIconClick={() => setShowPassword(!showPassword)}
               required
             />
 
-            <div className="space-y-4">
+            <div className="space-y-2 pt-2">
               <Button
                 type="submit"
                 variantClassName="primary"
                 fullWidth
                 isLoading={isLoading}
                 loadingText="Signing in..."
-                leadingIcon={<LogIn className="h-5 w-5" />}
+                leadingIcon={<LogIn className="h-4 w-4" />}
               >
                 Sign in
               </Button>
@@ -106,7 +105,7 @@ const LoginPage: React.FC = () => {
                 variantClassName="secondary"
                 fullWidth
                 onClick={() => navigate(ROUTES.LANDING)}
-                leadingIcon={<ArrowLeft className="h-5 w-5" />}
+                leadingIcon={<ArrowLeft className="h-4 w-4" />}
               >
                 Go back
               </Button>
@@ -115,11 +114,11 @@ const LoginPage: React.FC = () => {
         </div>
 
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-ink-500">
             Don't have an account?{' '}
             <button
               onClick={() => navigate(ROUTES.SIGNUP)}
-              className="font-medium text-blue-600 hover:text-blue-500 transition duration-200"
+              className="font-medium text-primary-500 hover:text-primary-600 transition-colors duration-150"
             >
               Sign up here
             </button>

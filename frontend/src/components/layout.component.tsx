@@ -14,33 +14,30 @@ const Layout: React.FC<LayoutProps> = ({
   showHeader = true,
   showFooter = true,
 }) => {
-  const baseClassName = 'min-h-screen grid grid-rows-[auto_1fr_auto]';
+  const baseClassName = 'min-h-screen grid grid-rows-[auto_1fr_auto] bg-snow';
 
-  const mainClassName =
-    'row-start-2 bg-gray-50';
+  const mainClassName = 'row-start-2 bg-snow';
 
-  const footerClassName =
-    'bg-gray-900 text-white border-t border-gray-700';
-  const footerContentClassName = 'text-center text-sm text-gray-300';
+  const footerClassName = 'bg-snow border-t border-ink-100';
+  const footerContentClassName =
+    'text-center text-xs text-ink-400 tracking-wide';
 
   const linkClassName =
-    'inline-flex items-center gap-1 text-blue-500 hover:text-blue-400 transition duration-200 font-medium';
+    'inline-flex items-center gap-1 text-primary-500 hover:text-primary-600 transition-colors duration-150 font-medium';
   const currentYear = new Date().getFullYear();
 
   return (
     <div className={baseClassName}>
       {showHeader && <Navbar />}
 
-      <main className={mainClassName}>
-        {children}
-      </main>
+      <main className={mainClassName}>{children}</main>
 
       {showFooter && (
         <footer className={footerClassName}>
-          <Container noDefaultPadding className="py-6">
+          <Container noDefaultPadding className="py-5">
             <div className={footerContentClassName}>
               <p>
-                &copy; {currentYear} ArtiGate. All rights reserved to{' '}
+                &copy; {currentYear} ArtiGate &middot; Crafted by{' '}
                 <a
                   href="https://github.com/azevedo1x"
                   target="_blank"

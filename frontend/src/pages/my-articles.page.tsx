@@ -41,7 +41,9 @@ const MyArticlesPage: React.FC = () => {
         const data = await articleService.getMyArticles(userData._id);
         setArticles(data);
       } catch (error) {
-        toast.error(extractErrorMessage(error, 'Failed to load your articles.'));
+        toast.error(
+          extractErrorMessage(error, 'Failed to load your articles.')
+        );
       } finally {
         setIsLoading(false);
       }
@@ -75,13 +77,16 @@ const MyArticlesPage: React.FC = () => {
 
   return (
     <Wrapper centered={false}>
-      <Container size="lg" className="space-y-8 py-8">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 tracking-tight">
+      <Container size="lg" className="space-y-8 py-10">
+        <div className="flex justify-between items-end gap-4 flex-wrap">
+          <div className="space-y-1">
+            <p className="text-xs font-medium text-ink-400 uppercase tracking-wide">
+              Library
+            </p>
+            <h1 className="text-3xl font-semibold text-ink-800 tracking-tight">
               My Articles
             </h1>
-            <p className="text-gray-500 mt-1 text-sm">
+            <p className="text-ink-500 text-sm">
               {isLoading
                 ? 'Loading...'
                 : `${articles.length} article${
@@ -100,16 +105,16 @@ const MyArticlesPage: React.FC = () => {
 
         {isLoading ? (
           <div className="flex justify-center items-center py-24">
-            <div className="h-8 w-8 animate-spin rounded-full border-[3px] border-blue-600 border-t-transparent" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
           </div>
         ) : articles.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 space-y-5 text-center">
-            <div className="h-16 w-16 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <FileText className="h-8 w-8 text-gray-400" />
+          <div className="flex flex-col items-center justify-center py-24 space-y-5 text-center border border-dashed border-ink-200 rounded-lg">
+            <div className="h-12 w-12 bg-ink-50 rounded-md flex items-center justify-center">
+              <FileText className="h-6 w-6 text-ink-400" />
             </div>
             <div>
-              <p className="text-gray-700 font-medium">No articles yet</p>
-              <p className="text-gray-400 text-sm mt-1">
+              <p className="text-ink-800 font-medium">No articles yet</p>
+              <p className="text-ink-400 text-sm mt-1">
                 Submit your first article to get started.
               </p>
             </div>
@@ -122,40 +127,37 @@ const MyArticlesPage: React.FC = () => {
             </Button>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col divide-y divide-ink-100 border border-ink-100 rounded-lg bg-snow">
             {articles.map((article) => {
               const isExpanded = expandedId === article._id;
               const reviews = reviewsMap[article._id];
               const isLoadingThis = loadingReviews === article._id;
 
               return (
-                <div
-                  key={article._id}
-                  className="bg-white rounded-xl border border-gray-200 hover:border-blue-200 transition-all duration-200"
-                >
+                <div key={article._id}>
                   <div className="p-5">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-3 flex-1 min-w-0">
-                        <div className="h-8 w-8 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                          <FileText className="h-4 w-4 text-blue-600" />
+                        <div className="h-8 w-8 bg-primary-50 rounded-md flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <FileText className="h-4 w-4 text-primary-500" />
                         </div>
-                        <p className="text-gray-700 text-sm leading-relaxed line-clamp-2 flex-1">
+                        <p className="text-ink-700 text-sm leading-relaxed line-clamp-2 flex-1">
                           {article._summary}
                         </p>
                       </div>
 
                       <div className="flex items-center gap-2 flex-shrink-0">
                         {article._scoreAvg > 0 ? (
-                          <div className="flex items-center gap-1 bg-amber-50 border border-amber-200 rounded-full px-2.5 py-0.5">
-                            <Star className="h-3.5 w-3.5 text-amber-500 fill-amber-500" />
-                            <span className="text-xs font-semibold text-amber-700">
+                          <div className="inline-flex items-center gap-1 bg-accent-50 border border-accent-200 rounded-full px-2.5 py-0.5">
+                            <Star className="h-3.5 w-3.5 text-accent-600 fill-accent-400" />
+                            <span className="text-xs font-semibold text-accent-700">
                               {article._scoreAvg.toFixed(1)}
                             </span>
                           </div>
                         ) : (
-                          <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-full px-2.5 py-0.5">
-                            <Clock className="h-3.5 w-3.5 text-gray-400" />
-                            <span className="text-xs font-medium text-gray-400">
+                          <div className="inline-flex items-center gap-1 bg-ink-50 border border-ink-100 rounded-full px-2.5 py-0.5">
+                            <Clock className="h-3.5 w-3.5 text-ink-400" />
+                            <span className="text-xs font-medium text-ink-500">
                               Pending
                             </span>
                           </div>
@@ -163,7 +165,7 @@ const MyArticlesPage: React.FC = () => {
 
                         <button
                           onClick={() => toggleReviews(article._id)}
-                          className="flex items-center gap-1 text-xs font-medium text-blue-600 hover:text-blue-800 transition-colors px-2 py-1 rounded-md hover:bg-blue-50"
+                          className="inline-flex items-center gap-1 text-xs font-medium text-primary-500 hover:text-primary-600 transition-colors px-2 py-1 rounded-md hover:bg-primary-50"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           Reviews
@@ -177,40 +179,40 @@ const MyArticlesPage: React.FC = () => {
                     </div>
 
                     <div className="mt-2 pl-11">
-                      <p className="text-xs text-gray-400 font-mono truncate">
+                      <p className="text-[11px] text-ink-300 font-mono truncate">
                         {article._id}
                       </p>
                     </div>
                   </div>
 
                   {isExpanded && (
-                    <div className="border-t border-gray-100 px-5 py-4 bg-gray-50 rounded-b-xl">
+                    <div className="border-t border-ink-100 px-5 py-4 bg-ink-50/50">
                       {isLoadingThis ? (
                         <div className="flex justify-center py-4">
-                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-blue-600 border-t-transparent" />
+                          <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
                         </div>
                       ) : !reviews || reviews.length === 0 ? (
-                        <div className="flex items-center gap-2 text-gray-400 text-sm py-2">
+                        <div className="flex items-center gap-2 text-ink-400 text-sm py-2">
                           <MessageSquare className="h-4 w-4" />
                           <span>No reviews yet</span>
                         </div>
                       ) : (
                         <div className="space-y-3">
-                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                          <p className="text-[11px] font-semibold text-ink-500 uppercase tracking-wide">
                             {reviews.length} Review
                             {reviews.length !== 1 ? 's' : ''}
                           </p>
                           {reviews.map((review) => (
                             <div
                               key={review._id}
-                              className="bg-white rounded-lg border border-gray-200 p-4 space-y-2"
+                              className="bg-snow rounded-md border border-ink-100 p-4 space-y-2"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-xs text-gray-400 font-mono truncate max-w-xs">
+                                <span className="text-[11px] text-ink-400 font-mono truncate max-w-xs">
                                   Reviewer: {review._reviewerId}
                                 </span>
                                 <div
-                                  className={`flex items-center gap-1 border rounded-full px-2 py-0.5 text-xs font-semibold ${scoreColor(
+                                  className={`inline-flex items-center gap-1 border rounded-full px-2 py-0.5 text-xs font-semibold ${scoreColor(
                                     review._score
                                   )}`}
                                 >
@@ -219,7 +221,7 @@ const MyArticlesPage: React.FC = () => {
                                 </div>
                               </div>
                               {review._commentary && (
-                                <p className="text-sm text-gray-700 leading-relaxed">
+                                <p className="text-sm text-ink-700 leading-relaxed">
                                   {review._commentary}
                                 </p>
                               )}
@@ -237,7 +239,7 @@ const MyArticlesPage: React.FC = () => {
 
         <div className="pt-2">
           <Button
-            variantClassName="secondary"
+            variantClassName="ghost"
             onClick={() => navigate(ROUTES.HOME)}
             leadingIcon={<ArrowLeft className="h-4 w-4" />}
           >

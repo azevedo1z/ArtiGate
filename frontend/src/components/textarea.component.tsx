@@ -8,14 +8,15 @@ interface TextAreaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
   ({ label, placeholder, error, className = '', ...props }, ref) => {
-    const labelClassName = 'text-sm font-medium text-gray-700';
+    const labelClassName =
+      'text-xs font-medium text-ink-600 uppercase tracking-wide';
     const baseTextAreaClassName =
-      'rounded-md border p-2 min-h-[80px] resize-y bg-white text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200';
+      'w-full rounded-md border px-3.5 py-2.5 text-sm min-h-[96px] resize-y bg-snow text-ink-800 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors duration-150';
     const borderTextAreaClassName = error
-      ? 'border-red-500'
-      : 'border-gray-300';
-    const textErrorClassName = 'text-xs text-red-500';
-    const parentDivClassName = 'grid gap-1';
+      ? 'border-red-400 focus:ring-red-500/30 focus:border-red-500'
+      : 'border-ink-200';
+    const textErrorClassName = 'text-xs text-red-600';
+    const parentDivClassName = 'grid gap-1.5';
 
     return (
       <div className={parentDivClassName}>

@@ -1,54 +1,40 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { Eye, ArrowLeft, Plus, Star, FileText } from 'lucide-react';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Button from '../components/button.component';
-import { RootState } from '../store/my.store';
 import { reviewService } from '../services/review.service';
 import { Review } from '../shared/types/types.shared';
+import { useUser } from '../hooks/useUser';
+import { ROUTES } from '../config/routes.config';
+import { scoreColor } from '../utils/score.util';
+import { extractErrorMessage } from '../utils/error.util';
 
 const MyReviewsPage: React.FC = () => {
   const navigate = useNavigate();
-  const userData = useSelector((state: RootState) => state.user.data);
-  const rolesData = useSelector((state: RootState) => state.roles.data);
+  const userData = useUser();
 
   const [reviews, setReviews] = useState<Review[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isReviewer =
-    rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
-
   useEffect(() => {
-    if (!isReviewer) {
-      toast.error('Only reviewers can access this page.');
-      navigate('/home');
-      return;
-    }
-
     const fetchReviews = async () => {
       if (!userData?._id) return;
 
       try {
         const data = await reviewService.getMyReviews(userData._id);
         setReviews(data);
-      } catch {
-        toast.error('Failed to load your reviews.');
+      } catch (error) {
+        toast.error(extractErrorMessage(error, 'Failed to load your reviews.'));
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchReviews();
-  }, [isReviewer, navigate, userData]);
-
-  const scoreColor = (score: number) => {
-    if (score >= 8) return 'text-green-700 bg-green-50 border-green-200';
-    if (score >= 5) return 'text-amber-700 bg-amber-50 border-amber-200';
-    return 'text-red-700 bg-red-50 border-red-200';
-  };
+  }, [userData]);
 
   return (
     <Wrapper centered={false}>
@@ -68,7 +54,7 @@ const MyReviewsPage: React.FC = () => {
           </div>
           <Button
             variantClassName="primary"
-            onClick={() => navigate('/submit-review')}
+            onClick={() => navigate(ROUTES.SUBMIT_REVIEW)}
             leadingIcon={<Plus className="h-4 w-4" />}
           >
             New Review
@@ -92,7 +78,7 @@ const MyReviewsPage: React.FC = () => {
             </div>
             <Button
               variantClassName="primary"
-              onClick={() => navigate('/submit-review')}
+              onClick={() => navigate(ROUTES.SUBMIT_REVIEW)}
               leadingIcon={<Plus className="h-4 w-4" />}
             >
               Submit your first review
@@ -149,7 +135,7 @@ const MyReviewsPage: React.FC = () => {
         <div className="pt-2">
           <Button
             variantClassName="secondary"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate(ROUTES.HOME)}
             leadingIcon={<ArrowLeft className="h-4 w-4" />}
           >
             Back to Home

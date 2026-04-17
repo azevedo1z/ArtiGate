@@ -1,30 +1,31 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/my.store';
+import { useDispatch } from 'react-redux';
 import { setRoles } from '../store/slices/roles.slice';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Card from '../components/card.component';
 import { Eye, FileText, BookOpen } from 'lucide-react';
 import { roleService } from '../services/role.service';
+import { useUser } from '../hooks/useUser';
+import { useIsReviewer, useRoles } from '../hooks/useRoles';
+import { ROUTES } from '../config/routes.config';
+import { extractErrorMessage } from '../utils/error.util';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userData = useSelector((state: RootState) => state.user.data);
-  const rolesData = useSelector((state: RootState) => state.roles.data);
-
-  const isReviewer =
-    rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
+  const userData = useUser();
+  const rolesData = useRoles();
+  const isReviewer = useIsReviewer();
 
   useEffect(() => {
     const initializeRolesData = async () => {
       const token = localStorage.getItem('access_token');
 
       if (!token || !userData) {
-        navigate('/');
+        navigate(ROUTES.LANDING);
         return;
       }
 
@@ -33,9 +34,12 @@ const HomePage: React.FC = () => {
       try {
         const fetchedRoles = await roleService.getRolesByUserId(userData._id);
         dispatch(setRoles(fetchedRoles));
-      } catch {
+      } catch (error) {
         toast.error(
-          'An error occurred loading your roles. Please refresh the page.'
+          extractErrorMessage(
+            error,
+            'An error occurred loading your roles. Please refresh the page.'
+          )
         );
       }
     };
@@ -63,7 +67,7 @@ const HomePage: React.FC = () => {
             description="Submit a new article for conference review and publication."
             iconColor="blue"
             className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
-            onClick={() => navigate('/submit-article')}
+            onClick={() => navigate(ROUTES.SUBMIT_ARTICLE)}
           />
 
           <Card
@@ -72,7 +76,7 @@ const HomePage: React.FC = () => {
             description="View and manage the articles you have submitted so far."
             iconColor="indigo"
             className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
-            onClick={() => navigate('/my-articles')}
+            onClick={() => navigate(ROUTES.MY_ARTICLES)}
           />
 
           {isReviewer && (
@@ -82,7 +86,7 @@ const HomePage: React.FC = () => {
               description="Review submitted articles and provide your expert feedback."
               iconColor="purple"
               className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
-              onClick={() => navigate('/submit-review')}
+              onClick={() => navigate(ROUTES.SUBMIT_REVIEW)}
             />
           )}
 
@@ -93,7 +97,7 @@ const HomePage: React.FC = () => {
               description="See all reviews you have submitted for conference articles."
               iconColor="indigo"
               className="cursor-pointer hover:scale-[1.02] transform transition-all duration-200"
-              onClick={() => navigate('/my-reviews')}
+              onClick={() => navigate(ROUTES.MY_REVIEWS)}
             />
           )}
         </div>

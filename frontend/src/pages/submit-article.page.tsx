@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { FileText, ArrowLeft, Plus, Trash2, Send, Users } from 'lucide-react';
 import Button from '../components/button.component';
@@ -8,12 +7,14 @@ import Textarea from '../components/textarea.component';
 import Input from '../components/input.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import { RootState } from '../store/my.store';
 import { articleService } from '../services/article.service';
+import { useUser } from '../hooks/useUser';
+import { ROUTES } from '../config/routes.config';
+import { extractErrorMessage } from '../utils/error.util';
 
 const SubmitArticlePage: React.FC = () => {
   const navigate = useNavigate();
-  const userData = useSelector((state: RootState) => state.user.data);
+  const userData = useUser();
 
   const [summary, setSummary] = useState('');
   const [coAuthorIds, setCoAuthorIds] = useState<string[]>([]);
@@ -52,9 +53,14 @@ const SubmitArticlePage: React.FC = () => {
       const authorIds = [userData._id, ...coAuthorIds];
       await articleService.createArticle({ summary, authorIds });
       toast.success('Article submitted successfully!');
-      navigate('/my-articles');
-    } catch {
-      toast.error('Failed to submit article. Please try again.');
+      navigate(ROUTES.MY_ARTICLES);
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(
+          error,
+          'Failed to submit article. Please try again.'
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -185,7 +191,7 @@ const SubmitArticlePage: React.FC = () => {
                 type="button"
                 variantClassName="secondary"
                 fullWidth
-                onClick={() => navigate('/home')}
+                onClick={() => navigate(ROUTES.HOME)}
                 leadingIcon={<ArrowLeft className="h-4 w-4" />}
               >
                 Cancel

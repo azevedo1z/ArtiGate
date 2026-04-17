@@ -29,6 +29,8 @@ import { setUser } from '../store/slices/user.slice';
 import { authService } from '../services/auth.service';
 import { userService } from '../services/user.service';
 import { roleService } from '../services/role.service';
+import { ROUTES } from '../config/routes.config';
+import { extractErrorMessage } from '../utils/error.util';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -107,9 +109,14 @@ const SignUpPage: React.FC = () => {
       dispatch(setUser(userData));
 
       toast.success('Account created successfully! Welcome to ArtiGate.');
-      setTimeout(() => navigate('/home'), 1000);
-    } catch {
-      toast.error('An error occurred during signup. Please try again.');
+      navigate(ROUTES.HOME);
+    } catch (error) {
+      toast.error(
+        extractErrorMessage(
+          error,
+          'An error occurred during signup. Please try again.'
+        )
+      );
     } finally {
       setIsLoading(false);
     }
@@ -514,7 +521,7 @@ const SignUpPage: React.FC = () => {
                 type="button"
                 variantClassName="secondary"
                 fullWidth
-                onClick={() => navigate('/')}
+                onClick={() => navigate(ROUTES.LANDING)}
                 leadingIcon={<ArrowLeft className="h-5 w-5" />}
               >
                 Go back

@@ -4,6 +4,10 @@ import { Injectable, NotImplementedException } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
 import { UpdateArticleDTO } from '../../application/dtos/article/updateArticle.dto';
 import { ArticleDatabaseAdapter } from '../../interface/adapter/database.adapter';
+import {
+  PaginationDTO,
+  normalizePagination,
+} from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class ArticleRepository implements ArticleDatabaseAdapter {
@@ -40,8 +44,18 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
     return await this.prisma.article.findFirst({ where: { id, deletedOn: null } });
   }
 
-  async findAll(): Promise<Article[]> {
-    return await this.prisma.article.findMany({ where: { deletedOn: null } });
+  async findAll(pagination?: PaginationDTO): Promise<Article[]> {
+    const { skip, take } = normalizePagination(pagination);
+    return await this.prisma.article.findMany({
+      where: { deletedOn: null },
+      skip,
+      take,
+      orderBy: { createdOn: 'desc' },
+    });
+  }
+
+  async countAll(): Promise<number> {
+    return await this.prisma.article.count({ where: { deletedOn: null } });
   }
 
   async findMany(_id: string): Promise<Article[]> {

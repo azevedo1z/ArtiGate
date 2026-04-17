@@ -4,6 +4,10 @@ import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
 import { Injectable, NotImplementedException } from '@nestjs/common';
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 import { UserDatabaseAdapter } from '../../interface/adapter/database.adapter';
+import {
+  PaginationDTO,
+  normalizePagination,
+} from '../../shared/dtos/pagination.dto';
 
 @Injectable()
 export class UserRepository implements UserDatabaseAdapter{
@@ -86,8 +90,18 @@ export class UserRepository implements UserDatabaseAdapter{
     return await this.prisma.user.findFirst({ where: { id, deletedOn: null } });
   }
 
-  async findAll(): Promise<User[]> {
-    return await this.prisma.user.findMany({ where: { deletedOn: null } });
+  async findAll(pagination?: PaginationDTO): Promise<User[]> {
+    const { skip, take } = normalizePagination(pagination);
+    return await this.prisma.user.findMany({
+      where: { deletedOn: null },
+      skip,
+      take,
+      orderBy: { createdOn: 'desc' },
+    });
+  }
+
+  async countAll(): Promise<number> {
+    return await this.prisma.user.count({ where: { deletedOn: null } });
   }
   
   async findMany(): Promise<User[]> {

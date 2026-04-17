@@ -2,26 +2,25 @@ import React from 'react';
 import Container from './container.component';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store/my.store';
+import { useDispatch } from 'react-redux';
 import { clearUser } from '../store/slices/user.slice';
 import { clearRoles } from '../store/slices/roles.slice';
 import { toast } from 'react-hot-toast';
+import { useIsLoggedIn } from '../hooks/useUser';
+import { useIsReviewer } from '../hooks/useRoles';
+import { ROUTES } from '../config/routes.config';
 
 const Navbar: React.FC = () => {
-  const isLoggedIn = useSelector((state: RootState) => state.user.isLoggedIn);
-  const rolesData = useSelector((state: RootState) => state.roles.data);
+  const isLoggedIn = useIsLoggedIn();
+  const isReviewer = useIsReviewer();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const isReviewer =
-    rolesData?.some((role) => role._name?.includes('REVIEWER')) ?? false;
-
   const navLinks = [
-    { name: 'Home', path: '/home' },
-    { name: 'My Articles', path: '/my-articles' },
-    ...(isReviewer ? [{ name: 'My Reviews', path: '/my-reviews' }] : []),
-    { name: 'About', path: '/about' },
+    { name: 'Home', path: ROUTES.HOME },
+    { name: 'My Articles', path: ROUTES.MY_ARTICLES },
+    ...(isReviewer ? [{ name: 'My Reviews', path: ROUTES.MY_REVIEWS }] : []),
+    { name: 'About', path: ROUTES.ABOUT },
   ];
 
   const baseClassName =
@@ -44,13 +43,16 @@ const Navbar: React.FC = () => {
     dispatch(clearRoles());
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
-    setTimeout(() => navigate('/'), 1000);
+    navigate(ROUTES.LANDING);
   };
 
   return (
     <nav className={baseClassName}>
       <Container noDefaultPadding className={containerClassName}>
-        <Link to={isLoggedIn ? '/home' : '/'} className={logoClassName}>
+        <Link
+          to={isLoggedIn ? ROUTES.HOME : ROUTES.LANDING}
+          className={logoClassName}
+        >
           ArtiGate
         </Link>
 

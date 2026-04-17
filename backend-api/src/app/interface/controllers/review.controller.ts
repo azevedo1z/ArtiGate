@@ -6,11 +6,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { PaginationDTO } from '../../shared/dtos/pagination.dto';
 import { CreateReviewService } from '../../application/services/review/createReview.service';
 import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto';
 import { GetReviewService } from '../../application/services/review/getReview.service';
@@ -48,8 +50,8 @@ export class ReviewController {
   }
 
   @Get('all')
-  async getAll() {
-    return await this.getReviewService.getAll();
+  async getAll(@Query() pagination: PaginationDTO) {
+    return await this.getReviewService.getAll(pagination);
   }
 
   @Get('reviewer/:userId')

@@ -5,6 +5,7 @@
   "nx": {
     "name": "backend-api-e2e",
     "projectType": "application",
+    "tags": ["scope:backend", "type:e2e"],
     "implicitDependencies": [
       "backend-api"
     ],

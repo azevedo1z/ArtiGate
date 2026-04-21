@@ -10,4 +10,7 @@ export default () => ({
   cors: {
     origin: process.env.CORS_ORIGIN,
   },
+  brasilApi: {
+    baseUrl: process.env.BRASIL_API_BASE_URL,
+  },
 });

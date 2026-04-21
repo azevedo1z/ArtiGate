@@ -44,6 +44,16 @@ export interface Address {
   state: string;
 }
 
+export interface ZipCodeLookupResult {
+  zipCode: string;
+  street: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+}
+
+export type AddressPrefix = 'home' | 'job';
+
 export interface CreateUserData {
   name: string;
   email: string;

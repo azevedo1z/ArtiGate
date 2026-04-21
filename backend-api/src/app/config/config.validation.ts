@@ -7,4 +7,7 @@ export const configValidationSchema = Joi.object({
   JWT_EXPIRES_IN: Joi.string().required(),
   CORS_ORIGIN: Joi.string().required(),
   BCRYPT_SALT_ROUNDS: Joi.number().default(10),
+  BRASIL_API_BASE_URL: Joi.string()
+    .uri()
+    .default('https://brasilapi.com.br'),
 });

@@ -16,6 +16,7 @@ import {
   Eye,
   EyeOff,
   HomeIcon,
+  Loader2,
 } from 'lucide-react';
 import Button from '../components/button.component';
 import Input from '../components/input.component';
@@ -23,7 +24,11 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Select from '../components/select.component';
 import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
-import { SignUpFormData } from '../shared/types/types.shared';
+import {
+  AddressPrefix,
+  SignUpFormData,
+  ZipCodeLookupResult,
+} from '../shared/types/types.shared';
 import { prepareUserData } from '../utils/helpers.util';
 import { setUser } from '../store/slices/user.slice';
 import { authService } from '../services/auth.service';
@@ -31,6 +36,7 @@ import { userService } from '../services/user.service';
 import { roleService } from '../services/role.service';
 import { ROUTES } from '../config/routes.config';
 import { extractErrorMessage } from '../utils/error.util';
+import { useZipCodeLookup } from '../hooks/useZipCodeLookup';
 
 const SignUpPage: React.FC = () => {
   const navigate = useNavigate();
@@ -69,6 +75,35 @@ const SignUpPage: React.FC = () => {
   ) => {
     setFormData((previousValue) => ({ ...previousValue, [field]: value }));
   };
+
+  const applyAddressLookup = (
+    prefix: AddressPrefix,
+    data: ZipCodeLookupResult
+  ) => {
+    setFormData((previousValue) => ({
+      ...previousValue,
+      [`${prefix}Street`]: data.street,
+      [`${prefix}Neighborhood`]: data.neighborhood,
+      [`${prefix}City`]: data.city,
+      [`${prefix}State`]: data.state,
+    }));
+  };
+
+  const { isLoading: isHomeZipCodeLoading } = useZipCodeLookup(
+    formData.homeZipCode,
+    {
+      onSuccess: (data) => applyAddressLookup('home', data),
+      onError: (message) => toast.error(message),
+    }
+  );
+
+  const { isLoading: isJobZipCodeLoading } = useZipCodeLookup(
+    formData.jobZipCode,
+    {
+      onSuccess: (data) => applyAddressLookup('job', data),
+      onError: (message) => toast.error(message),
+    }
+  );
 
   const toggleRole = (roleValue: string) => {
     const role = ROLE_OPTIONS.find((option) => option.value === roleValue);
@@ -306,6 +341,11 @@ const SignUpPage: React.FC = () => {
                     handleInputChange('homeZipCode', e.target.value)
                   }
                   leadingIcon={<MapPin className={iconClass} />}
+                  trailingIcon={
+                    isHomeZipCodeLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : null
+                  }
                   required
                   mask="99999-999"
                 />
@@ -404,6 +444,11 @@ const SignUpPage: React.FC = () => {
                     handleInputChange('jobZipCode', e.target.value)
                   }
                   leadingIcon={<MapPin className={iconClass} />}
+                  trailingIcon={
+                    isJobZipCodeLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : null
+                  }
                   required
                   mask="99999-999"
                 />

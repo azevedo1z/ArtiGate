@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
-import { Eye, ArrowLeft, Send, FileText } from 'lucide-react';
+import { Eye, ArrowLeft, Send, FileText, Download } from 'lucide-react';
 import Button from '../components/button.component';
 import Textarea from '../components/textarea.component';
 import Select from '../components/select.component';
@@ -24,6 +24,24 @@ const SubmitReviewPage: React.FC = () => {
   const [commentary, setCommentary] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleDownload = async () => {
+    if (!articleId) {
+      toast.error('Please select an article first.');
+      return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+      await articleService.downloadAttachment(articleId);
+    } catch (error) {
+      toast.error(extractErrorMessage(error, 'Failed to download attachment.'));
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -127,6 +145,19 @@ const SubmitReviewPage: React.FC = () => {
                   required
                 />
               </div>
+
+              {articleId && (
+                <Button
+                  type="button"
+                  variantClassName="secondary"
+                  onClick={handleDownload}
+                  isLoading={isDownloading}
+                  loadingText="Downloading..."
+                  leadingIcon={<Download className="h-4 w-4" />}
+                >
+                  Download article PDF
+                </Button>
+              )}
             </section>
 
             <section className="p-6 space-y-5">

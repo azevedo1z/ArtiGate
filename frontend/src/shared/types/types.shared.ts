@@ -82,6 +82,21 @@ export interface Review {
 export interface CreateArticleData {
   summary: string;
   authorIds: string[];
+  pdf: File;
+}
+
+export interface ArticleAttachmentMetadata {
+  id: string;
+  originalName: string;
+  size: number;
+  checksum: string;
+}
+
+export interface CreateArticleResponse {
+  id: string;
+  summary: string;
+  scoreAvg: number;
+  attachment: ArticleAttachmentMetadata;
 }
 
 export interface CreateReviewData {

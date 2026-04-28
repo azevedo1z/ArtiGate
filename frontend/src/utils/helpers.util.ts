@@ -1,4 +1,5 @@
 import { SignUpFormData } from '../shared/types/types.shared';
+import { ACCEPTED_DOCUMENT_TYPE } from './constants.util';
 
 export const stripMask = (value: string) =>
   value ? value.replace(/\D/g, '') : '';
@@ -31,4 +32,18 @@ export const prepareUserData = (
     },
     badgeUrl: '',
   };
+};
+
+export const formatBytes = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
+};
+
+export const validatePdfFile = (file: File): string | null => {
+  if (!/\.pdf$/i.test(file.name)) return 'The file extension must be .pdf.';
+  if (file?.type !== ACCEPTED_DOCUMENT_TYPE)
+    return 'Only PDF files are accepted.';
+  if (file.size === 0) return 'The PDF file is empty.';
+  return null;
 };

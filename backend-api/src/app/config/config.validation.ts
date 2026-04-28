@@ -10,4 +10,6 @@ export const configValidationSchema = Joi.object({
   BRASIL_API_BASE_URL: Joi.string()
     .uri()
     .default('https://brasilapi.com.br'),
+  UPLOAD_DIR: Joi.string().default('uploads/articles'),
+  MAX_PDF_BYTES: Joi.number().integer().min(1024).max(52428800).default(10485760),
 });

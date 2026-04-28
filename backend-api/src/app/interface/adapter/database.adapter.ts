@@ -1,6 +1,7 @@
 import {
   Address,
   Article,
+  ArticleAttachment,
   ArticleAuthor,
   Review,
   Role,
@@ -46,3 +47,4 @@ export abstract class ArticleDatabaseAdapter extends DatabaseAdapter<Article> {}
 export abstract class ReviewDatabaseAdapter extends DatabaseAdapter<Review> {}
 export abstract class ArticleAuthorDatabaseAdapter extends DatabaseAdapter<ArticleAuthor> {}
 export abstract class UserRoleDatabaseAdapter extends DatabaseAdapter<UserRole> {}
+export abstract class ArticleAttachmentDatabaseAdapter extends DatabaseAdapter<ArticleAttachment> {}

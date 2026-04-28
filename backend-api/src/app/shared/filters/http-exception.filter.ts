@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { MulterError } from 'multer';
 import {
   ConflictException,
   NotFoundException,
@@ -68,6 +69,20 @@ export class GlobalExceptionFilter implements ExceptionFilter {
           error: config.error,
         };
       }
+    }
+
+    if (exception instanceof MulterError) {
+      const isFileSizeLimit = exception.code === 'LIMIT_FILE_SIZE';
+
+      return {
+        status: isFileSizeLimit
+          ? HttpStatus.PAYLOAD_TOO_LARGE
+          : HttpStatus.BAD_REQUEST,
+        message: isFileSizeLimit
+          ? 'Uploaded file is larger than the allowed limit.'
+          : `File upload rejected: ${exception.message}`,
+        error: 'Upload Rejected',
+      };
     }
 
     if (exception instanceof HttpException) {

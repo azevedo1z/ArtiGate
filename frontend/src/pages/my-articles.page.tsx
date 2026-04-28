@@ -11,6 +11,7 @@ import {
   ChevronUp,
   Eye,
   MessageSquare,
+  Download,
 } from 'lucide-react';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
@@ -32,6 +33,18 @@ const MyArticlesPage: React.FC = () => {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [reviewsMap, setReviewsMap] = useState<Record<string, Review[]>>({});
   const [loadingReviews, setLoadingReviews] = useState<string | null>(null);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  const handleDownload = async (articleId: string) => {
+    setDownloadingId(articleId);
+    try {
+      await articleService.downloadAttachment(articleId);
+    } catch (error) {
+      toast.error(extractErrorMessage(error, 'Failed to download attachment.'));
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -162,6 +175,19 @@ const MyArticlesPage: React.FC = () => {
                             </span>
                           </div>
                         )}
+
+                        <button
+                          onClick={() => handleDownload(article._id)}
+                          disabled={downloadingId === article._id}
+                          className="inline-flex items-center gap-1 text-xs font-medium text-primary-500 hover:text-primary-600 transition-colors px-2 py-1 rounded-md hover:bg-primary-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {downloadingId === article._id ? (
+                            <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
+                          ) : (
+                            <Download className="h-3.5 w-3.5" />
+                          )}
+                          PDF
+                        </button>
 
                         <button
                           onClick={() => toggleReviews(article._id)}

@@ -8,3 +8,5 @@ export const CARD_BRAND_OPTIONS = [
   { value: 'Mastercard', label: 'Mastercard' },
   { value: 'American Express', label: 'American Express' },
 ];
+
+export const ACCEPTED_DOCUMENT_TYPE = 'application/pdf';

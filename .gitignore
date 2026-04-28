@@ -52,3 +52,6 @@ vitest.config.*.timestamp*
 test-output
 .env
 CLAUDE.md
+
+# uploaded article PDFs (stored outside the web root, never served statically)
+uploads/

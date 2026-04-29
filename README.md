@@ -16,13 +16,14 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 ## Features
 
 * **User registration and authentication** (JWT-based)
-* **Article submission** with summary and author association
+* **Article submission** with summary, author association, and mandatory PDF attachment
+* **PDF attachments**: secure upload (magic-byte + structure validation), SHA-256 checksum, hardened download (sandboxed CSP, `nosniff`, `no-store`), and per-route rate limiting
 * **Peer review system** with score (1-10) and commentary
 * **Automatic score averaging** on article after each review
 * **Business rules**: prevents self-review and duplicate reviews per reviewer
 * **Soft-delete** across all entities
 * **Role-based access**: reviewer-only pages and actions
-* **My Articles** page with expandable review details per article
+* **My Articles** page with expandable review details per article and PDF download
 * **My Reviews** page for reviewers to track submitted reviews
 
 ## Project Structure
@@ -74,7 +75,7 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 | User | CRUD, find by email/address/review |
 | Role | CRUD, find by name |
 | Address | CRUD |
-| Article | CRUD, find by author |
+| Article | CRUD, find by author, upload/download PDF attachment |
 | Review | CRUD, find by reviewer, find by article |
 
 ## Screenshots
@@ -111,7 +112,7 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 npm install
 ```
 
-Copy `.env.example` to `.env` and configure your database connection and JWT secret.
+Copy `.env.example` to `.env` and configure your database connection, JWT secret, and PDF upload settings (`UPLOAD_DIR`, `MAX_PDF_BYTES`).
 
 ### Running
 
@@ -133,7 +134,7 @@ npx nx lint                  # Lint all projects
 
 ## Database
 
-Migrations are managed via Prisma. Models: User, Role, UserRole, Address, Article, ArticleAuthor, Review, Payment.
+Migrations are managed via Prisma. Models: User, Role, UserRole, Address, Article, ArticleAuthor, ArticleAttachment, Review, Payment.
 
 ```bash
 npx prisma migrate dev    # Apply migrations

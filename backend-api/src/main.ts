@@ -28,6 +28,7 @@ async function bootstrap() {
     cors({
       origin: configService.get<string>('cors.origin'),
       credentials: true,
+      exposedHeaders: ['X-Attachment-Checksum-SHA256', 'Content-Disposition'],
     })
   );
 

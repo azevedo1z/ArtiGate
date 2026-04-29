@@ -3,15 +3,18 @@ import { Article } from '../../../domain/models/article.model';
 import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
 import {
   ArticleDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
+  UserDatabaseAdapter,
 } from '../../../interface/adapter/database.adapter';
-import { NotFoundException } from '../../../shared/exceptions/app.exception';
+import {
+  NotFoundException,
+  ValidationException,
+} from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class UpdateArticleService {
   constructor(
     private readonly adapter: ArticleDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
+    private readonly userAdapter: UserDatabaseAdapter
   ) {}
 
   async execute(data: UpdateArticleDTO): Promise<Article> {
@@ -19,25 +22,24 @@ export class UpdateArticleService {
     if (!existingArticle)
       throw new NotFoundException(`Article with ID "${data.id}" not found`);
 
+    await this.ensureIsUser(data.authorIds);
+
     const articleRecord = await this.adapter.update(data);
-
-    if (data.authorIds?.length) {
-      const existingAuthors = await this.articleAuthorAdapter.findMany(data.id);
-
-      for (const author of existingAuthors)
-        await this.articleAuthorAdapter.delete(author.id);
-
-      for (const authorId of data.authorIds)
-        await this.articleAuthorAdapter.create({
-          articleId: data.id,
-          userId: authorId,
-        });
-    }
 
     return Article.factory(
       articleRecord.id,
       articleRecord.summary,
       articleRecord.scoreAvg
     );
+  }
+
+  private async ensureIsUser(authorIds: string[] | undefined): Promise<void> {
+    if (!authorIds) return;
+
+    for (const userId of authorIds) {
+      const user = await this.userAdapter.findById(userId);
+      if (!user)
+        throw new ValidationException(`The author "${userId}" is not registered in the system.`);
+    }
   }
 }

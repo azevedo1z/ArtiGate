@@ -29,7 +29,7 @@ export class UploadArticleAttachmentService {
     uploaderId: string,
     file: Express.Multer.File
   ): Promise<ArticleAttachment> {
-    const validated = this.validator.validate(file);
+    const validated = this.validator.execute(file);
 
     const article = await this.articleAdapter.findById(articleId);
     if (!article)

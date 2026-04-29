@@ -36,7 +36,7 @@ export class SubmitArticleService {
         'The current user must be listed as an author of the article.'
       );
 
-    this.validator.validate(file);
+    this.validator.execute(file);
 
     const article = await this.createArticleService.execute(data);
 

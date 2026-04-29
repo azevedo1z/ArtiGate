@@ -110,7 +110,7 @@ describe('UploadArticleAttachmentService', () => {
 
     const result = await service.execute('article-1', 'user-1', file);
 
-    expect(validator.validate).toHaveBeenCalledWith(file);
+    expect(validator.execute).toHaveBeenCalledWith(file);
     expect(storage.write).toHaveBeenCalledWith(
       'stored-uuid.pdf',
       expect.any(Buffer)

@@ -47,11 +47,11 @@ describe('SubmitArticleService', () => {
       service.execute(dto, 'user-1', undefined as never)
     ).rejects.toThrow(ValidationException);
 
-    expect(validator.validate).not.toHaveBeenCalled();
+    expect(validator.execute).not.toHaveBeenCalled();
   });
 
   it('validates the PDF before creating the article', async () => {
-    validator.validate.mockImplementation(() => {
+    validator.execute.mockImplementation(() => {
       throw new ValidationException('bad pdf');
     });
 
@@ -74,7 +74,7 @@ describe('SubmitArticleService', () => {
 
     const result = await service.execute(dto, 'user-1', file);
 
-    expect(validator.validate).toHaveBeenCalledWith(file);
+    expect(validator.execute).toHaveBeenCalledWith(file);
     expect(createArticleService.execute).toHaveBeenCalledWith(dto);
     expect(uploadAttachmentService.execute).toHaveBeenCalledWith(
       'article-1',

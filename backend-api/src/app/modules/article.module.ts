@@ -28,10 +28,12 @@ import { ValidationException } from '../shared/exceptions/app.exception';
 import { PDF_ATTACHMENT } from '../shared/constants';
 import { ReviewModule } from './review.module';
 import { RoleModule } from './role.module';
+import { UserModule } from './user.module';
 
 @Module({
   imports: [
     forwardRef(() => ReviewModule),
+    forwardRef(() => UserModule),
     RoleModule,
     MulterModule.registerAsync({
       imports: [ConfigModule],

@@ -36,7 +36,7 @@ describe('UploadArticleAttachmentService', () => {
       delete: jest.fn().mockResolvedValue(undefined),
     } as never;
     validator = {
-      validate: jest.fn().mockReturnValue({
+      execute: jest.fn().mockReturnValue({
         buffer: Buffer.from('content'),
         size: 7,
         checksum: 'a'.repeat(64),

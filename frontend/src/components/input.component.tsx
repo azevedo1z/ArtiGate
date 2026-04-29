@@ -69,6 +69,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {mask ? (
             <InputMask
               mask={mask}
+              maskChar={null}
               value={props.value}
               onChange={props.onChange}
             >

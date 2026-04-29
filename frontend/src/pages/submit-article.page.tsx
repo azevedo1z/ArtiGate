@@ -236,6 +236,7 @@ const SubmitArticlePage: React.FC = () => {
                       type="text"
                       label=""
                       placeholder="Co-author user ID"
+                      mask="********-****-****-****-************"
                       value={coAuthorInput}
                       onChange={(e) => setCoAuthorInput(e.target.value)}
                       onKeyDown={(e) => {

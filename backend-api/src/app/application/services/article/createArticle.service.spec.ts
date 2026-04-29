@@ -2,69 +2,50 @@ import { CreateArticleService } from './createArticle.service';
 import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 import {
   ArticleDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
+  UserDatabaseAdapter,
 } from '../../../interface/adapter/database.adapter';
+import { ValidationException } from '../../../shared/exceptions/app.exception';
 
 describe('CreateArticleService', () => {
   let service: CreateArticleService;
   let articleAdapter: jest.Mocked<ArticleDatabaseAdapter>;
-  let articleAuthorAdapter: jest.Mocked<ArticleAuthorDatabaseAdapter>;
+  let userAdapter: jest.Mocked<UserDatabaseAdapter>;
+
+  const articleRecord = {
+    id: 'article-1',
+    summary: 'A research paper',
+    scoreAvg: 0,
+    createdOn: new Date(),
+    updatedOn: new Date(),
+    deletedOn: null,
+  };
 
   beforeEach(() => {
-    articleAdapter = {
-      create: jest.fn(),
-    } as any;
-
-    articleAuthorAdapter = {
-      create: jest.fn(),
-    } as any;
-
-    service = new CreateArticleService(articleAdapter, articleAuthorAdapter);
+    articleAdapter = { create: jest.fn() } as any;
+    userAdapter = { findById: jest.fn() } as any;
+    service = new CreateArticleService(articleAdapter, userAdapter);
   });
 
-  it('should create an article and associate authors', async () => {
+  it('creates the article when all authors exist', async () => {
     const dto = new CreateArticleDTO('A research paper', ['user-1', 'user-2']);
-    articleAdapter.create.mockResolvedValue({
-      id: 'article-1',
-      summary: 'A research paper',
-      scoreAvg: 0,
-      createdOn: new Date(),
-      updatedOn: new Date(),
-      deletedOn: null,
-    });
-    articleAuthorAdapter.create.mockResolvedValue({} as any);
+    userAdapter.findById.mockResolvedValue({ id: 'user-1' } as any);
+    articleAdapter.create.mockResolvedValue(articleRecord);
 
     const result = await service.execute(dto);
 
+    expect(userAdapter.findById).toHaveBeenCalledWith('user-1');
+    expect(userAdapter.findById).toHaveBeenCalledWith('user-2');
+    expect(articleAdapter.create).toHaveBeenCalledWith(dto);
     expect(result.id).toBe('article-1');
-    expect(result.summary).toBe('A research paper');
-    expect(result.scoreAvg).toBe(0);
-    expect(articleAuthorAdapter.create).toHaveBeenCalledTimes(2);
-    expect(articleAuthorAdapter.create).toHaveBeenCalledWith({
-      articleId: 'article-1',
-      userId: 'user-1',
-    });
-    expect(articleAuthorAdapter.create).toHaveBeenCalledWith({
-      articleId: 'article-1',
-      userId: 'user-2',
-    });
   });
 
-  it('should create an article with a single author', async () => {
-    const dto = new CreateArticleDTO('Solo paper', ['user-1']);
-    articleAdapter.create.mockResolvedValue({
-      id: 'article-2',
-      summary: 'Solo paper',
-      scoreAvg: 0,
-      createdOn: new Date(),
-      updatedOn: new Date(),
-      deletedOn: null,
-    });
-    articleAuthorAdapter.create.mockResolvedValue({} as any);
+  it('throws ValidationException and does not create when an author does not exist', async () => {
+    const dto = new CreateArticleDTO('A research paper', ['user-1', 'bad-id']);
+    userAdapter.findById.mockImplementation(async (id) =>
+      id === 'user-1' ? ({ id } as any) : null
+    );
 
-    const result = await service.execute(dto);
-
-    expect(result.id).toBe('article-2');
-    expect(articleAuthorAdapter.create).toHaveBeenCalledTimes(1);
+    await expect(service.execute(dto)).rejects.toThrow(ValidationException);
+    expect(articleAdapter.create).not.toHaveBeenCalled();
   });
 });

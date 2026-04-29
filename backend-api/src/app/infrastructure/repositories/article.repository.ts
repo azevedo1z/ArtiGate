@@ -14,11 +14,20 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateArticleDTO): Promise<Article> {
-    const article = {
-      summary: data.summary,
-    };
+    return await this.prisma.$transaction(async (tx) => {
+      const articleRecord = await tx.article.create({
+        data: { summary: data.summary },
+      });
 
-    return await this.prisma.article.create({ data: article });
+      await tx.articleAuthor.createMany({
+        data: data.authorIds.map((userId) => ({
+          articleId: articleRecord.id,
+          userId,
+        })),
+      });
+
+      return articleRecord;
+    });
   }
 
   async update(data: UpdateArticleDTO): Promise<Article> {
@@ -26,9 +35,27 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
     if (data.summary !== undefined) article.summary = data.summary;
     if (data.scoreAvg !== undefined) article.scoreAvg = data.scoreAvg;
 
-    return await this.prisma.article.update({
-      where: { id: data.id },
-      data: article,
+    return await this.prisma.$transaction(async (tx) => {
+      const articleRecord = await tx.article.update({
+        where: { id: data.id },
+        data: article,
+      });
+
+      if (data.authorIds?.length) {
+        await tx.articleAuthor.updateMany({
+          where: { articleId: data.id, deletedOn: null },
+          data: { deletedOn: new Date() },
+        });
+
+        await tx.articleAuthor.createMany({
+          data: data.authorIds.map((userId) => ({
+            articleId: data.id,
+            userId,
+          })),
+        });
+      }
+
+      return articleRecord;
     });
   }
 

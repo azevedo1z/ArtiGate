@@ -21,7 +21,7 @@ describe('SubmitArticleService', () => {
   };
 
   beforeEach(() => {
-    validator = { validate: jest.fn() } as never;
+    validator = { execute: jest.fn() } as never;
     createArticleService = { execute: jest.fn() } as never;
     uploadAttachmentService = { execute: jest.fn() } as never;
     articleAdapter = { delete: jest.fn() } as never;

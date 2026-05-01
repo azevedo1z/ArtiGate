@@ -6,7 +6,7 @@ import { setRoles } from '../store/slices/roles.slice';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Card from '../components/card.component';
-import { Eye, FileText, BookOpen } from 'lucide-react';
+import { Eye, FileText, BookOpen, CreditCard } from 'lucide-react';
 import { roleService } from '../services/role.service';
 import { useUser } from '../hooks/useUser';
 import { useIsReviewer, useRoles } from '../hooks/useRoles';
@@ -103,6 +103,15 @@ const HomePage: React.FC = () => {
               onClick={() => navigate(ROUTES.MY_REVIEWS)}
             />
           )}
+
+          <Card
+            icon={<CreditCard className="h-5 w-5" />}
+            title="Pay Access Fee"
+            description="Pay your access fee with a credit card. Card data is tokenized in your browser."
+            iconTone="primary"
+            className="cursor-pointer"
+            onClick={() => navigate(ROUTES.CHECKOUT)}
+          />
         </div>
       </Container>
     </Wrapper>

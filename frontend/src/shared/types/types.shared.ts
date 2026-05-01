@@ -1,3 +1,5 @@
+import { PAYMENT_STATUS_OPTIONS } from '../../utils/constants.util';
+
 export interface PaginationParams {
   page?: number;
   limit?: number;
@@ -125,8 +127,44 @@ export interface SignUpFormData {
   jobNeighborhood: string;
   jobCity: string;
   jobState: string;
-  // mocked
-  cardNumber: string;
-  cardExpiry: string;
-  cardBrand: string;
 }
+
+export type PaymentStatus = (typeof PAYMENT_STATUS_OPTIONS)[number]['value'];
+
+export interface Payment {
+  id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  description: string | null;
+  paymentMethodId: string | null;
+  payerEmail: string;
+  gatewayPaymentId: string | null;
+  idempotencyKey: string;
+  failureReason: string | null;
+}
+
+export interface CreatePaymentRequest {
+  token?: string;
+  amount: number;
+  currency?: string;
+  paymentMethodId: string;
+  payerEmail: string;
+  payerIdentification?: {
+    type: string;
+    number: string;
+  };
+  description?: string;
+  idempotencyKey: string;
+}
+
+export type CheckoutFormData = {
+  cardNumber: string;
+  cardholderName: string;
+  cardExpiry: string;
+  securityCode: string;
+  paymentMethodId: string;
+  identificationType: string;
+  identificationNumber: string;
+};

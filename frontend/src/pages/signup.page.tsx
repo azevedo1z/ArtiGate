@@ -9,8 +9,6 @@ import {
   Phone,
   MapPin,
   Building,
-  CreditCard,
-  Calendar,
   ArrowLeft,
   UserPlus,
   Eye,
@@ -22,8 +20,7 @@ import Button from '../components/button.component';
 import Input from '../components/input.component';
 import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
-import Select from '../components/select.component';
-import { ROLE_OPTIONS, CARD_BRAND_OPTIONS } from '../utils/constants.util';
+import { ROLE_OPTIONS } from '../utils/constants.util';
 import {
   AddressPrefix,
   SignUpFormData,
@@ -64,9 +61,6 @@ const SignUpPage: React.FC = () => {
     jobNeighborhood: '',
     jobCity: '',
     jobState: '',
-    cardNumber: '',
-    cardExpiry: '',
-    cardBrand: 'Visa',
   });
 
   const handleInputChange = (
@@ -522,66 +516,6 @@ const SignUpPage: React.FC = () => {
                   label="Country"
                   placeholder="Brasil"
                   disabled
-                />
-              </div>
-            </section>
-
-            <section className="p-6 space-y-5">
-              <div className="flex items-center gap-2">
-                <CreditCard className="h-4 w-4 text-ink-400" />
-                <h2 className="text-xs font-semibold text-ink-500 uppercase tracking-wide">
-                  Payment Information
-                </h2>
-                <span className="text-[10px] font-medium text-ink-400 bg-ink-50 border border-ink-100 rounded-full px-2 py-0.5 uppercase tracking-wide">
-                  Mock
-                </span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <Input
-                  id="cardNumber"
-                  type="text"
-                  label="Card Number"
-                  placeholder="1234 5678 9012 3456"
-                  value={formData.cardNumber}
-                  onChange={(e) =>
-                    handleInputChange('cardNumber', e.target.value)
-                  }
-                  leadingIcon={<CreditCard className={iconClass} />}
-                  required
-                  mask="9999 9999 9999 9999"
-                />
-
-                <Input
-                  id="cardExpiry"
-                  type="text"
-                  label="Expiry Date"
-                  placeholder="MM/YY"
-                  value={formData.cardExpiry}
-                  onChange={(e) =>
-                    handleInputChange('cardExpiry', e.target.value)
-                  }
-                  leadingIcon={<Calendar className={iconClass} />}
-                  required
-                  mask="99/99"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="cardBrand"
-                  className="text-xs font-medium text-ink-600 uppercase tracking-wide block"
-                >
-                  Card Brand
-                </label>
-                <Select
-                  id="cardBrand"
-                  placeholder="Select card brand"
-                  options={CARD_BRAND_OPTIONS}
-                  value={formData.cardBrand}
-                  onChange={(e) =>
-                    handleInputChange('cardBrand', e.target.value)
-                  }
                 />
               </div>
             </section>

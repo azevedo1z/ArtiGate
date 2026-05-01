@@ -8,6 +8,7 @@ export const ROUTES = {
   MY_ARTICLES: '/my-articles',
   SUBMIT_REVIEW: '/submit-review',
   MY_REVIEWS: '/my-reviews',
+  CHECKOUT: '/checkout',
 } as const;
 
 export const ROLES = {

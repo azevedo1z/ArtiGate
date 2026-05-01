@@ -137,10 +137,23 @@ model Review {
 model Payment {
   id String @id @default(uuid())
   userId String
+  amount Decimal @db.Decimal(12, 2)
+  currency String @default("BRL")
+  status String @default("pending")
+  description String?
+  paymentMethodId String?
+  payerEmail String
+  gatewayPaymentId String? @unique
+  idempotencyKey String @unique
+  failureReason String?
+  rawGatewayResponse String? @db.NVarChar(Max)
   createdOn DateTime @default(now())
+  updatedOn DateTime @updatedAt
   deletedOn DateTime?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([gatewayPaymentId])
+  @@index([status])
 }

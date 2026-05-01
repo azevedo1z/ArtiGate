@@ -15,6 +15,7 @@ const SubmitArticlePage = lazy(() => import('../pages/submit-article.page'));
 const MyArticlesPage = lazy(() => import('../pages/my-articles.page'));
 const SubmitReviewPage = lazy(() => import('../pages/submit-review.page'));
 const MyReviewsPage = lazy(() => import('../pages/my-reviews.page'));
+const CheckoutPage = lazy(() => import('../pages/checkout.page'));
 const NotFoundPage = lazy(() => import('../pages/not-found.page'));
 
 const LoadingFallback = () => (
@@ -71,6 +72,14 @@ export function App() {
                 <RoleProtectedRoute requiredRole={ROLES.REVIEWER}>
                   <MyReviewsPage />
                 </RoleProtectedRoute>
+              }
+            />
+            <Route
+              path={ROUTES.CHECKOUT}
+              element={
+                <PrivateRoute>
+                  <CheckoutPage />
+                </PrivateRoute>
               }
             />
             <Route path="*" element={<NotFoundPage />} />

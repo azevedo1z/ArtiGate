@@ -33,3 +33,10 @@ export class UnauthorizedException extends AppException {
     this.name = 'UnauthorizedException';
   }
 }
+
+export class PaymentGatewayException extends AppException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PaymentGatewayException';
+  }
+}

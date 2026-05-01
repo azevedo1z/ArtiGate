@@ -3,6 +3,7 @@ import {
   Article,
   ArticleAttachment,
   ArticleAuthor,
+  Payment,
   Review,
   Role,
   User,
@@ -38,6 +39,8 @@ export abstract class DatabaseAdapter<T> {
   abstract findByEmail?(email: string): Promise<T | null>;
   abstract findByAddressId?(addressId: string): Promise<T | null>;
   abstract findByReviewId?(reviewId: string): Promise<T | null>;
+  abstract findByIdempotencyKey?(key: string): Promise<T | null>;
+  abstract findByGatewayPaymentId?(id: string): Promise<T | null>;
 }
 
 export abstract class UserDatabaseAdapter extends DatabaseAdapter<User> {}
@@ -48,3 +51,4 @@ export abstract class ReviewDatabaseAdapter extends DatabaseAdapter<Review> {}
 export abstract class ArticleAuthorDatabaseAdapter extends DatabaseAdapter<ArticleAuthor> {}
 export abstract class UserRoleDatabaseAdapter extends DatabaseAdapter<UserRole> {}
 export abstract class ArticleAttachmentDatabaseAdapter extends DatabaseAdapter<ArticleAttachment> {}
+export abstract class PaymentDatabaseAdapter extends DatabaseAdapter<Payment> {}

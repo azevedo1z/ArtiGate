@@ -16,12 +16,19 @@ export type CardTokenInput = {
   identificationNumber?: string;
 };
 
-type MercadoPagoCardTokenResponse = { id: string };
+type MercadoPagoCardTokenResponse = { id: string; first_six_digits?: string };
+
+type MercadoPagoPaymentMethodsResponse = {
+  results: Array<{ id: string; name?: string; payment_type_id?: string }>;
+};
 
 type MercadoPagoInstance = {
   createCardToken: (
     input: CardTokenInput
   ) => Promise<MercadoPagoCardTokenResponse>;
+  getPaymentMethods: (input: {
+    bin: string;
+  }) => Promise<MercadoPagoPaymentMethodsResponse>;
 };
 
 type MercadoPagoConstructor = new (
@@ -67,6 +74,11 @@ function loadMercadoPagoSdk(): Promise<void> {
   return scriptPromise;
 }
 
+export type CardTokenizationResult = {
+  token: string;
+  paymentMethodId: string | null;
+};
+
 export function useMercadoPago() {
   const [isReady, setIsReady] = useState(PAYMENT_MOCK_ENABLED);
   const [error, setError] = useState<string | null>(null);
@@ -104,30 +116,40 @@ export function useMercadoPago() {
     };
   }, []);
 
-  const createCardToken = async (input: CardTokenInput): Promise<string> => {
+  const tokenizeCard = async (
+    input: CardTokenInput
+  ): Promise<CardTokenizationResult> => {
     if (PAYMENT_MOCK_ENABLED) {
       const random =
         typeof crypto !== 'undefined' && 'randomUUID' in crypto
           ? crypto.randomUUID()
           : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-      return `mock-token-${random}`;
+      return { token: `mock-token-${random}`, paymentMethodId: null };
     }
 
-    if (!instanceRef.current) {
+    if (!instanceRef.current)
       throw new Error('Mercado Pago SDK is not ready yet.');
-    }
 
     const response = await instanceRef.current.createCardToken(input);
     if (!response?.id)
       throw new Error('Mercado Pago did not return a card token.');
 
-    return response.id;
+    const bin = response.first_six_digits ?? input.cardNumber.slice(0, 6);
+    let paymentMethodId: string | null = null;
+    try {
+      const methods = await instanceRef.current.getPaymentMethods({ bin });
+      paymentMethodId = methods.results?.[0]?.id ?? null;
+    } catch {
+      paymentMethodId = null;
+    }
+
+    return { token: response.id, paymentMethodId };
   };
 
   return {
     isReady,
     isMock: PAYMENT_MOCK_ENABLED,
     error,
-    createCardToken,
+    tokenizeCard,
   };
 }

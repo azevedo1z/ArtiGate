@@ -1,4 +1,5 @@
-import { PaymentStatus } from '../../shared/types/payment.types';
+import { PaymentProps, PaymentStatus } from '../../shared/types/payment.types';
+
 export class Payment {
   private _id: string;
   private _userId: string;
@@ -12,58 +13,22 @@ export class Payment {
   private _idempotencyKey: string;
   private _failureReason: string | null;
 
-  private constructor(
-    id: string,
-    userId: string,
-    amount: number,
-    currency: string,
-    status: PaymentStatus,
-    description: string | null,
-    paymentMethodId: string | null,
-    payerEmail: string,
-    gatewayPaymentId: string | null,
-    idempotencyKey: string,
-    failureReason: string | null
-  ) {
-    this._id = id;
-    this._userId = userId;
-    this._amount = amount;
-    this._currency = currency;
-    this._status = status;
-    this._description = description;
-    this._paymentMethodId = paymentMethodId;
-    this._payerEmail = payerEmail;
-    this._gatewayPaymentId = gatewayPaymentId;
-    this._idempotencyKey = idempotencyKey;
-    this._failureReason = failureReason;
+  private constructor(props: PaymentProps) {
+    this._id = props.id;
+    this._userId = props.userId;
+    this._amount = props.amount;
+    this._currency = props.currency;
+    this._status = props.status;
+    this._description = props.description;
+    this._paymentMethodId = props.paymentMethodId;
+    this._payerEmail = props.payerEmail;
+    this._gatewayPaymentId = props.gatewayPaymentId;
+    this._idempotencyKey = props.idempotencyKey;
+    this._failureReason = props.failureReason;
   }
 
-  static factory(
-    id: string,
-    userId: string,
-    amount: number,
-    currency: string,
-    status: PaymentStatus,
-    description: string | null,
-    paymentMethodId: string | null,
-    payerEmail: string,
-    gatewayPaymentId: string | null,
-    idempotencyKey: string,
-    failureReason: string | null
-  ): Payment {
-    return new Payment(
-      id,
-      userId,
-      amount,
-      currency,
-      status,
-      description,
-      paymentMethodId,
-      payerEmail,
-      gatewayPaymentId,
-      idempotencyKey,
-      failureReason
-    );
+  static factory(props: PaymentProps): Payment {
+    return new Payment(props);
   }
 
   get id(): string {

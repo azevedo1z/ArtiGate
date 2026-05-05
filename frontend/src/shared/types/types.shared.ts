@@ -132,22 +132,21 @@ export interface SignUpFormData {
 export type PaymentStatus = (typeof PAYMENT_STATUS_OPTIONS)[number]['value'];
 
 export interface Payment {
-  id: string;
-  userId: string;
-  amount: number;
-  currency: string;
-  status: PaymentStatus;
-  description: string | null;
-  paymentMethodId: string | null;
-  payerEmail: string;
-  gatewayPaymentId: string | null;
-  idempotencyKey: string;
-  failureReason: string | null;
+  _id: string;
+  _userId: string;
+  _amount: number;
+  _currency: string;
+  _status: PaymentStatus;
+  _description: string | null;
+  _paymentMethodId: string | null;
+  _payerEmail: string;
+  _gatewayPaymentId: string | null;
+  _idempotencyKey: string;
+  _failureReason: string | null;
 }
 
 export interface CreatePaymentRequest {
   token?: string;
-  amount: number;
   currency?: string;
   paymentMethodId: string;
   payerEmail: string;

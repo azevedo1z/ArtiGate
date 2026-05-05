@@ -18,7 +18,7 @@ const EnsurePayerIdMatchesPattern =
   (validationOptions?: ValidationOptions): PropertyDecorator =>
   (target, propertyKey) => {
     registerDecorator({
-      name: 'matchPayerIdentificationNumber',
+      name: 'ensurePayerIdMatchesPattern',
       target: target.constructor,
       propertyName: propertyKey as string,
       options: validationOptions,
@@ -28,14 +28,17 @@ const EnsurePayerIdMatchesPattern =
           const dto = args.object as { type?: string };
           const type = getPayerIdType(dto.type);
           if (!type) return false;
-          return getPayerIdRegex(type).test(String(value).trim());
+          const pattern = getPayerIdRegex(type);
+          if (!pattern) return false;
+          return pattern.test(String(value).trim());
         },
         defaultMessage(args: ValidationArguments) {
           const dto = args.object as { type?: string };
           const type = getPayerIdType(dto.type);
-          return type
-            ? `payerIdentification.number must match ${type} format.`
-            : 'payerIdentification.type is required.';
+          if (!type) return 'payerIdentification.type is required.';
+          if (!getPayerIdRegex(type))
+            return `payerIdentification.type "${type}" is not supported.`;
+          return `payerIdentification.number must match ${type} format.`;
         },
       },
     });

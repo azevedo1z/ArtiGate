@@ -38,14 +38,24 @@ export const PAYMENT_PAYER_IDENTIFICATION_TYPES = [
 ] as const;
 
 export const PAYMENT_METHOD_IDS = [
-  'credit',
+  'visa',
+  'master',
+  'amex',
+  'elo',
+  'hipercard',
+  'hiper',
+  'diners',
+  'discover',
   'pix',
+  'bolbradesco',
   'caixa_virtual_debit',
-  'bank_slip',
 ] as const;
 
-export const PAYER_ID_REGEX_BY_TYPE: Partial<
-  Record<(typeof PAYMENT_PAYER_IDENTIFICATION_TYPES)[number], RegExp>
+export const PAYER_ID_OTRO_REGEX = /^.{1,30}$/;
+
+export const PAYER_ID_REGEX_BY_TYPE: Record<
+  (typeof PAYMENT_PAYER_IDENTIFICATION_TYPES)[number],
+  RegExp
 > = {
   CPF: /^\d{11}$/,
   CNPJ: /^\d{14}$/,
@@ -59,6 +69,7 @@ export const PAYER_ID_REGEX_BY_TYPE: Partial<
   CURP: /^[A-Z]{4}\d{6}[A-Z]{6}\d{2}$/,
   RFC: /^[A-Z&N]{3,4}\d{6}[A-Z0-9]{3}$/,
   RUC: /^\d{6,15}$/,
+  OTRO: PAYER_ID_OTRO_REGEX,
 };
 
 export const PAYMENT_STATUS_OPTIONS = [
@@ -70,4 +81,6 @@ export const PAYMENT_STATUS_OPTIONS = [
   { value: 'cancelled', label: 'Cancelled' },
   { value: 'refunded', label: 'Refunded' },
   { value: 'charged_back', label: 'Charged Back' },
-];
+] as const;
+
+export const PAYMENT_ACCESS_FEE = 49.9;

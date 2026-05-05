@@ -1,10 +1,21 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PaymentWebhookDTO } from '../../dtos/payment/paymentWebhook.dto';
+import { UpdatePaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
 import { PaymentDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
 import { PaymentGatewayWebhookHeaders } from '../../dtos/payment/paymentGatewayCharge.dto';
-import { PaymentUpdateDTO } from '../../dtos/payment/paymentPersist.dto';
-import { UnauthorizedException } from '../../../shared/exceptions/app.exception';
+import { PaymentStatus } from '../../../shared/types/payment.types';
+
+const STATUS_PRIORITY: Record<PaymentStatus, number> = {
+  pending: 0,
+  in_process: 1,
+  authorized: 2,
+  approved: 3,
+  cancelled: 4,
+  rejected: 4,
+  refunded: 5,
+  charged_back: 5,
+};
 
 @Injectable()
 export class ProcessPaymentWebhookService {
@@ -21,16 +32,17 @@ export class ProcessPaymentWebhookService {
   ): Promise<void> {
     const resourceId = body?.data?.id;
     if (!resourceId) {
-      this.logger.warn('Payment webhook received without resource id; ignoring.');
+      this.logger.warn(
+        'Payment webhook received without resource id; ignoring.'
+      );
       return;
     }
 
-    const isValid = this.gateway.verifyWebhookSignature(headers, resourceId);
-    if (!isValid) {
+    if (!this.gateway.verifyWebhookSignature(headers, resourceId)) {
       this.logger.warn(
-        `Payment webhook signature verification failed for resource ${resourceId}.`
+        `Payment webhook signature verification failed for resource ${resourceId}; ignoring.`
       );
-      throw new UnauthorizedException('Invalid webhook signature.');
+      return;
     }
 
     if (body.type && body.type !== 'payment') {
@@ -56,7 +68,14 @@ export class ProcessPaymentWebhookService {
       return;
     }
 
-    const update = new PaymentUpdateDTO({
+    if (!this.shouldApply(existing.status, remote.status)) {
+      this.logger.warn(
+        `Payment webhook would regress status (${existing.status} -> ${remote.status}); ignoring.`
+      );
+      return;
+    }
+
+    const update = new UpdatePaymentPersistDTO({
       id: existing.id,
       status: remote.status,
       paymentMethodId: remote.paymentMethodId,
@@ -64,6 +83,13 @@ export class ProcessPaymentWebhookService {
       rawGatewayResponse: remote.rawResponse,
     });
 
-    await this.adapter.update(update as never);
+    await this.adapter.update(update);
+  }
+
+  private shouldApply(currentStatus: string, nextStatus: string): boolean {
+    const current = STATUS_PRIORITY[currentStatus as PaymentStatus];
+    const next = STATUS_PRIORITY[nextStatus as PaymentStatus];
+    if (current == null || next == null) return true;
+    return next >= current;
   }
 }

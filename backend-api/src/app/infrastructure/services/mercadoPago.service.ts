@@ -14,6 +14,10 @@ import { PAYMENT_STATUS_OPTIONS } from '../../shared/constants';
 
 const REQUEST_TIMEOUT_MS = 10_000;
 
+const KNOWN_STATUS_VALUES: ReadonlySet<string> = new Set(
+  PAYMENT_STATUS_OPTIONS.map((option) => option.value)
+);
+
 @Injectable()
 export class MercadoPagoService extends PaymentGatewayAdapter {
   private readonly logger = new Logger(MercadoPagoService.name);
@@ -116,12 +120,12 @@ export class MercadoPagoService extends PaymentGatewayAdapter {
       .update(manifest)
       .digest('hex');
 
-    const expectedBuffer = Buffer.from(expected, 'utf8');
-    const receivedBuffer = Buffer.from(v1, 'utf8');
-
-    if (expectedBuffer.length !== receivedBuffer.length) return false;
+    if (expected.length !== v1.length) return false;
 
     try {
+      const expectedBuffer = Buffer.from(expected, 'hex');
+      const receivedBuffer = Buffer.from(v1, 'hex');
+      if (expectedBuffer.length !== receivedBuffer.length) return false;
       return timingSafeEqual(
         Uint8Array.from(expectedBuffer),
         Uint8Array.from(receivedBuffer)
@@ -155,13 +159,7 @@ export class MercadoPagoService extends PaymentGatewayAdapter {
 
   private mapStatus(status?: string): PaymentStatus {
     if (!status) return 'pending';
-    if (
-      (
-        PAYMENT_STATUS_OPTIONS.map((o) => o.value) as readonly string[]
-      ).includes(status)
-    ) {
-      return status as PaymentStatus;
-    }
+    if (KNOWN_STATUS_VALUES.has(status)) return status as PaymentStatus;
     if (status === 'in_mediation') return 'in_process';
     return 'pending';
   }
@@ -180,11 +178,33 @@ export class MercadoPagoService extends PaymentGatewayAdapter {
         string,
         unknown
       >;
+
       const card = clone['card'] as Record<string, unknown> | undefined;
       if (card) {
         delete card['cardholder'];
         delete card['security_code_length'];
       }
+
+      const payer = clone['payer'] as Record<string, unknown> | undefined;
+      if (payer) {
+        delete payer['email'];
+        delete payer['first_name'];
+        delete payer['last_name'];
+        delete payer['phone'];
+        const identification = payer['identification'] as
+          | Record<string, unknown>
+          | undefined;
+        if (identification) delete identification['number'];
+      }
+
+      const additionalInfo = clone['additional_info'] as
+        | Record<string, unknown>
+        | undefined;
+      if (additionalInfo) {
+        delete additionalInfo['payer'];
+        delete additionalInfo['shipments'];
+      }
+
       delete clone['payer_authentication'];
       return clone;
     } catch {

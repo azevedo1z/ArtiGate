@@ -1,11 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Payment as PaymentRow, Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { CreatePaymentDTO } from '../../dtos/payment/createPayment.dto';
+import { CreatePaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
 import { PaymentGatewayChargeRequestDTO } from '../../dtos/payment/paymentGatewayCharge.dto';
-import { PaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
 import { Payment } from '../../../domain/models/payment.model';
-import { PaymentStatus } from '../../../shared/types/payment.types';
+import { paymentRowToDomain } from '../../mappers/payment.mapper';
 import {
   PaymentDatabaseAdapter,
   UserDatabaseAdapter,
@@ -15,6 +15,7 @@ import {
   NotFoundException,
   PaymentGatewayException,
 } from '../../../shared/exceptions/app.exception';
+import { PAYMENT_ACCESS_FEE } from '../../../shared/constants';
 
 @Injectable()
 export class CreatePaymentService {
@@ -35,8 +36,9 @@ export class CreatePaymentService {
     const cached = await this.adapter.findByIdempotencyKey?.(
       dto.idempotencyKey
     );
-    if (cached) return this.toDomain(cached);
+    if (cached) return paymentRowToDomain(cached);
 
+    const amount = PAYMENT_ACCESS_FEE;
     const currency = (
       dto.currency ??
       this.configService.get<string>('payment.defaultCurrency') ??
@@ -45,7 +47,7 @@ export class CreatePaymentService {
 
     const chargeRequest = new PaymentGatewayChargeRequestDTO({
       token: dto.token ?? null,
-      amount: dto.amount,
+      amount,
       currency,
       description: dto.description ?? null,
       paymentMethodId: dto.paymentMethodId,
@@ -57,30 +59,29 @@ export class CreatePaymentService {
 
     const chargeResult = await this.gateway.createCharge(chargeRequest);
 
+    const persistData = new CreatePaymentPersistDTO({
+      userId,
+      amount: new Prisma.Decimal(amount.toFixed(2)),
+      currency,
+      status: chargeResult.status,
+      description: dto.description ?? null,
+      paymentMethodId: chargeResult.paymentMethodId ?? dto.paymentMethodId,
+      payerEmail: dto.payerEmail,
+      gatewayPaymentId: chargeResult.gatewayPaymentId || null,
+      idempotencyKey: dto.idempotencyKey,
+      failureReason: chargeResult.failureReason,
+      rawGatewayResponse: chargeResult.rawResponse,
+    });
+
     try {
-      const persistData = new PaymentPersistDTO({
-        userId,
-        amount: new Prisma.Decimal(dto.amount.toFixed(2)),
-        currency,
-        status: chargeResult.status,
-        description: dto.description ?? null,
-        paymentMethodId: chargeResult.paymentMethodId ?? dto.paymentMethodId,
-        payerEmail: dto.payerEmail,
-        gatewayPaymentId: chargeResult.gatewayPaymentId || null,
-        idempotencyKey: dto.idempotencyKey,
-        failureReason: chargeResult.failureReason,
-        rawGatewayResponse: chargeResult.rawResponse,
-      });
-
-      const persisted = await this.adapter.create(persistData as never);
-
-      return this.toDomain(persisted);
+      const persisted = await this.adapter.create(persistData);
+      return paymentRowToDomain(persisted);
     } catch (error) {
       if (this.isUniqueViolation(error)) {
         const fallback = await this.adapter.findByIdempotencyKey?.(
           dto.idempotencyKey
         );
-        if (fallback) return this.toDomain(fallback);
+        if (fallback) return paymentRowToDomain(fallback);
       }
 
       this.logger.error(
@@ -88,7 +89,7 @@ export class CreatePaymentService {
         error instanceof Error ? error.stack : JSON.stringify(error)
       );
       throw new PaymentGatewayException(
-        'Payment was processed but could not be recorded. Please contact support.'
+        'Payment could not be completed. Please try again later.'
       );
     }
   }
@@ -97,22 +98,6 @@ export class CreatePaymentService {
     return (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === 'P2002'
-    );
-  }
-
-  private toDomain(row: PaymentRow): Payment {
-    return Payment.factory(
-      row.id,
-      row.userId,
-      Number(row.amount),
-      row.currency,
-      row.status as PaymentStatus,
-      row.description,
-      row.paymentMethodId,
-      row.payerEmail,
-      row.gatewayPaymentId,
-      row.idempotencyKey,
-      row.failureReason
     );
   }
 }

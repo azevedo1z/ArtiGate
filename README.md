@@ -25,6 +25,7 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 * **Role-based access**: reviewer-only pages and actions
 * **My Articles** page with expandable review details per article and PDF download
 * **My Reviews** page for reviewers to track submitted reviews
+* **Payment gateway**: Mercado Pago integration for the access fee; client-side card tokenization (PAN/CVV never reach the backend), idempotent charges, signed webhooks (HMAC-SHA256, constant-time compare), monotonic status transitions, and PII-stripped gateway payloads. Article submission and reviewing are gated by `AccessFeePaymentGuard` until the fee is approved. A mock mode (`ENABLE_PAYMENT_MOCK=true`) bypasses the gateway for local dev and tests.
 
 ## Project Structure
 
@@ -63,9 +64,10 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 | `/signup` | Sign Up | Public |
 | `/about` | About | Public |
 | `/home` | Home (dashboard) | Authenticated |
-| `/submit-article` | Submit Article | Authenticated |
+| `/checkout` | Checkout (access fee) | Authenticated |
+| `/submit-article` | Submit Article | Authenticated + Access fee paid |
 | `/my-articles` | My Articles | Authenticated |
-| `/submit-review` | Submit Review | Authenticated + Reviewer |
+| `/submit-review` | Submit Review | Authenticated + Reviewer + Access fee paid |
 | `/my-reviews` | My Reviews | Authenticated + Reviewer |
 
 ## API Modules
@@ -77,6 +79,7 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 | Address | CRUD |
 | Article | CRUD, find by author, upload/download PDF attachment |
 | Review | CRUD, find by reviewer, find by article |
+| Payment | Create charge, list mine, get by id, access-fee status, gateway webhook |
 
 ## Screenshots
 
@@ -112,7 +115,7 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 npm install
 ```
 
-Copy `.env.example` to `.env` and configure your database connection, JWT secret, and PDF upload settings (`UPLOAD_DIR`, `MAX_PDF_BYTES`).
+Copy `.env.example` to `.env` and configure your database connection, JWT secret, PDF upload settings (`UPLOAD_DIR`, `MAX_PDF_BYTES`), and Mercado Pago credentials (`MERCADO_PAGO_ACCESS_TOKEN`, `MERCADO_PAGO_PUBLIC_KEY`, `MERCADO_PAGO_WEBHOOK_SECRET`, `MERCADO_PAGO_NOTIFICATION_URL`). For local dev without real credentials, set `ENABLE_PAYMENT_MOCK=true` to enable the mock gateway. The frontend reads `VITE_MERCADO_PAGO_PUBLIC_KEY` and `VITE_ENABLE_PAYMENT_MOCK` from its own `.env`.
 
 ### Running
 

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
   CreditCard,
@@ -16,6 +16,10 @@ import Select from '../components/select.component';
 import Wrapper from '../components/wrapper.component';
 import { IDENTIFICATION_TYPE_OPTIONS } from '../utils/constants.util';
 import { useCheckout } from '../hooks/useCheckout';
+import {
+  useAccessFeeStatus,
+  useFetchAccessFeeStatus,
+} from '../hooks/useAccessFee';
 import { ROUTES } from '../config/routes.config';
 import { CheckoutFormData } from '../shared/types/types.shared';
 
@@ -31,6 +35,8 @@ const initialFormData: CheckoutFormData = {
 const CheckoutPage: React.FC = () => {
   const navigate = useNavigate();
   const { isReady, isMock, sdkError, isSubmitting, submit } = useCheckout();
+  useFetchAccessFeeStatus();
+  const hasPaidAccessFee = useAccessFeeStatus();
   const [formData, setFormData] = useState<CheckoutFormData>(initialFormData);
 
   const handleChange = (field: keyof CheckoutFormData, value: string) => {
@@ -41,6 +47,8 @@ const CheckoutPage: React.FC = () => {
     event.preventDefault();
     await submit(formData);
   };
+
+  if (hasPaidAccessFee === true) return <Navigate to={ROUTES.HOME} replace />;
 
   const iconClass = 'h-4 w-4 text-ink-400';
 
@@ -67,7 +75,7 @@ const CheckoutPage: React.FC = () => {
         )}
         {isMock && (
           <div className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-md px-4 py-2">
-            Mock mode is on — submitting will skip tokenization and the backend
+            Mock mode is on; submitting will skip tokenization and the backend
             will auto-approve the charge locally.
           </div>
         )}
@@ -138,7 +146,7 @@ const CheckoutPage: React.FC = () => {
                 onChange={(e) => handleChange('securityCode', e.target.value)}
                 leadingIcon={<Lock className={iconClass} />}
                 required
-                mask="9999"
+                mask="999"
               />
             </div>
           </section>
@@ -175,13 +183,14 @@ const CheckoutPage: React.FC = () => {
               </div>
               <Input
                 id="identificationNumber"
-                type="text"
+                type="number"
                 label="Document Number"
-                placeholder="Numbers, dots, dashes"
+                placeholder="Numbers only"
                 value={formData.identificationNumber}
                 onChange={(e) =>
                   handleChange('identificationNumber', e.target.value)
                 }
+                required={Boolean(formData.identificationType)}
               />
             </div>
           </section>

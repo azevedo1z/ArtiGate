@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
+import { AxiosError } from 'axios';
 import { paymentService } from '../services/payment.service';
 import { useUser } from './useUser';
 import { useMercadoPago } from './useMercadoPago';
@@ -146,6 +147,13 @@ export function useCheckout() {
         navigate(ROUTES.HOME);
       }
     } catch (error) {
+      if (error instanceof AxiosError && error.response?.status === 409) {
+        dispatch(setAccessFeePaid(true));
+        sessionStorage.removeItem(IDEMPOTENCY_STORAGE_KEY);
+        toast.error('You have already paid the access fee.');
+        navigate(ROUTES.HOME);
+        return;
+      }
       toast.error(
         extractErrorMessage(error, 'Could not complete the payment.')
       );

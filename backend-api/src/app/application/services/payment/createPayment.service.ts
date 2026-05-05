@@ -12,6 +12,7 @@ import {
 } from '../../../interface/adapter/database.adapter';
 import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
 import {
+  ConflictException,
   NotFoundException,
   PaymentGatewayException,
 } from '../../../shared/exceptions/app.exception';
@@ -37,6 +38,12 @@ export class CreatePaymentService {
       dto.idempotencyKey
     );
     if (cached) return paymentRowToDomain(cached);
+
+    const alreadyPaid =
+      (await this.adapter.hasApprovedFeeByUserId?.(userId)) ?? false;
+
+    if (alreadyPaid)
+      throw new ConflictException('The access fee has already been paid.');
 
     const amount = PAYMENT_ACCESS_FEE;
     const currency = (

@@ -8,6 +8,7 @@ import {
 } from '../../../interface/adapter/database.adapter';
 import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
 import {
+  ConflictException,
   NotFoundException,
   PaymentGatewayException,
 } from '../../../shared/exceptions/app.exception';
@@ -49,6 +50,7 @@ describe('CreatePaymentService', () => {
   beforeEach(() => {
     paymentAdapter = {
       findByIdempotencyKey: jest.fn(),
+      hasApprovedFeeByUserId: jest.fn().mockResolvedValue(false),
       create: jest.fn(),
     } as never;
 
@@ -82,7 +84,7 @@ describe('CreatePaymentService', () => {
 
   it('returns the cached payment when the idempotency key was already used', async () => {
     userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    paymentAdapter.findByIdempotencyKey?.mockResolvedValue({
+    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue({
       ...persistedRow,
       id: 'p-1',
       paymentMethodId: 'master',
@@ -95,9 +97,23 @@ describe('CreatePaymentService', () => {
     expect(paymentAdapter.create).not.toHaveBeenCalled();
   });
 
+  it('throws ConflictException when the user already paid the access fee', async () => {
+    userAdapter.findById.mockResolvedValue({ id: userId } as never);
+    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
+    (paymentAdapter.hasApprovedFeeByUserId as jest.Mock).mockResolvedValue(
+      true
+    );
+
+    await expect(service.execute(userId, baseDto)).rejects.toThrow(
+      ConflictException
+    );
+    expect(gateway.createCharge).not.toHaveBeenCalled();
+    expect(paymentAdapter.create).not.toHaveBeenCalled();
+  });
+
   it('charges the gateway with the backend-defined amount and persists the payment row', async () => {
     userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    paymentAdapter.findByIdempotencyKey?.mockResolvedValue(null);
+    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
     gateway.createCharge.mockResolvedValue({
       gatewayPaymentId: 'mp-42',
       status: 'approved',
@@ -162,7 +178,7 @@ describe('CreatePaymentService', () => {
 
   it('throws PaymentGatewayException when persist fails for a non-unique reason', async () => {
     userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    paymentAdapter.findByIdempotencyKey?.mockResolvedValue(null);
+    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
     gateway.createCharge.mockResolvedValue({
       gatewayPaymentId: 'mp-42',
       status: 'approved',

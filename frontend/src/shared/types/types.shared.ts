@@ -163,7 +163,6 @@ export type CheckoutFormData = {
   cardholderName: string;
   cardExpiry: string;
   securityCode: string;
-  paymentMethodId: string;
   identificationType: string;
   identificationNumber: string;
 };

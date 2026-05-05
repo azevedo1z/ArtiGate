@@ -46,9 +46,6 @@ export const PAYMENT_METHOD_IDS = [
   'hiper',
   'diners',
   'discover',
-  'pix',
-  'bolbradesco',
-  'caixa_virtual_debit',
 ] as const;
 
 export const PAYER_ID_OTRO_REGEX = /^.{1,30}$/;

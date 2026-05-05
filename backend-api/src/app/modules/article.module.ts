@@ -29,11 +29,13 @@ import { PDF_ATTACHMENT } from '../shared/constants';
 import { ReviewModule } from './review.module';
 import { RoleModule } from './role.module';
 import { UserModule } from './user.module';
+import { PaymentModule } from './payment.module';
 
 @Module({
   imports: [
     forwardRef(() => ReviewModule),
     forwardRef(() => UserModule),
+    forwardRef(() => PaymentModule),
     RoleModule,
     MulterModule.registerAsync({
       imports: [ConfigModule],

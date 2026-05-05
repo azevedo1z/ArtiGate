@@ -51,6 +51,13 @@ export class PaymentController {
     return await this.getPaymentService.getByUserId(req.user.id);
   }
 
+  @Get('access-status')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuardService)
+  async accessStatus(@Request() req: AuthenticatedRequest) {
+    return await this.getPaymentService.getAccessFeeStatus(req.user.id);
+  }
+
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)

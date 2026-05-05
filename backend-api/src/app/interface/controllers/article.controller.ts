@@ -36,6 +36,7 @@ import { UpdateArticleService } from '../../application/services/article/updateA
 import { SubmitArticleService } from '../../application/services/article/submitArticle.service';
 import { DownloadArticleAttachmentService } from '../../application/services/articleAttachment/downloadArticleAttachment.service';
 import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { AccessFeePaymentGuard } from '../../infrastructure/services/accessFeePayment.guard';
 import {
   PDF_ATTACHMENT,
   PDF_DOWNLOAD_SECURITY_HEADERS,
@@ -44,7 +45,7 @@ import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @Controller('article')
 @ApiBearerAuth()
-@UseGuards(AuthGuardService)
+@UseGuards(AuthGuardService, AccessFeePaymentGuard)
 export class ArticleController {
   constructor(
     private readonly submitArticleService: SubmitArticleService,

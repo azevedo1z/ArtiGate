@@ -9,6 +9,7 @@ import { MockPaymentGatewayService } from '../infrastructure/services/mockPaymen
 import { CreatePaymentService } from '../application/services/payment/createPayment.service';
 import { GetPaymentService } from '../application/services/payment/getPayment.service';
 import { ProcessPaymentWebhookService } from '../application/services/payment/processPaymentWebhook.service';
+import { AccessFeePaymentGuard } from '../infrastructure/services/accessFeePayment.guard';
 import { UserModule } from './user.module';
 
 @Module({
@@ -18,6 +19,7 @@ import { UserModule } from './user.module';
     CreatePaymentService,
     GetPaymentService,
     ProcessPaymentWebhookService,
+    AccessFeePaymentGuard,
     {
       provide: PaymentDatabaseAdapter,
       useClass: PaymentRepository,
@@ -33,6 +35,11 @@ import { UserModule } from './user.module';
       inject: [ConfigService],
     },
   ],
-  exports: [PaymentDatabaseAdapter, PaymentGatewayAdapter],
+  exports: [
+    PaymentDatabaseAdapter,
+    PaymentGatewayAdapter,
+    AccessFeePaymentGuard,
+    GetPaymentService,
+  ],
 })
 export class PaymentModule {}

@@ -18,13 +18,14 @@ import { CreateReviewDTO } from '../../application/dtos/review/createReview.dto'
 import { GetReviewService } from '../../application/services/review/getReview.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
+import { AccessFeePaymentGuard } from '../../infrastructure/services/accessFeePayment.guard';
 import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
 import { UpdateReviewService } from '../../application/services/review/updateReview.service';
 import { DeleteReviewService } from '../../application/services/review/deleteReview.service';
 
 @Controller('review')
 @ApiBearerAuth()
-@UseGuards(AuthGuardService)
+@UseGuards(AuthGuardService, AccessFeePaymentGuard)
 export class ReviewController {
   constructor(
     private readonly createReviewService: CreateReviewService,

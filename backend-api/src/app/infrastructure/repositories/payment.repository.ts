@@ -77,4 +77,11 @@ export class PaymentRepository implements PaymentDatabaseAdapter {
       where: { gatewayPaymentId: id, deletedOn: null },
     });
   }
+
+  async hasApprovedFeeByUserId(userId: string): Promise<boolean> {
+    const count = await this.prisma.payment.count({
+      where: { userId, status: 'approved', deletedOn: null },
+    });
+    return count > 0;
+  }
 }

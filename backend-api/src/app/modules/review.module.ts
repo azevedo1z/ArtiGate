@@ -8,9 +8,14 @@ import { UpdateReviewService } from '../application/services/review/updateReview
 import { DeleteReviewService } from '../application/services/review/deleteReview.service';
 import { UserModule } from './user.module';
 import { ArticleModule } from './article.module';
+import { PaymentModule } from './payment.module';
 
 @Module({
-  imports: [forwardRef(() => UserModule), forwardRef(() => ArticleModule)],
+  imports: [
+    forwardRef(() => UserModule),
+    forwardRef(() => ArticleModule),
+    forwardRef(() => PaymentModule),
+  ],
   controllers: [ReviewController],
   providers: [
     CreateReviewService,

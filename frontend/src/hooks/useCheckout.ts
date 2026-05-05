@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { paymentService } from '../services/payment.service';
 import { useUser } from './useUser';
@@ -7,6 +8,7 @@ import { useMercadoPago } from './useMercadoPago';
 import { ROUTES } from '../config/routes.config';
 import { extractErrorMessage } from '../utils/error.util';
 import { stripMask } from '../utils/helpers.util';
+import { setAccessFeePaid } from '../store/slices/payment.slice';
 import {
   CheckoutFormData,
   Payment,
@@ -49,6 +51,7 @@ const reportPaymentResult = (
 
 export function useCheckout() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const userData = useUser();
   const { isReady, isMock, error: sdkError, tokenizeCard } = useMercadoPago();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -137,7 +140,11 @@ export function useCheckout() {
       setIdempotencyKey(getOrCreateIdempotencyKey());
 
       reportPaymentResult(payment._status, payment._failureReason);
-      navigate(ROUTES.HOME);
+
+      if (payment._status === 'approved' || payment._status === 'authorized') {
+        dispatch(setAccessFeePaid(true));
+        navigate(ROUTES.HOME);
+      }
     } catch (error) {
       toast.error(
         extractErrorMessage(error, 'Could not complete the payment.')

@@ -27,7 +27,9 @@ import {
   ZipCodeLookupResult,
 } from '../shared/types/types.shared';
 import { prepareUserData } from '../utils/helpers.util';
-import { setUser } from '../store/slices/user.slice';
+import { clearUser, setUser } from '../store/slices/user.slice';
+import { clearRoles } from '../store/slices/roles.slice';
+import { clearAccessFeeStatus } from '../store/slices/payment.slice';
 import { authService } from '../services/auth.service';
 import { userService } from '../services/user.service';
 import { roleService } from '../services/role.service';
@@ -130,6 +132,10 @@ const SignUpPage: React.FC = () => {
       }
 
       await userService.createUser(prepareUserData(formData, roleIds));
+
+      dispatch(clearUser());
+      dispatch(clearRoles());
+      dispatch(clearAccessFeeStatus());
 
       const signInData = await authService.signIn(
         formData.email,

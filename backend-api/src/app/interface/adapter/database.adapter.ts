@@ -41,6 +41,7 @@ export abstract class DatabaseAdapter<T> {
   abstract findByReviewId?(reviewId: string): Promise<T | null>;
   abstract findByIdempotencyKey?(key: string): Promise<T | null>;
   abstract findByGatewayPaymentId?(id: string): Promise<T | null>;
+  abstract hasApprovedFeeByUserId?(userId: string): Promise<boolean>;
 }
 
 export abstract class UserDatabaseAdapter extends DatabaseAdapter<User> {}

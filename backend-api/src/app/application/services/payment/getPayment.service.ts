@@ -22,4 +22,13 @@ export class GetPaymentService {
 
     return rows.map((row) => paymentRowToDomain(row));
   }
+
+  async getAccessFeeStatus(
+    userId: string
+  ): Promise<{ hasPaidAccessFee: boolean }> {
+    const hasPaidAccessFee =
+      (await this.adapter.hasApprovedFeeByUserId?.(userId)) ?? false;
+
+    return { hasPaidAccessFee };
+  }
 }

@@ -40,3 +40,10 @@ export class PaymentGatewayException extends AppException {
     this.name = 'PaymentGatewayException';
   }
 }
+
+export class PaymentRequiredException extends AppException {
+  constructor(message: string) {
+    super(message);
+    this.name = 'PaymentRequiredException';
+  }
+}

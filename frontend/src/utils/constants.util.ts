@@ -7,7 +7,7 @@ export const PAYMENT_METHOD_OPTIONS = [
   { value: 'credit', label: 'Credit Card' },
   { value: 'pix', label: 'PIX' },
   { value: 'caixa_virtual_debit', label: 'Caixa Bank Virtual Debit Card' },
-  { value: 'bank_slip', label: 'Bank Slip' },
+  { value: 'bolbradesco', label: 'Bank Slip' },
 ];
 
 export const PAYMENT_STATUS_OPTIONS = [
@@ -19,7 +19,7 @@ export const PAYMENT_STATUS_OPTIONS = [
   { value: 'cancelled', label: 'Cancelled' },
   { value: 'refunded', label: 'Refunded' },
   { value: 'charged_back', label: 'Charged Back' },
-];
+] as const;
 
 export const IDENTIFICATION_TYPE_OPTIONS = [
   { value: '', label: 'None' },

@@ -1,10 +1,11 @@
 import { Prisma } from '@prisma/client';
+import { PaymentStatus } from '../../../shared/types/payment.types';
 
-export class PaymentPersistDTO {
+export class CreatePaymentPersistDTO {
   userId: string;
   amount: Prisma.Decimal;
   currency: string;
-  status: string;
+  status: PaymentStatus;
   description: string | null;
   paymentMethodId: string | null;
   payerEmail: string;
@@ -17,7 +18,7 @@ export class PaymentPersistDTO {
     userId: string;
     amount: Prisma.Decimal;
     currency: string;
-    status: string;
+    status: PaymentStatus;
     description: string | null;
     paymentMethodId: string | null;
     payerEmail: string;
@@ -40,25 +41,22 @@ export class PaymentPersistDTO {
   }
 }
 
-export class PaymentUpdateDTO {
+export class UpdatePaymentPersistDTO {
   id: string;
-  status?: string;
-  gatewayPaymentId?: string | null;
+  status?: PaymentStatus;
   paymentMethodId?: string | null;
   failureReason?: string | null;
   rawGatewayResponse?: string | null;
 
   constructor(params: {
     id: string;
-    status?: string;
-    gatewayPaymentId?: string | null;
+    status?: PaymentStatus;
     paymentMethodId?: string | null;
     failureReason?: string | null;
     rawGatewayResponse?: string | null;
   }) {
     this.id = params.id;
     this.status = params.status;
-    this.gatewayPaymentId = params.gatewayPaymentId;
     this.paymentMethodId = params.paymentMethodId;
     this.failureReason = params.failureReason;
     this.rawGatewayResponse = params.rawGatewayResponse;

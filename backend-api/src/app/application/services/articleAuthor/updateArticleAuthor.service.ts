@@ -7,6 +7,8 @@ export class UpdateArticleAuthorService {
   constructor(private readonly adapter: ArticleAuthorDatabaseAdapter) {}
 
   async execute(data: UpdateArticleDTO) {
+    if (!data.authorIds || data.authorIds.length === 0) return;
+
     for (const userId of data.authorIds) {
       const articleAuthorData = {
         articleId: data.id,

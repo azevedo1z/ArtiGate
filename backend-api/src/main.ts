@@ -46,8 +46,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, options);
   SwaggerModule.setup('', app, document);
   const port = configService.getOrThrow<number>('port');
+  const paymentMockEnabled = configService.get<boolean>('payment.mockEnabled');
   await app.listen(port);
   Logger.log(`🚀 Application is running on: http://localhost:${port}/`);
+  Logger.log(
+    `💳 Payment gateway mock: ${paymentMockEnabled ? 'ENABLED' : 'disabled'}`
+  );
 }
 
 bootstrap();

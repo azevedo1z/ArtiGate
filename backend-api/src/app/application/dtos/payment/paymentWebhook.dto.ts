@@ -10,11 +10,7 @@ import {
 export class PaymentWebhookResourceDTO {
   @IsString()
   @MaxLength(64)
-  id: string;
-
-  constructor(id: string) {
-    this.id = id;
-  }
+  id!: string;
 }
 
 export class PaymentWebhookDTO {
@@ -28,14 +24,12 @@ export class PaymentWebhookDTO {
   @MaxLength(64)
   type?: string;
 
+  // Marked optional so legacy Mercado Pago IPN notifications (which carry the
+  // resource id only in the query string) are not rejected by the global
+  // ValidationPipe before the controller can apply its query-param fallback.
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => PaymentWebhookResourceDTO)
-  data: PaymentWebhookResourceDTO;
-
-  constructor(data: PaymentWebhookResourceDTO, action?: string, type?: string) {
-    this.data = data;
-    this.action = action;
-    this.type = type;
-  }
+  data?: PaymentWebhookResourceDTO;
 }

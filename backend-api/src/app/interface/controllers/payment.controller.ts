@@ -18,9 +18,11 @@ import { CreatePaymentService } from '../../application/services/payment/createP
 import { GetPaymentService } from '../../application/services/payment/getPayment.service';
 import { ProcessPaymentWebhookService } from '../../application/services/payment/processPaymentWebhook.service';
 import { CreatePaymentDTO } from '../../application/dtos/payment/createPayment.dto';
-import { PaymentWebhookDTO } from '../../application/dtos/payment/paymentWebhook.dto';
+import {
+  PaymentWebhookDTO,
+  PaymentWebhookResourceDTO,
+} from '../../application/dtos/payment/paymentWebhook.dto';
 import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
-import { PaginationDTO } from '../../shared/dtos/pagination.dto';
 import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @Controller('payment')
@@ -49,18 +51,14 @@ export class PaymentController {
     return await this.getPaymentService.getByUserId(req.user.id);
   }
 
-  @Get('all')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuardService)
-  async getAll(@Query() pagination: PaginationDTO) {
-    return await this.getPaymentService.getAll(pagination);
-  }
-
   @Get(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async getById(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.getPaymentService.getById(id);
+  async getById(
+    @Request() req: AuthenticatedRequest,
+    @Param('id', ParseUUIDPipe) id: string
+  ) {
+    return await this.getPaymentService.getById(id, req.user.id);
   }
 
   @Post('webhook')
@@ -72,11 +70,15 @@ export class PaymentController {
     @Query('id') queryId?: string,
     @Query('topic') queryTopic?: string
   ) {
+    const resource: PaymentWebhookResourceDTO | undefined =
+      body?.data ?? (queryId ? { id: queryId } : undefined);
+
     const normalized: PaymentWebhookDTO = {
       action: body?.action,
       type: body?.type ?? queryTopic,
-      data: body?.data ?? (queryId ? { id: queryId } : ({} as never)),
+      data: resource,
     };
+
     await this.processWebhookService.execute(headers, normalized);
     return { received: true };
   }

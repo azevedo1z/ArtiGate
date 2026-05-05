@@ -3,19 +3,15 @@ import { Transform, Type } from 'class-transformer';
 import {
   IsEmail,
   IsIn,
-  IsNumber,
   IsOptional,
   IsString,
   IsUUID,
   Length,
-  Matches,
-  Max,
   MaxLength,
-  Min,
   ValidateNested,
 } from 'class-validator';
 import { PAYMENT_METHOD_IDS } from '../../../shared/constants';
-import { PayerIdentificationDTO } from './payerIdentification.dto.js';
+import { PayerIdentificationDTO } from './payerIdentification.dto';
 
 export class CreatePaymentDTO {
   @ApiProperty({
@@ -27,15 +23,6 @@ export class CreatePaymentDTO {
   @IsString()
   @MaxLength(256)
   token?: string;
-
-  @ApiProperty({
-    description:
-      'Total amount to charge in major currency units (e.g. 19.99). Must be positive.',
-  })
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @Min(0.01)
-  @Max(1_000_000)
-  amount: number;
 
   @ApiProperty({
     description:
@@ -57,16 +44,14 @@ export class CreatePaymentDTO {
   })
   @IsString()
   @IsIn(PAYMENT_METHOD_IDS, {
-    message: `PaymentMethodId must be one of: ${PAYMENT_METHOD_IDS.join(
-      ', '
-    )}.`,
+    message: `paymentMethodId must be one of: ${PAYMENT_METHOD_IDS.join(', ')}.`,
   })
-  paymentMethodId: string;
+  paymentMethodId!: string;
 
   @ApiProperty()
   @IsEmail()
   @MaxLength(254)
-  payerEmail: string;
+  payerEmail!: string;
 
   @ApiProperty({ required: false, type: () => PayerIdentificationDTO })
   @IsOptional()
@@ -86,25 +71,5 @@ export class CreatePaymentDTO {
       'Client-supplied UUID v4; deduplicates retries so network failures do not create duplicate charges.',
   })
   @IsUUID('4')
-  idempotencyKey: string;
-
-  constructor(
-    amount: number,
-    paymentMethodId: string,
-    payerEmail: string,
-    idempotencyKey: string,
-    token?: string,
-    currency?: string,
-    payerIdentification?: PayerIdentificationDTO,
-    description?: string
-  ) {
-    this.amount = amount;
-    this.paymentMethodId = paymentMethodId;
-    this.payerEmail = payerEmail;
-    this.idempotencyKey = idempotencyKey;
-    this.token = token;
-    this.currency = currency;
-    this.payerIdentification = payerIdentification;
-    this.description = description;
-  }
+  idempotencyKey!: string;
 }

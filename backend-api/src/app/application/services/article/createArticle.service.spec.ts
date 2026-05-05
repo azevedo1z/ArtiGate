@@ -41,7 +41,7 @@ describe('CreateArticleService', () => {
 
   it('throws ValidationException and does not create when an author does not exist', async () => {
     const dto = new CreateArticleDTO('A research paper', ['user-1', 'bad-id']);
-    userAdapter.findById.mockImplementation(async (id) =>
+    userAdapter.findById.mockImplementation(async (id: string) =>
       id === 'user-1' ? ({ id } as any) : null
     );
 

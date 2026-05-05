@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsEmail, IsArray, IsOptional, ValidateNested, MinLength, IsUrl } from 'class-validator';
+import { IsString, IsEmail, IsArray, IsOptional, ValidateNested, MinLength } from 'class-validator';
 import { Type, Transform } from 'class-transformer';
 import { CreateAddressDTO } from '../address/createAddress.dto';
 

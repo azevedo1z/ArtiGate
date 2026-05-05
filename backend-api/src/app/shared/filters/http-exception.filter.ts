@@ -14,6 +14,8 @@ import {
   NotFoundException,
   ValidationException,
   UnauthorizedException,
+  PaymentGatewayException,
+  PaymentRequiredException,
 } from '../exceptions/app.exception';
 
 interface ErrorResponse {
@@ -39,6 +41,14 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     [
       UnauthorizedException,
       { status: HttpStatus.UNAUTHORIZED, error: 'Unauthorized' },
+    ],
+    [
+      PaymentGatewayException,
+      { status: HttpStatus.BAD_GATEWAY, error: 'Payment Gateway Error' },
+    ],
+    [
+      PaymentRequiredException,
+      { status: HttpStatus.PAYMENT_REQUIRED, error: 'Payment Required' },
     ],
   ]);
 

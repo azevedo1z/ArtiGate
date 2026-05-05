@@ -5,6 +5,7 @@ import { LogOut } from 'lucide-react';
 import { useDispatch } from 'react-redux';
 import { clearUser } from '../store/slices/user.slice';
 import { clearRoles } from '../store/slices/roles.slice';
+import { clearAccessFeeStatus } from '../store/slices/payment.slice';
 import { toast } from 'react-hot-toast';
 import { useIsLoggedIn } from '../hooks/useUser';
 import { useIsReviewer } from '../hooks/useRoles';
@@ -41,6 +42,7 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     dispatch(clearUser());
     dispatch(clearRoles());
+    dispatch(clearAccessFeeStatus());
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
     navigate(ROUTES.LANDING);

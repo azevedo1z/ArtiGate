@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import Layout from '../components/layout.component';
 import Toaster from '../providers/toaster.provider';
 import PrivateRoute from '../components/private-route.component';
+import RequireAccessFee from '../components/require-access-fee.component';
 import RoleProtectedRoute from '../components/role-protected-route.component';
 import { ROUTES, ROLES } from '../config/routes.config';
 
@@ -15,6 +16,7 @@ const SubmitArticlePage = lazy(() => import('../pages/submit-article.page'));
 const MyArticlesPage = lazy(() => import('../pages/my-articles.page'));
 const SubmitReviewPage = lazy(() => import('../pages/submit-review.page'));
 const MyReviewsPage = lazy(() => import('../pages/my-reviews.page'));
+const CheckoutPage = lazy(() => import('../pages/checkout.page'));
 const NotFoundPage = lazy(() => import('../pages/not-found.page'));
 
 const LoadingFallback = () => (
@@ -37,7 +39,9 @@ export function App() {
               path={ROUTES.HOME}
               element={
                 <PrivateRoute>
-                  <HomePage />
+                  <RequireAccessFee>
+                    <HomePage />
+                  </RequireAccessFee>
                 </PrivateRoute>
               }
             />
@@ -45,7 +49,9 @@ export function App() {
               path={ROUTES.SUBMIT_ARTICLE}
               element={
                 <PrivateRoute>
-                  <SubmitArticlePage />
+                  <RequireAccessFee>
+                    <SubmitArticlePage />
+                  </RequireAccessFee>
                 </PrivateRoute>
               }
             />
@@ -53,24 +59,42 @@ export function App() {
               path={ROUTES.MY_ARTICLES}
               element={
                 <PrivateRoute>
-                  <MyArticlesPage />
+                  <RequireAccessFee>
+                    <MyArticlesPage />
+                  </RequireAccessFee>
                 </PrivateRoute>
               }
             />
             <Route
               path={ROUTES.SUBMIT_REVIEW}
               element={
-                <RoleProtectedRoute requiredRole={ROLES.REVIEWER}>
-                  <SubmitReviewPage />
-                </RoleProtectedRoute>
+                <PrivateRoute>
+                  <RequireAccessFee>
+                    <RoleProtectedRoute requiredRole={ROLES.REVIEWER}>
+                      <SubmitReviewPage />
+                    </RoleProtectedRoute>
+                  </RequireAccessFee>
+                </PrivateRoute>
               }
             />
             <Route
               path={ROUTES.MY_REVIEWS}
               element={
-                <RoleProtectedRoute requiredRole={ROLES.REVIEWER}>
-                  <MyReviewsPage />
-                </RoleProtectedRoute>
+                <PrivateRoute>
+                  <RequireAccessFee>
+                    <RoleProtectedRoute requiredRole={ROLES.REVIEWER}>
+                      <MyReviewsPage />
+                    </RoleProtectedRoute>
+                  </RequireAccessFee>
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path={ROUTES.CHECKOUT}
+              element={
+                <PrivateRoute>
+                  <CheckoutPage />
+                </PrivateRoute>
               }
             />
             <Route path="*" element={<NotFoundPage />} />

@@ -22,4 +22,16 @@ export default () => ({
     ),
     maxBytes: parseInt(process.env.MAX_PDF_BYTES ?? '10485760', 10),
   },
+  payment: {
+    mockEnabled:
+      String(process.env.ENABLE_PAYMENT_MOCK ?? 'false').toLowerCase() ===
+      'true',
+    defaultCurrency: process.env.PAYMENT_DEFAULT_CURRENCY ?? 'BRL',
+    mercadoPago: {
+      accessToken: process.env.MERCADO_PAGO_ACCESS_TOKEN,
+      publicKey: process.env.MERCADO_PAGO_PUBLIC_KEY,
+      webhookSecret: process.env.MERCADO_PAGO_WEBHOOK_SECRET,
+      notificationUrl: process.env.MERCADO_PAGO_NOTIFICATION_URL,
+    },
+  },
 });

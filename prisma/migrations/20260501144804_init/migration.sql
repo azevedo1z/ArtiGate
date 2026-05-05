@@ -68,6 +68,22 @@ CREATE TABLE [dbo].[Article] (
 );
 
 -- CreateTable
+CREATE TABLE [dbo].[ArticleAttachment] (
+    [id] NVARCHAR(1000) NOT NULL,
+    [articleId] NVARCHAR(1000) NOT NULL,
+    [storedName] NVARCHAR(1000) NOT NULL,
+    [originalName] NVARCHAR(1000) NOT NULL,
+    [mimeType] NVARCHAR(1000) NOT NULL,
+    [size] INT NOT NULL,
+    [checksum] NVARCHAR(1000) NOT NULL,
+    [uploaderId] NVARCHAR(1000) NOT NULL,
+    [createdOn] DATETIME2 NOT NULL CONSTRAINT [ArticleAttachment_createdOn_df] DEFAULT CURRENT_TIMESTAMP,
+    [deletedOn] DATETIME2,
+    CONSTRAINT [ArticleAttachment_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [ArticleAttachment_storedName_key] UNIQUE NONCLUSTERED ([storedName])
+);
+
+-- CreateTable
 CREATE TABLE [dbo].[ArticleAuthor] (
     [id] NVARCHAR(1000) NOT NULL,
     [articleId] NVARCHAR(1000) NOT NULL,
@@ -95,13 +111,32 @@ CREATE TABLE [dbo].[Review] (
 CREATE TABLE [dbo].[Payment] (
     [id] NVARCHAR(1000) NOT NULL,
     [userId] NVARCHAR(1000) NOT NULL,
+    [amount] DECIMAL(12,2) NOT NULL,
+    [currency] NVARCHAR(1000) NOT NULL CONSTRAINT [Payment_currency_df] DEFAULT 'BRL',
+    [status] NVARCHAR(1000) NOT NULL CONSTRAINT [Payment_status_df] DEFAULT 'pending',
+    [description] NVARCHAR(1000),
+    [paymentMethodId] NVARCHAR(1000),
+    [payerEmail] NVARCHAR(1000) NOT NULL,
+    [gatewayPaymentId] NVARCHAR(1000),
+    [idempotencyKey] NVARCHAR(1000) NOT NULL,
+    [failureReason] NVARCHAR(1000),
+    [rawGatewayResponse] NVARCHAR(max),
     [createdOn] DATETIME2 NOT NULL CONSTRAINT [Payment_createdOn_df] DEFAULT CURRENT_TIMESTAMP,
+    [updatedOn] DATETIME2 NOT NULL,
     [deletedOn] DATETIME2,
-    CONSTRAINT [Payment_pkey] PRIMARY KEY CLUSTERED ([id])
+    CONSTRAINT [Payment_pkey] PRIMARY KEY CLUSTERED ([id]),
+    CONSTRAINT [Payment_gatewayPaymentId_key] UNIQUE NONCLUSTERED ([gatewayPaymentId]),
+    CONSTRAINT [Payment_idempotencyKey_key] UNIQUE NONCLUSTERED ([idempotencyKey])
 );
 
 -- CreateIndex
 CREATE NONCLUSTERED INDEX [UserRole_roleId_idx] ON [dbo].[UserRole]([roleId]);
+
+-- CreateIndex
+CREATE NONCLUSTERED INDEX [ArticleAttachment_articleId_idx] ON [dbo].[ArticleAttachment]([articleId]);
+
+-- CreateIndex
+CREATE NONCLUSTERED INDEX [ArticleAttachment_uploaderId_idx] ON [dbo].[ArticleAttachment]([uploaderId]);
 
 -- CreateIndex
 CREATE NONCLUSTERED INDEX [ArticleAuthor_articleId_idx] ON [dbo].[ArticleAuthor]([articleId]);
@@ -118,6 +153,12 @@ CREATE NONCLUSTERED INDEX [Review_reviewerId_idx] ON [dbo].[Review]([reviewerId]
 -- CreateIndex
 CREATE NONCLUSTERED INDEX [Payment_userId_idx] ON [dbo].[Payment]([userId]);
 
+-- CreateIndex
+CREATE NONCLUSTERED INDEX [Payment_gatewayPaymentId_idx] ON [dbo].[Payment]([gatewayPaymentId]);
+
+-- CreateIndex
+CREATE NONCLUSTERED INDEX [Payment_status_idx] ON [dbo].[Payment]([status]);
+
 -- AddForeignKey
 ALTER TABLE [dbo].[UserRole] ADD CONSTRAINT [UserRole_userId_fkey] FOREIGN KEY ([userId]) REFERENCES [dbo].[User]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -129,6 +170,12 @@ ALTER TABLE [dbo].[User] ADD CONSTRAINT [User_homeAddressId_fkey] FOREIGN KEY ([
 
 -- AddForeignKey
 ALTER TABLE [dbo].[User] ADD CONSTRAINT [User_jobAddressId_fkey] FOREIGN KEY ([jobAddressId]) REFERENCES [dbo].[Address]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[ArticleAttachment] ADD CONSTRAINT [ArticleAttachment_articleId_fkey] FOREIGN KEY ([articleId]) REFERENCES [dbo].[Article]([id]) ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE [dbo].[ArticleAttachment] ADD CONSTRAINT [ArticleAttachment_uploaderId_fkey] FOREIGN KEY ([uploaderId]) REFERENCES [dbo].[User]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE [dbo].[ArticleAuthor] ADD CONSTRAINT [ArticleAuthor_articleId_fkey] FOREIGN KEY ([articleId]) REFERENCES [dbo].[Article]([id]) ON DELETE CASCADE ON UPDATE CASCADE;

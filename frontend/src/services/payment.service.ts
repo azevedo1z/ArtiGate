@@ -16,6 +16,11 @@ class PaymentService {
     const response = await apiClient.get(`/payment/${id}`);
     return response.data;
   }
+
+  async getAccessStatus(): Promise<{ hasPaidAccessFee: boolean }> {
+    const response = await apiClient.get('/payment/access-status');
+    return response.data;
+  }
 }
 
 export const paymentService = new PaymentService();

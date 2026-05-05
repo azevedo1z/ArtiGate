@@ -3,13 +3,6 @@ export const ROLE_OPTIONS = [
   { value: 'REVIEWER', label: 'Reviewer' },
 ];
 
-export const PAYMENT_METHOD_OPTIONS = [
-  { value: 'credit', label: 'Credit Card' },
-  { value: 'pix', label: 'PIX' },
-  { value: 'caixa_virtual_debit', label: 'Caixa Bank Virtual Debit Card' },
-  { value: 'bolbradesco', label: 'Bank Slip' },
-];
-
 export const PAYMENT_STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending' },
   { value: 'in_process', label: 'In Process' },

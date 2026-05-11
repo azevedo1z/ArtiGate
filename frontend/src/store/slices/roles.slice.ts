@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Role } from '../../shared/types/types.shared';
+import { resetUserSession } from '../session.actions';
 
 export interface RolesState {
   data: Role[];
@@ -16,11 +17,11 @@ const rolesSlice = createSlice({
     setRoles: (state, action: PayloadAction<Role[]>) => {
       state.data = action.payload;
     },
-    clearRoles: (state) => {
-      state.data = [];
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(resetUserSession, () => initialState);
   },
 });
 
-export const { setRoles, clearRoles } = rolesSlice.actions;
+export const { setRoles } = rolesSlice.actions;
 export default rolesSlice.reducer;

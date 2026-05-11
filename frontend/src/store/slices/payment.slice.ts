@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { resetUserSession } from '../session.actions';
 
 export interface PaymentState {
   hasPaidAccessFee: boolean | null;
@@ -15,11 +16,11 @@ const paymentSlice = createSlice({
     setAccessFeePaid: (state, action: PayloadAction<boolean>) => {
       state.hasPaidAccessFee = action.payload;
     },
-    clearAccessFeeStatus: (state) => {
-      state.hasPaidAccessFee = null;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(resetUserSession, () => initialState);
   },
 });
 
-export const { setAccessFeePaid, clearAccessFeeStatus } = paymentSlice.actions;
+export const { setAccessFeePaid } = paymentSlice.actions;
 export default paymentSlice.reducer;

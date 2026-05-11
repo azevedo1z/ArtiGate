@@ -19,7 +19,7 @@ export class GetArticleService {
     private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
   ) {}
 
-  async getById(id: string): Promise<Article | null> {
+  async getById(id: string): Promise<Article> {
     const existingArticle = await this.adapter.findById(id);
 
     if (existingArticle == null)

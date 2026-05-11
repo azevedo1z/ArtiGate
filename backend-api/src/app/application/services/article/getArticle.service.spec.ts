@@ -78,13 +78,12 @@ describe('GetArticleService', () => {
 
   describe('getByAuthorId', () => {
     it('should return articles for an author', async () => {
-      articleAuthorAdapter.findManyByUserId.mockResolvedValue([
+      (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue([
         {
           id: 'aa-1',
           articleId: 'article-1',
           userId: 'user-1',
           createdOn: new Date(),
-          updatedOn: new Date(),
           deletedOn: null,
         },
       ]);
@@ -97,7 +96,9 @@ describe('GetArticleService', () => {
     });
 
     it('should return empty array when author has no articles', async () => {
-      articleAuthorAdapter.findManyByUserId.mockResolvedValue([]);
+      (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue(
+        [],
+      );
 
       const result = await service.getByAuthorId('user-1');
 
@@ -105,13 +106,12 @@ describe('GetArticleService', () => {
     });
 
     it('should filter out null articles from results', async () => {
-      articleAuthorAdapter.findManyByUserId.mockResolvedValue([
+      (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue([
         {
           id: 'aa-1',
           articleId: 'article-1',
           userId: 'user-1',
           createdOn: new Date(),
-          updatedOn: new Date(),
           deletedOn: null,
         },
         {
@@ -119,7 +119,6 @@ describe('GetArticleService', () => {
           articleId: 'article-deleted',
           userId: 'user-1',
           createdOn: new Date(),
-          updatedOn: new Date(),
           deletedOn: null,
         },
       ]);

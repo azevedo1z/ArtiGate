@@ -73,7 +73,6 @@ describe('DeleteArticleService', () => {
         articleId: 'article-1',
         userId: 'user-1',
         createdOn: new Date(),
-        updatedOn: new Date(),
         deletedOn: null,
       },
     ]);

@@ -101,7 +101,6 @@ describe('CreateReviewService', () => {
         articleId: 'article-1',
         userId: 'reviewer-1',
         createdOn: new Date(),
-        updatedOn: new Date(),
         deletedOn: null,
       },
     ]);

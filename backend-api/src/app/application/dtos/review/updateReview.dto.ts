@@ -9,31 +9,31 @@ export class UpdateReviewDTO {
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  articleId: string;
+  articleId?: string;
 
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  reviewerId: string;
+  reviewerId?: string;
 
   @ApiProperty({ minimum: 1, maximum: 10, required: false })
   @IsNumber()
   @IsOptional()
   @Min(1)
   @Max(10)
-  score: number;
+  score?: number;
 
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  commentary: string;
+  commentary?: string;
 
   constructor(
     id: string,
-    articleId: string,
-    reviewerId: string,
-    score: number,
-    commentary: string
+    articleId?: string,
+    reviewerId?: string,
+    score?: number,
+    commentary?: string
   ) {
     this.id = id;
     this.articleId = articleId;

@@ -3,9 +3,7 @@ import Container from './container.component';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { LogOut } from 'lucide-react';
 import { useDispatch } from 'react-redux';
-import { clearUser } from '../store/slices/user.slice';
-import { clearRoles } from '../store/slices/roles.slice';
-import { clearAccessFeeStatus } from '../store/slices/payment.slice';
+import { resetUserSession } from '../store/session.actions';
 import { toast } from 'react-hot-toast';
 import { useIsLoggedIn } from '../hooks/useUser';
 import { useIsReviewer } from '../hooks/useRoles';
@@ -40,9 +38,7 @@ const Navbar: React.FC = () => {
     'inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-ink-600 hover:text-ink-800 hover:bg-ink-50 rounded-md transition-colors duration-150';
 
   const handleLogout = () => {
-    dispatch(clearUser());
-    dispatch(clearRoles());
-    dispatch(clearAccessFeeStatus());
+    dispatch(resetUserSession());
     localStorage.removeItem('access_token');
     toast.success('Logged out successfully');
     navigate(ROUTES.LANDING);

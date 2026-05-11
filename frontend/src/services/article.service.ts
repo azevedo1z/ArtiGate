@@ -44,8 +44,10 @@ class ArticleService {
         | undefined;
       const filename = parseFilenameFromDisposition(disposition) ?? 'attachment.pdf';
 
+      const contentType = response.headers['content-type'];
       const blob = new Blob([response.data], {
-        type: response.headers['content-type'] || 'application/pdf',
+        type:
+          typeof contentType === 'string' ? contentType : 'application/pdf',
       });
       const objectUrl = URL.createObjectURL(blob);
 

@@ -3,9 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { Eye, EyeOff, Mail, Lock, ArrowLeft, LogIn } from 'lucide-react';
-import { clearUser, setUser } from '../store/slices/user.slice';
-import { clearRoles } from '../store/slices/roles.slice';
-import { clearAccessFeeStatus } from '../store/slices/payment.slice';
+import { setUser } from '../store/slices/user.slice';
+import { resetUserSession } from '../store/session.actions';
 import Input from '../components/input.component';
 import Button from '../components/button.component';
 import Container from '../components/container.component';
@@ -26,9 +25,7 @@ const LoginPage: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      dispatch(clearUser());
-      dispatch(clearRoles());
-      dispatch(clearAccessFeeStatus());
+      dispatch(resetUserSession());
 
       const signInData = await authService.signIn(email, password);
       authService.setToken(signInData.access_token);

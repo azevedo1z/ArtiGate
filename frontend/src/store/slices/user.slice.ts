@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { User } from '../../shared/types/types.shared';
+import { resetUserSession } from '../session.actions';
 
 export interface UserState {
   data: Pick<User, '_id' | '_name' | '_email'> | null;
@@ -19,12 +20,11 @@ const userSlice = createSlice({
       state.data = action.payload;
       state.isLoggedIn = true;
     },
-    clearUser: (state) => {
-      state.data = null;
-      state.isLoggedIn = false;
-    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(resetUserSession, () => initialState);
   },
 });
 
-export const { setUser, clearUser } = userSlice.actions;
+export const { setUser } = userSlice.actions;
 export default userSlice.reducer;

@@ -14,13 +14,11 @@ export class AddressRepository implements AddressDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Address | null> {
-    return await this.prisma.address.findFirst({
-      where: { id, deletedOn: null },
-    });
+    return await this.prisma.address.findFirst({ where: { id } });
   }
 
   async findAll(): Promise<Address[]> {
-    return await this.prisma.address.findMany({ where: { deletedOn: null } });
+    return await this.prisma.address.findMany();
   }
 
   async delete(id: string): Promise<boolean> {

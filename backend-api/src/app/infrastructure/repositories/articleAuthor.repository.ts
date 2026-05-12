@@ -52,18 +52,18 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
   }
 
   async findById(id: string): Promise<ArticleAuthor | null> {
-    return await this.prisma.articleAuthor.findFirst({ where: { id, deletedOn: null } });
+    return await this.prisma.articleAuthor.findFirst({ where: { id } });
   }
 
   async findAll(): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { deletedOn: null } });
+    return await this.prisma.articleAuthor.findMany();
   }
 
   async findMany(articleId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { articleId, deletedOn: null } });
+    return await this.prisma.articleAuthor.findMany({ where: { articleId } });
   }
 
   async findManyByUserId(userId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { userId, deletedOn: null } });
+    return await this.prisma.articleAuthor.findMany({ where: { userId } });
   }
 }

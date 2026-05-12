@@ -54,15 +54,12 @@ export class ArticleAttachmentRepository
   }
 
   async findById(id: string): Promise<ArticleAttachment | null> {
-    return await this.prisma.articleAttachment.findFirst({
-      where: { id, deletedOn: null },
-    });
+    return await this.prisma.articleAttachment.findFirst({ where: { id } });
   }
 
   async findAll(pagination?: PaginationDTO): Promise<ArticleAttachment[]> {
     const { skip, take } = normalizePagination(pagination);
     return await this.prisma.articleAttachment.findMany({
-      where: { deletedOn: null },
       skip,
       take,
       orderBy: { createdOn: 'desc' },
@@ -70,14 +67,12 @@ export class ArticleAttachmentRepository
   }
 
   async countAll(): Promise<number> {
-    return await this.prisma.articleAttachment.count({
-      where: { deletedOn: null },
-    });
+    return await this.prisma.articleAttachment.count();
   }
 
   async findMany(articleId: string): Promise<ArticleAttachment[]> {
     return await this.prisma.articleAttachment.findMany({
-      where: { articleId, deletedOn: null },
+      where: { articleId },
       orderBy: { createdOn: 'desc' },
     });
   }

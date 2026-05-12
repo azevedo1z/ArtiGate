@@ -24,7 +24,7 @@ const MyReviewsPage: React.FC = () => {
       if (!userData?._id) return;
 
       try {
-        const data = await reviewService.getMyReviewsExpanded();
+        const data = await reviewService.getMyReviews();
         setReviews(data);
       } catch (error) {
         toast.error(

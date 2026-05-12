@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  Request,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -22,6 +23,7 @@ import { AccessFeePaymentGuard } from '../../infrastructure/services/accessFeePa
 import { UpdateReviewDTO } from '../../application/dtos/review/updateReview.dto';
 import { UpdateReviewService } from '../../application/services/review/updateReview.service';
 import { DeleteReviewService } from '../../application/services/review/deleteReview.service';
+import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @Controller('review')
 @ApiBearerAuth()
@@ -36,18 +38,27 @@ export class ReviewController {
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
-  async create(@Body() data: CreateReviewDTO) {
-    return await this.createReviewService.execute(data);
+  async create(
+    @Body() data: CreateReviewDTO,
+    @Request() req: AuthenticatedRequest
+  ) {
+    return await this.createReviewService.execute(req.user.id, data);
   }
 
   @Put('update')
-  async update(@Body() data: UpdateReviewDTO) {
-    return await this.updateReviewService.execute(data);
+  async update(
+    @Body() data: UpdateReviewDTO,
+    @Request() req: AuthenticatedRequest
+  ) {
+    return await this.updateReviewService.execute(req.user.id, data);
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.deleteReviewService.execute(id);
+  async delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: AuthenticatedRequest
+  ) {
+    return await this.deleteReviewService.execute(req.user.id, id);
   }
 
   @Get('all')
@@ -55,9 +66,9 @@ export class ReviewController {
     return await this.getReviewService.getAll(pagination);
   }
 
-  @Get('reviewer/:userId')
-  async getByUserId(@Param('userId', ParseUUIDPipe) userId: string) {
-    return await this.getReviewService.getByReviewerId(userId);
+  @Get('me')
+  async getMine(@Request() req: AuthenticatedRequest) {
+    return await this.getReviewService.getByReviewerId(req.user.id);
   }
 
   @Get('article/:articleId')

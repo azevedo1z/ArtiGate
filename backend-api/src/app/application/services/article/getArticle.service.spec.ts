@@ -24,6 +24,8 @@ describe('GetArticleService', () => {
       findById: jest.fn(),
       findAll: jest.fn(),
       countAll: jest.fn(),
+      findByIds: jest.fn(),
+      findUnreviewedAndNotAuthored: jest.fn(),
     } as any;
 
     articleAuthorAdapter = {
@@ -77,35 +79,7 @@ describe('GetArticleService', () => {
   });
 
   describe('getByAuthorId', () => {
-    it('should return articles for an author', async () => {
-      (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue([
-        {
-          id: 'aa-1',
-          articleId: 'article-1',
-          userId: 'user-1',
-          createdOn: new Date(),
-          deletedOn: null,
-        },
-      ]);
-      articleAdapter.findById.mockResolvedValue(articleRecord);
-
-      const result = await service.getByAuthorId('user-1');
-
-      expect(result).toHaveLength(1);
-      expect(result[0].id).toBe('article-1');
-    });
-
-    it('should return empty array when author has no articles', async () => {
-      (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue(
-        [],
-      );
-
-      const result = await service.getByAuthorId('user-1');
-
-      expect(result).toEqual([]);
-    });
-
-    it('should filter out null articles from results', async () => {
+    it('should batch-fetch articles for an author', async () => {
       (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue([
         {
           id: 'aa-1',
@@ -116,19 +90,52 @@ describe('GetArticleService', () => {
         },
         {
           id: 'aa-2',
-          articleId: 'article-deleted',
+          articleId: 'article-2',
           userId: 'user-1',
           createdOn: new Date(),
           deletedOn: null,
         },
       ]);
-      articleAdapter.findById
-        .mockResolvedValueOnce(articleRecord)
-        .mockResolvedValueOnce(null);
+      (articleAdapter.findByIds as jest.Mock).mockResolvedValue([
+        articleRecord,
+        { ...articleRecord, id: 'article-2' },
+      ]);
 
       const result = await service.getByAuthorId('user-1');
 
+      expect(articleAdapter.findByIds).toHaveBeenCalledWith([
+        'article-1',
+        'article-2',
+      ]);
+      expect(result).toHaveLength(2);
+    });
+
+    it('should return empty array when author has no articles', async () => {
+      (articleAuthorAdapter.findManyByUserId as jest.Mock).mockResolvedValue(
+        [],
+      );
+
+      const result = await service.getByAuthorId('user-1');
+
+      expect(result).toEqual([]);
+      expect(articleAdapter.findByIds).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('getUnreviewedAndNotAuthored', () => {
+    it('delegates the not-author + not-reviewed filter to the adapter', async () => {
+      const article3 = { ...articleRecord, id: 'article-3' };
+      (articleAdapter.findUnreviewedAndNotAuthored as jest.Mock).mockResolvedValue([
+        article3,
+      ]);
+
+      const result = await service.getUnreviewedAndNotAuthored('reviewer-1');
+
+      expect(articleAdapter.findUnreviewedAndNotAuthored).toHaveBeenCalledWith(
+        'reviewer-1',
+      );
       expect(result).toHaveLength(1);
+      expect(result[0].id).toBe('article-3');
     });
   });
 });

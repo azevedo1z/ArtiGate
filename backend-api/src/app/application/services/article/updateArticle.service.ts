@@ -1,45 +1,46 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
+import { articleRowToDomain } from '../../mappers/article.mapper';
 import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
 import {
+  ArticleAuthorDatabaseAdapter,
   ArticleDatabaseAdapter,
-  UserDatabaseAdapter,
 } from '../../../interface/adapter/database.adapter';
 import {
   NotFoundException,
-  ValidationException,
+  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
+import { EnsureAuthorsExistService } from './ensureAuthorsExist.service';
 
 @Injectable()
 export class UpdateArticleService {
   constructor(
     private readonly adapter: ArticleDatabaseAdapter,
-    private readonly userAdapter: UserDatabaseAdapter
+    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter,
+    private readonly ensureAuthorsExistService: EnsureAuthorsExistService
   ) {}
 
-  async execute(data: UpdateArticleDTO): Promise<Article> {
+  async execute(requesterId: string, data: UpdateArticleDTO): Promise<Article> {
     const existingArticle = await this.adapter.findById(data.id);
     if (!existingArticle)
       throw new NotFoundException(`Article with ID "${data.id}" not found`);
 
-    await this.ensureIsUser(data.authorIds);
+    await this.ensureRequesterIsAuthor(data.id, requesterId);
+    await this.ensureAuthorsExistService.execute(data.authorIds);
 
     const articleRecord = await this.adapter.update(data);
 
-    return Article.factory(
-      articleRecord.id,
-      articleRecord.summary,
-      articleRecord.scoreAvg
-    );
+    return articleRowToDomain(articleRecord);
   }
 
-  private async ensureIsUser(authorIds: string[] | undefined): Promise<void> {
-    if (!authorIds) return;
-
-    for (const userId of authorIds) {
-      const user = await this.userAdapter.findById(userId);
-      if (!user)
-        throw new ValidationException(`The author "${userId}" is not registered in the system.`);
-    }
+  private async ensureRequesterIsAuthor(
+    articleId: string,
+    requesterId: string
+  ): Promise<void> {
+    const authors = await this.articleAuthorAdapter.findMany(articleId);
+    if (!authors.some((a) => a.userId === requesterId))
+      throw new UnauthorizedException(
+        'Only authors of the article can update it.'
+      );
   }
 }

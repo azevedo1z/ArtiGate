@@ -24,7 +24,7 @@ export class UserRoleRepository implements UserRoleDatabaseAdapter {
   }
 
   async findAll(): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany({ where: { deletedOn: null } });
+    return await this.prisma.userRole.findMany();
   }
 
   async findMany(_id: string): Promise<UserRole[]> {
@@ -33,13 +33,13 @@ export class UserRoleRepository implements UserRoleDatabaseAdapter {
 
   async countByField(field: string, value: string): Promise<number> {
     return await this.prisma.userRole.count({
-      where: { [field]: value, deletedOn: null },
+      where: { [field]: value },
     });
   }
 
   async findManyByUserId(userId: string): Promise<UserRole[]> {
     return await this.prisma.userRole.findMany({
-      where: { userId, deletedOn: null },
+      where: { userId },
     });
   }
 }

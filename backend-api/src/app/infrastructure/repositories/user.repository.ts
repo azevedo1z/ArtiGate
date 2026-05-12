@@ -86,13 +86,12 @@ export class UserRepository implements UserDatabaseAdapter {
   }
 
   async findById(id: string): Promise<User | null> {
-    return await this.prisma.user.findFirst({ where: { id, deletedOn: null } });
+    return await this.prisma.user.findFirst({ where: { id } });
   }
 
   async findAll(pagination?: PaginationDTO): Promise<User[]> {
     const { skip, take } = normalizePagination(pagination);
     return await this.prisma.user.findMany({
-      where: { deletedOn: null },
       skip,
       take,
       orderBy: { createdOn: 'desc' },
@@ -100,7 +99,7 @@ export class UserRepository implements UserDatabaseAdapter {
   }
 
   async countAll(): Promise<number> {
-    return await this.prisma.user.count({ where: { deletedOn: null } });
+    return await this.prisma.user.count();
   }
 
   async findMany(): Promise<User[]> {
@@ -108,13 +107,13 @@ export class UserRepository implements UserDatabaseAdapter {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.prisma.user.findFirst({ where: { email, deletedOn: null } });
+    return this.prisma.user.findFirst({ where: { email } });
   }
 
   async findByIds(ids: string[]): Promise<User[]> {
     if (!ids.length) return [];
     return this.prisma.user.findMany({
-      where: { id: { in: ids }, deletedOn: null },
+      where: { id: { in: ids } },
     });
   }
 
@@ -122,14 +121,13 @@ export class UserRepository implements UserDatabaseAdapter {
     return await this.prisma.user.findFirst({
       where: {
         OR: [{ jobAddressId: addressId }, { homeAddressId: addressId }],
-        deletedOn: null,
       },
     });
   }
 
   async findByReviewId(reviewId: string): Promise<User | null> {
     return await this.prisma.user.findFirst({
-      where: { reviews: { some: { id: reviewId } }, deletedOn: null },
+      where: { reviews: { some: { id: reviewId } } },
     });
   }
 }

@@ -30,21 +30,21 @@ export class RoleRepository implements RoleDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Role | null> {
-    return await this.prisma.role.findFirst({ where: { id, deletedOn: null } });
+    return await this.prisma.role.findFirst({ where: { id } });
   }
 
   async findAll(): Promise<Role[]> {
-    return await this.prisma.role.findMany({ where: { deletedOn: null } });
+    return await this.prisma.role.findMany();
   }
 
   async findByIds(ids: string[]): Promise<Role[]> {
     return await this.prisma.role.findMany({
-      where: { id: { in: ids }, deletedOn: null },
+      where: { id: { in: ids } },
     });
   }
 
   async findByName(name: string): Promise<Role | null> {
-    return await this.prisma.role.findFirst({ where: { name, deletedOn: null } });
+    return await this.prisma.role.findFirst({ where: { name } });
   }
 
    async findMany(): Promise<Role[]> {

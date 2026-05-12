@@ -36,15 +36,12 @@ export class PaymentRepository implements PaymentDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Payment | null> {
-    return this.prisma.payment.findFirst({
-      where: { id, deletedOn: null },
-    });
+    return this.prisma.payment.findFirst({ where: { id } });
   }
 
   async findAll(pagination?: PaginationDTO): Promise<Payment[]> {
     const { skip, take } = normalizePagination(pagination);
     return this.prisma.payment.findMany({
-      where: { deletedOn: null },
       skip,
       take,
       orderBy: { createdOn: 'desc' },
@@ -52,7 +49,7 @@ export class PaymentRepository implements PaymentDatabaseAdapter {
   }
 
   async countAll(): Promise<number> {
-    return this.prisma.payment.count({ where: { deletedOn: null } });
+    return this.prisma.payment.count();
   }
 
   async findMany(userId: string): Promise<Payment[]> {
@@ -61,26 +58,26 @@ export class PaymentRepository implements PaymentDatabaseAdapter {
 
   async findManyByUserId(userId: string): Promise<Payment[]> {
     return this.prisma.payment.findMany({
-      where: { userId, deletedOn: null },
+      where: { userId },
       orderBy: { createdOn: 'desc' },
     });
   }
 
   async findByIdempotencyKey(key: string): Promise<Payment | null> {
     return this.prisma.payment.findFirst({
-      where: { idempotencyKey: key, deletedOn: null },
+      where: { idempotencyKey: key },
     });
   }
 
   async findByGatewayPaymentId(id: string): Promise<Payment | null> {
     return this.prisma.payment.findFirst({
-      where: { gatewayPaymentId: id, deletedOn: null },
+      where: { gatewayPaymentId: id },
     });
   }
 
   async hasApprovedFeeByUserId(userId: string): Promise<boolean> {
     const count = await this.prisma.payment.count({
-      where: { userId, status: 'approved', deletedOn: null },
+      where: { userId, status: 'approved' },
     });
     return count > 0;
   }

@@ -110,9 +110,9 @@ export class ArticleController {
     return await this.getArticleService.getByAuthorId(req.user.id);
   }
 
-  @Get('available-to-review')
-  async getAvailableToReview(@Req() req: AuthenticatedRequest) {
-    return await this.getArticleService.getAvailableToReview(req.user.id);
+  @Get('unreviewed-and-not-authored')
+  async getUnreviewedAndNotAuthored(@Req() req: AuthenticatedRequest) {
+    return await this.getArticleService.getUnreviewedAndNotAuthored(req.user.id);
   }
 
   @Get(':id/attachment')

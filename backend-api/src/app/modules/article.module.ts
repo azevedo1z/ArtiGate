@@ -16,6 +16,7 @@ import { SubmitArticleService } from '../application/services/article/submitArti
 import { GetArticleService } from '../application/services/article/getArticle.service';
 import { UpdateArticleService } from '../application/services/article/updateArticle.service';
 import { DeleteArticleService } from '../application/services/article/deleteArticle.service';
+import { EnsureAuthorsExistService } from '../application/services/article/ensureAuthorsExist.service';
 import { CreateArticleAuthorService } from '../application/services/articleAuthor/createArticleAuthor.service';
 import { GetArticleAuthorService } from '../application/services/articleAuthor/getArticleAuthor.service';
 import { UpdateArticleAuthorService } from '../application/services/articleAuthor/updateArticleAuthor.service';
@@ -66,6 +67,7 @@ import { PaymentModule } from './payment.module';
     GetArticleService,
     UpdateArticleService,
     DeleteArticleService,
+    EnsureAuthorsExistService,
     CreateArticleAuthorService,
     GetArticleAuthorService,
     UpdateArticleAuthorService,

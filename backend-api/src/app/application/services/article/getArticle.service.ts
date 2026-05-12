@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
+import { articleRowToDomain } from '../../mappers/article.mapper';
 import {
   ArticleDatabaseAdapter,
   ArticleAuthorDatabaseAdapter,
@@ -25,11 +26,7 @@ export class GetArticleService {
     if (existingArticle == null)
       throw new NotFoundException(`There is no article with the ID "${id}".`);
 
-    return Article.factory(
-      existingArticle.id,
-      existingArticle.summary,
-      existingArticle.scoreAvg
-    );
+    return articleRowToDomain(existingArticle);
   }
 
   async getAll(pagination?: PaginationDTO): Promise<PaginatedResult<Article>> {
@@ -39,36 +36,31 @@ export class GetArticleService {
       this.adapter.countAll?.() ?? Promise.resolve(0),
     ]);
 
-    const data = articles.map((existingArticle) =>
-      Article.factory(
-        existingArticle.id,
-        existingArticle.summary,
-        existingArticle.scoreAvg
-      )
+    return buildPaginatedResult(
+      articles.map(articleRowToDomain),
+      total,
+      page,
+      limit
     );
+  }
 
-    return buildPaginatedResult(data, total, page, limit);
+  async getUnreviewedAndNotAuthored(reviewerId: string): Promise<Article[]> {
+    const rows =
+      (await this.adapter.findUnreviewedAndNotAuthored?.(reviewerId)) ?? [];
+    return rows.map(articleRowToDomain);
   }
 
   async getByAuthorId(authorId: string): Promise<Article[]> {
     const articleAuthors = await this.articleAuthorAdapter.findManyByUserId?.(
       authorId
     );
-
     if (!articleAuthors || articleAuthors.length === 0) return [];
 
-    const articles = await Promise.all(
-      articleAuthors.map((existingArticleAuthor) =>
-        this.adapter.findById(existingArticleAuthor.articleId)
-      )
+    const articleIds = Array.from(
+      new Set(articleAuthors.map((aa) => aa.articleId))
     );
 
-    return articles
-      .filter(
-        (article): article is NonNullable<typeof article> => article !== null
-      )
-      .map((article) =>
-        Article.factory(article.id, article.summary, article.scoreAvg)
-      );
+    const rows = (await this.adapter.findByIds?.(articleIds)) ?? [];
+    return rows.map(articleRowToDomain);
   }
 }

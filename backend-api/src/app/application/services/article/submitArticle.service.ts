@@ -31,10 +31,7 @@ export class SubmitArticleService {
   ): Promise<SubmitArticleResult> {
     if (!file) throw new ValidationException('A PDF attachment is required.');
 
-    if (!data.authorIds.includes(requesterId))
-      throw new ValidationException(
-        'The current user must be listed as an author of the article.'
-      );
+    Article.assertAuthoredBy(data.authorIds, requesterId);
 
     this.validator.execute(file);
 

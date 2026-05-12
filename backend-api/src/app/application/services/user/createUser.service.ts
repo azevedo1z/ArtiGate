@@ -1,6 +1,7 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { User } from '../../../domain/models/user.model';
 import { Address } from '../../../domain/models/address.model';
+import { Password } from '../../../domain/values/password.value';
 import { userRowToDomain } from '../../mappers/user.mapper';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -33,6 +34,8 @@ export class CreateUserService {
     Address.ensureInvariants({ id: '', ...data.homeAddress });
     Address.ensureInvariants({ id: '', ...data.jobAddress });
 
+    const password = Password.fromPlaintext(data.password);
+
     User.ensureInvariants({
       id: '',
       name: data.name,
@@ -44,7 +47,7 @@ export class CreateUserService {
       passwordHash: data.password,
     });
 
-    data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
+    data.password = await bcrypt.hash(password.value, BCRYPT_SALT_ROUNDS);
 
     const homeAddress = await this.addressAdapter.create(data.homeAddress);
     const jobAddress = await this.addressAdapter.create(data.jobAddress);

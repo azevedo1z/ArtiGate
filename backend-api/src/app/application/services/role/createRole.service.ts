@@ -10,16 +10,15 @@ export class CreateRoleService {
   constructor(private readonly adapter: RoleDatabaseAdapter) {}
 
   async execute(data: CreateRoleDTO): Promise<Role> {
-    const roleExists = await this.adapter.findByName?.(
-      data.name.toUpperCase().trim()
-    );
+    const name = Role.normalizeName(data.name);
 
+    const roleExists = await this.adapter.findByName?.(name);
     if (roleExists)
       throw new ConflictException('There is already a role with this name.');
 
-    Role.ensureInvariants({ id: '', name: data.name });
+    Role.ensureInvariants({ id: '', name });
 
-    const roleRecord = await this.adapter.create(data);
+    const roleRecord = await this.adapter.create({ ...data, name });
 
     return roleRowToDomain(roleRecord);
   }

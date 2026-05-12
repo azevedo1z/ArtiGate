@@ -1,4 +1,7 @@
-import { ValidationException } from '../../shared/exceptions/app.exception';
+import {
+  UnauthorizedException,
+  ValidationException,
+} from '../../shared/exceptions/app.exception';
 
 export interface ArticleProps {
   id: string;
@@ -7,6 +10,9 @@ export interface ArticleProps {
 }
 
 export class Article {
+  static readonly MIN_AUTHORS = 1;
+  static readonly MAX_AUTHORS = 3;
+
   private _id: string;
   private _summary: string;
   private _scoreAvg: number;
@@ -26,8 +32,6 @@ export class Article {
   static ensureInvariants(props: ArticleProps): void {
     const errors: string[] = [];
 
-    if (!props.summary?.trim()) errors.push('Article summary is required.');
-
     if (
       Number.isNaN(props.scoreAvg) ||
       props.scoreAvg < 0 ||
@@ -36,6 +40,23 @@ export class Article {
       errors.push('Article score average must be a number between 0 and 10.');
 
     if (errors.length) throw new ValidationException(errors.join(' '));
+  }
+
+  static assertAuthorCount(authorIds: string[]): void {
+    if (
+      authorIds.length < Article.MIN_AUTHORS ||
+      authorIds.length > Article.MAX_AUTHORS
+    )
+      throw new ValidationException(
+        `An article must have between ${Article.MIN_AUTHORS} and ${Article.MAX_AUTHORS} authors.`
+      );
+  }
+
+  static assertAuthoredBy(authorIds: string[], userId: string): void {
+    if (!authorIds.includes(userId))
+      throw new UnauthorizedException(
+        'Only authors of this article are allowed to perform this action.'
+      );
   }
 
   get summary(): string {

@@ -3,10 +3,7 @@ import { UpdateReviewDTO } from '../../dtos/review/updateReview.dto';
 import { Review } from '../../../domain/models/review.model';
 import { reviewRowToDomain } from '../../mappers/review.mapper';
 import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import {
-  NotFoundException,
-  UnauthorizedException,
-} from '../../../shared/exceptions/app.exception';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class UpdateReviewService {
@@ -18,10 +15,7 @@ export class UpdateReviewService {
     if (!existing)
       throw new NotFoundException(`Review with ID "${data.id}" not found`);
 
-    if (existing.reviewerId !== requesterId)
-      throw new UnauthorizedException(
-        'You can only update your own reviews.'
-      );
+    Review.assertOwnedBy(existing.reviewerId, requesterId);
 
     Review.ensureInvariants({
       id: existing.id,

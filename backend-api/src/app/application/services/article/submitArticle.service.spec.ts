@@ -4,7 +4,10 @@ import { CreateArticleService } from './createArticle.service';
 import { UploadArticleAttachmentService } from '../articleAttachment/uploadArticleAttachment.service';
 import { PdfSecurityValidatorService } from '../../../infrastructure/services/pdfSecurityValidator.service';
 import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { ValidationException } from '../../../shared/exceptions/app.exception';
+import {
+  UnauthorizedException,
+  ValidationException,
+} from '../../../shared/exceptions/app.exception';
 import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 
 describe('SubmitArticleService', () => {
@@ -34,10 +37,10 @@ describe('SubmitArticleService', () => {
     );
   });
 
-  it('throws ValidationException when the requester is not in authorIds', async () => {
+  it('throws UnauthorizedException when the requester is not in authorIds', async () => {
     await expect(
       service.execute(dto, 'someone-else', file)
-    ).rejects.toThrow(ValidationException);
+    ).rejects.toThrow(UnauthorizedException);
 
     expect(createArticleService.execute).not.toHaveBeenCalled();
   });

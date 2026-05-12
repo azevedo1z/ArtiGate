@@ -12,7 +12,7 @@ describe('GetArticleService', () => {
 
   const articleRecord = {
     id: 'article-1',
-    summary: 'A paper',
+    summary: 'A research paper',
     scoreAvg: 7.5,
     createdOn: new Date(),
     updatedOn: new Date(),
@@ -42,7 +42,7 @@ describe('GetArticleService', () => {
       const result = await service.getById('article-1');
 
       expect(result.id).toBe('article-1');
-      expect(result.summary).toBe('A paper');
+      expect(result.summary).toBe('A research paper');
       expect(result.scoreAvg).toBe(7.5);
     });
 

@@ -13,9 +13,10 @@ export class CreateArticleService {
   ) {}
 
   async execute(data: CreateArticleDTO): Promise<Article> {
-    await this.ensureAuthorsExistService.execute(data.authorIds);
-
+    Article.assertAuthorCount(data.authorIds);
     Article.ensureInvariants({ id: '', summary: data.summary, scoreAvg: 0 });
+
+    await this.ensureAuthorsExistService.execute(data.authorIds);
 
     const articleRecord = await this.adapter.create(data);
 

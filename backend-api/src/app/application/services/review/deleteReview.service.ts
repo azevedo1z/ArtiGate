@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { Review } from '../../../domain/models/review.model';
 import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import {
-  NotFoundException,
-  UnauthorizedException,
-} from '../../../shared/exceptions/app.exception';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class DeleteReviewService {
@@ -15,10 +13,7 @@ export class DeleteReviewService {
     if (!review)
       throw new NotFoundException(`Review with ID "${id}" not found`);
 
-    if (review.reviewerId !== requesterId)
-      throw new UnauthorizedException(
-        'You can only delete your own reviews.'
-      );
+    Review.assertOwnedBy(review.reviewerId, requesterId);
 
     return await this.adapter.deleteAndRecomputeArticleScore(
       id,

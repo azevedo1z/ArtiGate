@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Article } from '../../../domain/models/article.model';
 import {
   ArticleDatabaseAdapter,
   ReviewDatabaseAdapter,
@@ -7,7 +8,6 @@ import {
 import {
   NotFoundException,
   ConflictException,
-  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
@@ -24,10 +24,10 @@ export class DeleteArticleService {
       throw new NotFoundException(`Article with ID "${id}" not found`);
 
     const authors = await this.articleAuthorAdapter.findMany(id);
-    if (!authors.some((a) => a.userId === requesterId))
-      throw new UnauthorizedException(
-        'Only authors of the article can delete it.'
-      );
+    Article.assertAuthoredBy(
+      authors.map((a) => a.userId),
+      requesterId
+    );
 
     const reviews = await this.reviewAdapter.findMany(id);
     if (reviews?.length)

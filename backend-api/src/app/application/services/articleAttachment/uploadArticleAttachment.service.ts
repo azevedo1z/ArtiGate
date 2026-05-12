@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Article } from '../../../domain/models/article.model';
 import { ArticleAttachment } from '../../../domain/models/articleAttachment.model';
 import { articleAttachmentRowToDomain } from '../../mappers/articleAttachment.mapper';
 import {
@@ -11,7 +12,6 @@ import { PdfStorageService } from '../../../infrastructure/services/pdfStorage.s
 import {
   ConflictException,
   NotFoundException,
-  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
 import { PDF_ATTACHMENT } from '../../../shared/constants';
 
@@ -39,10 +39,10 @@ export class UploadArticleAttachmentService {
       );
 
     const authors = await this.articleAuthorAdapter.findMany(articleId);
-    if (!authors.some((a) => a.userId === uploaderId))
-      throw new UnauthorizedException(
-        'Only authors of the article can upload its attachment.'
-      );
+    Article.assertAuthoredBy(
+      authors.map((a) => a.userId),
+      uploaderId
+    );
 
     const existing = await this.attachmentAdapter.findMany(articleId);
     if (existing.length > 0)

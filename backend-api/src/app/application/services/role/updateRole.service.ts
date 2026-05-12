@@ -14,6 +14,8 @@ export class UpdateRoleService {
     if (!existing)
       throw new NotFoundException(`Role with ID "${data.id}" not found`);
 
+    if (data.name !== undefined) data.name = Role.normalizeName(data.name);
+
     Role.ensureInvariants({
       id: existing.id,
       name: data.name ?? existing.name,

@@ -1,4 +1,7 @@
-import { ValidationException } from '../../shared/exceptions/app.exception';
+import {
+  UnauthorizedException,
+  ValidationException,
+} from '../../shared/exceptions/app.exception';
 
 export interface ReviewProps {
   id: string;
@@ -44,10 +47,26 @@ export class Review {
         `Review score must be between ${Review.MIN_SCORE} and ${Review.MAX_SCORE}.`
       );
 
-    if (!props.commentary?.trim())
-      errors.push('Review commentary is required.');
+    const commentary = props.commentary?.trim() ?? '';
+
+    if (!commentary) errors.push('Review commentary is required.');
 
     if (errors.length) throw new ValidationException(errors.join(' '));
+  }
+
+  static assertOwnedBy(reviewerId: string, requesterId: string): void {
+    if (reviewerId !== requesterId)
+      throw new UnauthorizedException('You can only act on your own reviews.');
+  }
+
+  static assertReviewerIsNotAuthor(
+    authorIds: string[],
+    reviewerId: string
+  ): void {
+    if (authorIds.includes(reviewerId))
+      throw new ValidationException(
+        'Authors cannot review their own articles.'
+      );
   }
 
   get id(): string {

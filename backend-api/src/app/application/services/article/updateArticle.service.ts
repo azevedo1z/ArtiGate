@@ -6,10 +6,7 @@ import {
   ArticleAuthorDatabaseAdapter,
   ArticleDatabaseAdapter,
 } from '../../../interface/adapter/database.adapter';
-import {
-  NotFoundException,
-  UnauthorizedException,
-} from '../../../shared/exceptions/app.exception';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 import { EnsureAuthorsExistService } from './ensureAuthorsExist.service';
 
 @Injectable()
@@ -25,8 +22,16 @@ export class UpdateArticleService {
     if (!existing)
       throw new NotFoundException(`Article with ID "${data.id}" not found`);
 
-    await this.ensureRequesterIsAuthor(data.id, requesterId);
-    await this.ensureAuthorsExistService.execute(data.authorIds);
+    const authors = await this.articleAuthorAdapter.findMany(data.id);
+    Article.assertAuthoredBy(
+      authors.map((a) => a.userId),
+      requesterId
+    );
+
+    if (data.authorIds !== undefined) {
+      Article.assertAuthorCount(data.authorIds);
+      await this.ensureAuthorsExistService.execute(data.authorIds);
+    }
 
     Article.ensureInvariants({
       id: existing.id,
@@ -37,16 +42,5 @@ export class UpdateArticleService {
     const articleRecord = await this.adapter.update(data);
 
     return articleRowToDomain(articleRecord);
-  }
-
-  private async ensureRequesterIsAuthor(
-    articleId: string,
-    requesterId: string
-  ): Promise<void> {
-    const authors = await this.articleAuthorAdapter.findMany(articleId);
-    if (!authors.some((a) => a.userId === requesterId))
-      throw new UnauthorizedException(
-        'Only authors of the article can update it.'
-      );
   }
 }

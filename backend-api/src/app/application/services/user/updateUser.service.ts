@@ -5,6 +5,7 @@ import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
 import { Address } from '../../../domain/models/address.model';
+import { Password } from '../../../domain/values/password.value';
 import { userRowToDomain } from '../../mappers/user.mapper';
 import {
   UserDatabaseAdapter,
@@ -37,8 +38,10 @@ export class UpdateUserService {
       passwordHash: existing.passwordHash,
     });
 
-    if (data.password)
-      data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
+    if (data.password) {
+      const password = Password.fromPlaintext(data.password);
+      data.password = await bcrypt.hash(password.value, BCRYPT_SALT_ROUNDS);
+    }
 
     const homeAddressId = await this.handleNewAddressCreation(data.homeAddress);
     const jobAddressId = await this.handleNewAddressCreation(data.jobAddress);

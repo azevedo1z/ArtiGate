@@ -25,6 +25,10 @@ export class Role {
       throw new ValidationException('Role name is required.');
   }
 
+  static normalizeName(raw: string): string {
+    return (raw ?? '').trim().toUpperCase();
+  }
+
   get id(): string {
     return this._id;
   }

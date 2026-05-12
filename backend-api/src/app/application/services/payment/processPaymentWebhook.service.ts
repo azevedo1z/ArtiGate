@@ -1,21 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PaymentWebhookDTO } from '../../dtos/payment/paymentWebhook.dto';
 import { UpdatePaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
+import { Payment } from '../../../domain/models/payment.model';
 import { PaymentDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
 import { PaymentGatewayWebhookHeaders } from '../../dtos/payment/paymentGatewayCharge.dto';
 import { PaymentStatus } from '../../../shared/types/payment.types';
-
-const STATUS_PRIORITY: Record<PaymentStatus, number> = {
-  pending: 0,
-  in_process: 1,
-  authorized: 2,
-  approved: 3,
-  cancelled: 4,
-  rejected: 4,
-  refunded: 5,
-  charged_back: 5,
-};
 
 @Injectable()
 export class ProcessPaymentWebhookService {
@@ -68,9 +58,14 @@ export class ProcessPaymentWebhookService {
       return;
     }
 
-    if (!this.shouldApply(existing.status, remote.status)) {
+    if (
+      !Payment.canTransitionTo(
+        existing.status as PaymentStatus,
+        remote.status as PaymentStatus
+      )
+    ) {
       this.logger.warn(
-        `Payment webhook would regress status (${existing.status} -> ${remote.status}); ignoring.`
+        `Payment webhook would regress or use unknown status (${existing.status} -> ${remote.status}); ignoring.`
       );
       return;
     }
@@ -84,18 +79,5 @@ export class ProcessPaymentWebhookService {
     });
 
     await this.adapter.update(update);
-  }
-
-  private shouldApply(currentStatus: string, nextStatus: string): boolean {
-    const current = STATUS_PRIORITY[currentStatus as PaymentStatus];
-    const next = STATUS_PRIORITY[nextStatus as PaymentStatus];
-
-    if (current == null || next == null) {
-      this.logger.warn(
-        `Payment webhook: refusing unknown status transition (${currentStatus} -> ${nextStatus}).`
-      );
-      return false;
-    }
-    return next >= current;
   }
 }

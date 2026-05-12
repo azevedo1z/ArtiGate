@@ -52,6 +52,20 @@ export class CreatePaymentService {
       'BRL'
     ).toUpperCase();
 
+    Payment.ensureInvariants({
+      id: '',
+      userId,
+      amount,
+      currency,
+      status: 'pending',
+      description: dto.description ?? null,
+      paymentMethodId: dto.paymentMethodId,
+      payerEmail: dto.payerEmail,
+      gatewayPaymentId: null,
+      idempotencyKey: dto.idempotencyKey,
+      failureReason: null,
+    });
+
     const chargeRequest = new PaymentGatewayChargeRequestDTO({
       token: dto.token ?? null,
       amount,

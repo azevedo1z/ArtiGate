@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  ValidationException,
-  ConflictException,
-} from '../../../shared/exceptions/app.exception';
+import { ConflictException } from '../../../shared/exceptions/app.exception';
 import { CreateReviewDTO } from '../../dtos/review/createReview.dto';
 import { Review } from '../../../domain/models/review.model';
 import { reviewRowToDomain } from '../../mappers/review.mapper';
@@ -20,9 +17,10 @@ export class CreateReviewService {
 
   async execute(requesterId: string, data: CreateReviewDTO): Promise<Review> {
     const authors = await this.articleAuthorAdapter.findMany(data.articleId);
-
-    if (authors.some((a) => a.userId === requesterId))
-      throw new ValidationException('Authors cannot review their own articles');
+    Review.assertReviewerIsNotAuthor(
+      authors.map((a) => a.userId),
+      requesterId
+    );
 
     const existingReviews = await this.adapter.findMany(data.articleId);
 

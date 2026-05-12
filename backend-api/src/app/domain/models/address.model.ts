@@ -13,6 +13,7 @@ export interface AddressProps {
 
 export class Address {
   static readonly COUNTRY = 'Brazil';
+  static readonly ZIP_CODE_REGEX = /^\d{5}-?\d{3}$/;
 
   private _id: string;
   private _zipCode: string;
@@ -42,6 +43,9 @@ export class Address {
 
   static ensureInvariants(props: AddressProps): void {
     const errors: string[] = [];
+
+    if (!Address.ZIP_CODE_REGEX.test(props.zipCode ?? ''))
+      errors.push('Address zip code must be 8 digits (with optional hyphen).');
 
     if (!props.street?.trim()) errors.push('Address street is required.');
 

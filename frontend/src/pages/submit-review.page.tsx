@@ -46,8 +46,8 @@ const SubmitReviewPage: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await articleService.getAll({ limit: 100 });
-        setArticles(response.data);
+        const data = await articleService.getAvailableToReview();
+        setArticles(data);
       } catch (error) {
         toast.error(extractErrorMessage(error, 'Failed to load articles.'));
       } finally {
@@ -80,7 +80,6 @@ const SubmitReviewPage: React.FC = () => {
     try {
       await reviewService.createReview({
         articleId,
-        reviewerId: userData._id,
         score,
         commentary,
       });

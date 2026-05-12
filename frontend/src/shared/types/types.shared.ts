@@ -103,9 +103,17 @@ export interface CreateArticleResponse {
 
 export interface CreateReviewData {
   articleId: string;
+  score: number;
+  commentary: string;
+}
+
+export interface ReviewWithArticleSummary {
+  id: string;
+  articleId: string;
   reviewerId: string;
   score: number;
   commentary: string;
+  article: { id: string; summary: string } | null;
 }
 
 export interface SignUpFormData {

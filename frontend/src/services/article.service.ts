@@ -33,6 +33,11 @@ class ArticleService {
     return response.data;
   }
 
+  async getAvailableToReview(): Promise<Article[]> {
+    const response = await apiClient.get('/article/available-to-review');
+    return response.data;
+  }
+
   async downloadAttachment(articleId: string): Promise<void> {
     try {
       const response = await apiClient.get(`/article/${articleId}/attachment`, {

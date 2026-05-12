@@ -23,7 +23,7 @@ export class Article {
     return new Article(props);
   }
 
-  private static ensureInvariants(props: ArticleProps): void {
+  static ensureInvariants(props: ArticleProps): void {
     const errors: string[] = [];
 
     if (!props.summary?.trim()) errors.push('Article summary is required.');

@@ -1,5 +1,6 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { User } from '../../../domain/models/user.model';
+import { Address } from '../../../domain/models/address.model';
 import { userRowToDomain } from '../../mappers/user.mapper';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
@@ -28,6 +29,20 @@ export class CreateUserService {
       throw new ConflictException('There is already a user with this e-mail.');
 
     await this.validateRoles(data.roleIds);
+
+    Address.ensureInvariants({ id: '', ...data.homeAddress });
+    Address.ensureInvariants({ id: '', ...data.jobAddress });
+
+    User.ensureInvariants({
+      id: '',
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      badgeUrl: data.badgeUrl,
+      homeAddressId: '',
+      jobAddressId: '',
+      passwordHash: data.password,
+    });
 
     data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
 

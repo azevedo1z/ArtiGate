@@ -13,15 +13,23 @@ export class UpdateReviewService {
   constructor(private readonly adapter: ReviewDatabaseAdapter) {}
 
   async execute(requesterId: string, data: UpdateReviewDTO): Promise<Review> {
-    const existingReview = await this.adapter.findById(data.id);
+    const existing = await this.adapter.findById(data.id);
 
-    if (!existingReview)
+    if (!existing)
       throw new NotFoundException(`Review with ID "${data.id}" not found`);
 
-    if (existingReview.reviewerId !== requesterId)
+    if (existing.reviewerId !== requesterId)
       throw new UnauthorizedException(
         'You can only update your own reviews.'
       );
+
+    Review.ensureInvariants({
+      id: existing.id,
+      articleId: existing.articleId,
+      reviewerId: existing.reviewerId,
+      score: data.score ?? existing.score,
+      commentary: data.commentary ?? existing.commentary,
+    });
 
     if (data.score === undefined) {
       const reviewRecord = await this.adapter.update(data);
@@ -30,7 +38,7 @@ export class UpdateReviewService {
 
     const reviewRecord = await this.adapter.updateAndRecomputeArticleScore(
       data,
-      existingReview.articleId
+      existing.articleId
     );
 
     return reviewRowToDomain(reviewRecord);

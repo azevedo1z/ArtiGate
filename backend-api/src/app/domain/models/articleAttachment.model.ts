@@ -38,7 +38,7 @@ export class ArticleAttachment {
     return new ArticleAttachment(props);
   }
 
-  private static ensureInvariants(props: ArticleAttachmentProps): void {
+  static ensureInvariants(props: ArticleAttachmentProps): void {
     const errors: string[] = [];
 
     if (props.size <= 0)

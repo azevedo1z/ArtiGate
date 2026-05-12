@@ -39,7 +39,7 @@ export class User {
     return new User(props);
   }
 
-  private static ensureInvariants(props: UserProps): void {
+  static ensureInvariants(props: UserProps): void {
     const errors: string[] = [];
 
     if (!props.name?.trim()) errors.push('User name is required.');

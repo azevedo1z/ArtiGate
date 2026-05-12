@@ -10,11 +10,23 @@ export class UpdateAddressService {
   constructor(private readonly adapter: AddressDatabaseAdapter) {}
 
   async execute(data: UpdateAddressDTO): Promise<Address> {
-    const existingAddress = await this.adapter.findById(data.id);
-    if (!existingAddress)
+    const existing = await this.adapter.findById(data.id);
+    if (!existing)
       throw new NotFoundException(`Address with ID "${data.id}" not found`);
 
-    const addressRecord = await this.adapter.update(data);
-    return addressRowToDomain(addressRecord);
+    Address.ensureInvariants({
+      id: existing.id,
+      zipCode: data.zipCode ?? existing.zipCode,
+      street: data.street ?? existing.street,
+      neighborhood: data.neighborhood ?? existing.neighborhood,
+      city: data.city ?? existing.city,
+      state: data.state ?? existing.state,
+      complement:
+        data.complement === undefined ? existing.complement : data.complement,
+      country: existing.country,
+    });
+
+    const updated = await this.adapter.update(data);
+    return addressRowToDomain(updated);
   }
 }

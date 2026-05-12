@@ -21,12 +21,18 @@ export class UpdateArticleService {
   ) {}
 
   async execute(requesterId: string, data: UpdateArticleDTO): Promise<Article> {
-    const existingArticle = await this.adapter.findById(data.id);
-    if (!existingArticle)
+    const existing = await this.adapter.findById(data.id);
+    if (!existing)
       throw new NotFoundException(`Article with ID "${data.id}" not found`);
 
     await this.ensureRequesterIsAuthor(data.id, requesterId);
     await this.ensureAuthorsExistService.execute(data.authorIds);
+
+    Article.ensureInvariants({
+      id: existing.id,
+      summary: data.summary ?? existing.summary,
+      scoreAvg: data.scoreAvg ?? existing.scoreAvg,
+    });
 
     const articleRecord = await this.adapter.update(data);
 

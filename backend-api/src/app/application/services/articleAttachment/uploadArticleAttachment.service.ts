@@ -52,6 +52,17 @@ export class UploadArticleAttachmentService {
 
     const storedName = this.storage.generateStoredName();
 
+    ArticleAttachment.ensureInvariants({
+      id: '',
+      articleId,
+      storedName,
+      originalName: validated.sanitizedName,
+      mimeType: PDF_ATTACHMENT.MIME_TYPE,
+      size: validated.size,
+      checksum: validated.checksum,
+      uploaderId,
+    });
+
     await this.storage.write(storedName, validated.buffer);
 
     try {

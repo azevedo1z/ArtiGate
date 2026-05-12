@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
+import { Address } from '../../../domain/models/address.model';
 import { userRowToDomain } from '../../mappers/user.mapper';
 import {
   UserDatabaseAdapter,
@@ -21,9 +22,20 @@ export class UpdateUserService {
   ) {}
 
   async execute(data: UpdateUserDTO): Promise<User> {
-    const existingUser = await this.adapter.findById(data.id);
-    if (!existingUser)
+    const existing = await this.adapter.findById(data.id);
+    if (!existing)
       throw new NotFoundException(`User with ID "${data.id}" not found`);
+
+    User.ensureInvariants({
+      id: existing.id,
+      name: data.name ?? existing.name,
+      email: data.email ?? existing.email,
+      phone: data.phone ?? existing.phone,
+      badgeUrl: data.badgeUrl ?? existing.badgeUrl,
+      homeAddressId: existing.homeAddressId,
+      jobAddressId: existing.jobAddressId,
+      passwordHash: existing.passwordHash,
+    });
 
     if (data.password)
       data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
@@ -59,6 +71,8 @@ export class UpdateUserService {
     address: CreateAddressDTO
   ): Promise<string | undefined> {
     if (!address) return;
+
+    Address.ensureInvariants({ id: '', ...address });
 
     const newAddress = await this.addressAdapter.create(address);
     return newAddress.id;

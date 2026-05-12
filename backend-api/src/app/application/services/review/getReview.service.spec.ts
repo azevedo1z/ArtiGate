@@ -22,7 +22,7 @@ describe('GetReviewService', () => {
       findById: jest.fn(),
       findAll: jest.fn(),
       countAll: jest.fn(),
-      findManyByUserId: jest.fn(),
+      findManyWithArticleByUserId: jest.fn(),
       findMany: jest.fn(),
     } as any;
 
@@ -30,12 +30,16 @@ describe('GetReviewService', () => {
   });
 
   describe('getById', () => {
-    it('should return a review by id', async () => {
+    it('should return a review by id as a domain model', async () => {
       adapter.findById.mockResolvedValue(reviewRecord);
 
       const result = await service.getById('review-1');
 
-      expect(result).toEqual(reviewRecord);
+      expect(result.id).toBe('review-1');
+      expect(result.articleId).toBe('article-1');
+      expect(result.reviewerId).toBe('reviewer-1');
+      expect(result.score).toBe(8);
+      expect(result.commentary).toBe('Good');
     });
 
     it('should throw NotFoundException if review not found', async () => {
@@ -72,25 +76,33 @@ describe('GetReviewService', () => {
   });
 
   describe('getByReviewerId', () => {
-    it('should return reviews for a reviewer', async () => {
-      (adapter.findManyByUserId as jest.Mock).mockResolvedValue([reviewRecord]);
+    it('returns reviews with the article summary attached', async () => {
+      (adapter.findManyWithArticleByUserId as jest.Mock).mockResolvedValue([
+        {
+          ...reviewRecord,
+          article: { id: 'article-1', summary: 'A paper' },
+        },
+      ]);
 
       const result = await service.getByReviewerId('reviewer-1');
 
       expect(result).toHaveLength(1);
       expect(result[0].reviewerId).toBe('reviewer-1');
+      expect(result[0].article).toEqual({ id: 'article-1', summary: 'A paper' });
     });
 
-    it('should return empty array when reviewer has no reviews', async () => {
-      (adapter.findManyByUserId as jest.Mock).mockResolvedValue([]);
+    it('returns empty array when reviewer has no reviews', async () => {
+      (adapter.findManyWithArticleByUserId as jest.Mock).mockResolvedValue([]);
 
       const result = await service.getByReviewerId('reviewer-1');
 
       expect(result).toEqual([]);
     });
 
-    it('should return empty array when findManyByUserId returns undefined', async () => {
-      (adapter.findManyByUserId as jest.Mock).mockResolvedValue(undefined as any);
+    it('falls back to empty when the adapter returns undefined', async () => {
+      (adapter.findManyWithArticleByUserId as jest.Mock).mockResolvedValue(
+        undefined as any,
+      );
 
       const result = await service.getByReviewerId('reviewer-1');
 

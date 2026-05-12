@@ -20,7 +20,7 @@ export class Role {
     return new Role(props);
   }
 
-  private static ensureInvariants(props: RoleProps): void {
+  static ensureInvariants(props: RoleProps): void {
     if (!props.name?.trim())
       throw new ValidationException('Role name is required.');
   }

@@ -10,9 +10,14 @@ export class UpdateRoleService {
   constructor(private readonly adapter: RoleDatabaseAdapter) {}
 
   async execute(data: UpdateRoleDTO): Promise<Role> {
-    const existingRole = await this.adapter.findById(data.id);
-    if (!existingRole)
+    const existing = await this.adapter.findById(data.id);
+    if (!existing)
       throw new NotFoundException(`Role with ID "${data.id}" not found`);
+
+    Role.ensureInvariants({
+      id: existing.id,
+      name: data.name ?? existing.name,
+    });
 
     const roleRecord = await this.adapter.update(data);
 

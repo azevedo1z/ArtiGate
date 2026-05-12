@@ -29,6 +29,14 @@ export class CreateReviewService {
     if (existingReviews.some((r) => r.reviewerId === requesterId))
       throw new ConflictException('You have already reviewed this article');
 
+    Review.ensureInvariants({
+      id: '',
+      articleId: data.articleId,
+      reviewerId: requesterId,
+      score: data.score,
+      commentary: data.commentary,
+    });
+
     const reviewRecord = await this.adapter.createAndRecomputeArticleScore(
       { ...data, reviewerId: requesterId },
       data.articleId

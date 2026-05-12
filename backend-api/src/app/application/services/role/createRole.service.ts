@@ -17,6 +17,8 @@ export class CreateRoleService {
     if (roleExists)
       throw new ConflictException('There is already a role with this name.');
 
+    Role.ensureInvariants({ id: '', name: data.name });
+
     const roleRecord = await this.adapter.create(data);
 
     return roleRowToDomain(roleRecord);

@@ -9,6 +9,8 @@ export class CreateAddressService {
   constructor(private readonly adapter: AddressDatabaseAdapter) {}
 
   async execute(data: CreateAddressDTO): Promise<Address> {
+    Address.ensureInvariants({ id: '', ...data });
+
     const addressRecord = await this.adapter.create(data);
     return addressRowToDomain(addressRecord);
   }

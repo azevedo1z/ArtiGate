@@ -40,7 +40,7 @@ export class Address {
     return new Address(props);
   }
 
-  private static ensureInvariants(props: AddressProps): void {
+  static ensureInvariants(props: AddressProps): void {
     const errors: string[] = [];
 
     if (!props.street?.trim()) errors.push('Address street is required.');

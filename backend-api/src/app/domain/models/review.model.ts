@@ -32,7 +32,7 @@ export class Review {
     return new Review(props);
   }
 
-  private static ensureInvariants(props: ReviewProps): void {
+  static ensureInvariants(props: ReviewProps): void {
     const errors: string[] = [];
 
     if (

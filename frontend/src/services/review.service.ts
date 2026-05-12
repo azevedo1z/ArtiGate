@@ -16,8 +16,8 @@ class ReviewService {
     return response.data;
   }
 
-  async getMyReviews(userId: string): Promise<Review[]> {
-    const response = await apiClient.get(`/review/reviewer/${userId}`);
+  async getMyReviews(): Promise<Review[]> {
+    const response = await apiClient.get('/review/me');
     return response.data;
   }
 

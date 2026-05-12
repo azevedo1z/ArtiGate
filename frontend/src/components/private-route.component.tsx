@@ -52,7 +52,7 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ children }) => {
 
     let cancelled = false;
     roleService
-      .getRolesByUserId(userData._id)
+      .getMyRoles()
       .then((data) => {
         if (cancelled) return;
         dispatch(setRoles(data));

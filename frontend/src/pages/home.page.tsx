@@ -34,7 +34,7 @@ const HomePage: React.FC = () => {
       if (rolesData?.length) return;
 
       try {
-        const fetchedRoles = await roleService.getRolesByUserId(userData._id);
+        const fetchedRoles = await roleService.getMyRoles();
         dispatch(setRoles(fetchedRoles));
       } catch (error) {
         toast.error(

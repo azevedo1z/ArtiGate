@@ -51,7 +51,7 @@ const MyArticlesPage: React.FC = () => {
       if (!userData?._id) return;
 
       try {
-        const data = await articleService.getMyArticles(userData._id);
+        const data = await articleService.getMyArticles();
         setArticles(data);
       } catch (error) {
         toast.error(

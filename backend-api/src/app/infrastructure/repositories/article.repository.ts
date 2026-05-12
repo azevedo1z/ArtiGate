@@ -68,15 +68,12 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Article | null> {
-    return await this.prisma.article.findFirst({
-      where: { id, deletedOn: null },
-    });
+    return await this.prisma.article.findFirst({ where: { id } });
   }
 
   async findAll(pagination?: PaginationDTO): Promise<Article[]> {
     const { skip, take } = normalizePagination(pagination);
     return await this.prisma.article.findMany({
-      where: { deletedOn: null },
       skip,
       take,
       orderBy: { createdOn: 'desc' },
@@ -84,18 +81,28 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
   }
 
   async countAll(): Promise<number> {
-    return await this.prisma.article.count({ where: { deletedOn: null } });
+    return await this.prisma.article.count();
   }
 
   async findByIds(ids: string[]): Promise<Article[]> {
     if (!ids.length) return [];
     return this.prisma.article.findMany({
-      where: { id: { in: ids }, deletedOn: null },
+      where: { id: { in: ids } },
       orderBy: { createdOn: 'desc' },
     });
   }
 
   async findMany(_id: string): Promise<Article[]> {
     throw new NotImplementedException();
+  }
+
+  async findReviewableByUser(userId: string): Promise<Article[]> {
+    return this.prisma.article.findMany({
+      where: {
+        authors: { none: { userId } },
+        reviews: { none: { reviewerId: userId } },
+      },
+      orderBy: { createdOn: 'desc' },
+    });
   }
 }

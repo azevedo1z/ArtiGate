@@ -16,13 +16,8 @@ class ReviewService {
     return response.data;
   }
 
-  async getMyReviews(): Promise<Review[]> {
+  async getMyReviews(): Promise<ReviewWithArticleSummary[]> {
     const response = await apiClient.get('/review/me');
-    return response.data;
-  }
-
-  async getMyReviewsExpanded(): Promise<ReviewWithArticleSummary[]> {
-    const response = await apiClient.get('/review/me/expanded');
     return response.data;
   }
 }

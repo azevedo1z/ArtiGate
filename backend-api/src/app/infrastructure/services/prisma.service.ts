@@ -1,6 +1,27 @@
 import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
 
+const SOFT_DELETE_MODELS: ReadonlySet<string> = new Set([
+  'User',
+  'Role',
+  'UserRole',
+  'Address',
+  'Article',
+  'ArticleAuthor',
+  'ArticleAttachment',
+  'Review',
+  'Payment',
+]);
+
+const READ_ACTIONS: ReadonlySet<string> = new Set([
+  'findUnique',
+  'findFirst',
+  'findMany',
+  'count',
+  'aggregate',
+  'groupBy',
+]);
+
 @Injectable()
 export class PrismaService
   extends PrismaClient
@@ -9,36 +30,21 @@ export class PrismaService
   async onModuleInit() {
     await this.$connect();
 
-    // Soft delete middleware
     this.$use(async (params, next) => {
-      // List of models with soft delete
-      const softDeleteModels = [
-        'User',
-        'Role',
-        'UserRole',
-        'Address',
-        'Article',
-        'ArticleAuthor',
-        'Review',
-        'Payment',
-      ];
-
-      // Only apply to find queries on soft-delete models
       if (
         params.model &&
-        softDeleteModels.includes(params.model) &&
-        ['findUnique', 'findFirst', 'findMany'].includes(params.action)
+        SOFT_DELETE_MODELS.has(params.model) &&
+        READ_ACTIONS.has(params.action)
       ) {
         if (!params.args) params.args = {};
         if (!params.args.where) params.args.where = {};
-        // Only add if not already filtering by deletedOn
-        if (params.args.where.deletedOn === undefined) {
+        if (params.args.where.deletedOn === undefined)
           params.args.where.deletedOn = null;
-        }
       }
       return next(params);
     });
   }
+
   async onModuleDestroy() {
     await this.$disconnect();
   }

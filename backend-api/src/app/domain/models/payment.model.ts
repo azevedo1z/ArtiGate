@@ -1,4 +1,18 @@
-import { PaymentProps, PaymentStatus } from '../../shared/types/payment.types';
+import { PaymentStatus } from '../../shared/types/payment.types';
+
+export interface PaymentProps {
+  id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  description: string | null;
+  paymentMethodId: string | null;
+  payerEmail: string;
+  gatewayPaymentId: string | null;
+  idempotencyKey: string;
+  failureReason: string | null;
+}
 
 export class Payment {
   private _id: string;

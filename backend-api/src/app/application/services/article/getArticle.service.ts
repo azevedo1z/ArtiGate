@@ -44,9 +44,8 @@ export class GetArticleService {
     );
   }
 
-  async getUnreviewedAndNotAuthored(reviewerId: string): Promise<Article[]> {
-    const rows =
-      (await this.adapter.findUnreviewedAndNotAuthored?.(reviewerId)) ?? [];
+  async getReviewableByUser(userId: string): Promise<Article[]> {
+    const rows = (await this.adapter.findReviewableByUser?.(userId)) ?? [];
     return rows.map(articleRowToDomain);
   }
 

@@ -33,23 +33,42 @@ export class AuthGuardService implements CanActivate {
   private async validateRequest(
     request: AuthenticatedRequest
   ): Promise<boolean> {
-    const authHeader = request.headers['authorization'];
-
-    if (authHeader == null)
-      throw new UnauthorizedException(
-        'Missing or badly formatted Bearer token.'
-      );
-
-    const token = authHeader.replace('Bearer ', '').trim();
-
+    const token = this.extractBearerToken(request.headers['authorization']);
     const secretKey = this.configService.get<string>('jwt.secret');
 
-    const payload: JwtPayload = await this.jwtService.verify(token, {
-      secret: secretKey,
-    });
+    let payload: JwtPayload;
+    try {
+      payload = this.jwtService.verify<JwtPayload>(token, {
+        secret: secretKey,
+      });
+    } catch {
+      throw new UnauthorizedException('Invalid or expired access token.');
+    }
+
+    if (!payload?.sub)
+      throw new UnauthorizedException('Invalid access token payload.');
 
     request.user = { id: payload.sub };
 
     return true;
+  }
+
+  private extractBearerToken(authHeader: string | string[] | undefined): string {
+    const header = Array.isArray(authHeader) ? authHeader[0] : authHeader;
+
+    if (!header)
+      throw new UnauthorizedException(
+        'Missing or badly formatted Bearer token.'
+      );
+
+    const [scheme, ...rest] = header.trim().split(/\s+/);
+    const token = rest.join(' ').trim();
+
+    if (!scheme || scheme.toLowerCase() !== 'bearer' || !token)
+      throw new UnauthorizedException(
+        'Missing or badly formatted Bearer token.'
+      );
+
+    return token;
   }
 }

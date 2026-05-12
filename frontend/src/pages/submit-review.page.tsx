@@ -46,7 +46,7 @@ const SubmitReviewPage: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const data = await articleService.getUnreviewedAndNotAuthored();
+        const data = await articleService.getReviewable();
         setArticles(data);
       } catch (error) {
         toast.error(extractErrorMessage(error, 'Failed to load articles.'));

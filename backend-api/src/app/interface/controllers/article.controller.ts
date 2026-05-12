@@ -110,9 +110,9 @@ export class ArticleController {
     return await this.getArticleService.getByAuthorId(req.user.id);
   }
 
-  @Get('unreviewed-and-not-authored')
-  async getUnreviewedAndNotAuthored(@Req() req: AuthenticatedRequest) {
-    return await this.getArticleService.getUnreviewedAndNotAuthored(req.user.id);
+  @Get('reviewable')
+  async getReviewable(@Req() req: AuthenticatedRequest) {
+    return await this.getArticleService.getReviewableByUser(req.user.id);
   }
 
   @Get(':id/attachment')

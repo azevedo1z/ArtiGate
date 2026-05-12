@@ -25,7 +25,7 @@ describe('GetArticleService', () => {
       findAll: jest.fn(),
       countAll: jest.fn(),
       findByIds: jest.fn(),
-      findUnreviewedAndNotAuthored: jest.fn(),
+      findReviewableByUser: jest.fn(),
     } as any;
 
     articleAuthorAdapter = {
@@ -122,16 +122,16 @@ describe('GetArticleService', () => {
     });
   });
 
-  describe('getUnreviewedAndNotAuthored', () => {
-    it('delegates the not-author + not-reviewed filter to the adapter', async () => {
+  describe('getReviewableByUser', () => {
+    it('delegates the reviewable-by-user filter to the adapter', async () => {
       const article3 = { ...articleRecord, id: 'article-3' };
-      (articleAdapter.findUnreviewedAndNotAuthored as jest.Mock).mockResolvedValue([
+      (articleAdapter.findReviewableByUser as jest.Mock).mockResolvedValue([
         article3,
       ]);
 
-      const result = await service.getUnreviewedAndNotAuthored('reviewer-1');
+      const result = await service.getReviewableByUser('reviewer-1');
 
-      expect(articleAdapter.findUnreviewedAndNotAuthored).toHaveBeenCalledWith(
+      expect(articleAdapter.findReviewableByUser).toHaveBeenCalledWith(
         'reviewer-1',
       );
       expect(result).toHaveLength(1);

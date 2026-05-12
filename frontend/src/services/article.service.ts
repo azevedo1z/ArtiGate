@@ -33,8 +33,8 @@ class ArticleService {
     return response.data;
   }
 
-  async getUnreviewedAndNotAuthored(): Promise<Article[]> {
-    const response = await apiClient.get('/article/unreviewed-and-not-authored');
+  async getReviewable(): Promise<Article[]> {
+    const response = await apiClient.get('/article/reviewable');
     return response.data;
   }
 

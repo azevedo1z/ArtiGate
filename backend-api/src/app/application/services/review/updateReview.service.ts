@@ -1,50 +1,38 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateReviewDTO } from '../../dtos/review/updateReview.dto';
-import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
 import { Review } from '../../../domain/models/review.model';
+import { reviewRowToDomain } from '../../mappers/review.mapper';
+import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import {
-  ArticleDatabaseAdapter,
-  ReviewDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
-import { NotFoundException } from '../../../shared/exceptions/app.exception';
+  NotFoundException,
+  UnauthorizedException,
+} from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class UpdateReviewService {
-  constructor(
-    private readonly adapter: ReviewDatabaseAdapter,
-    private readonly articleAdapter: ArticleDatabaseAdapter
-  ) {}
+  constructor(private readonly adapter: ReviewDatabaseAdapter) {}
 
-  async execute(data: UpdateReviewDTO): Promise<Review> {
+  async execute(requesterId: string, data: UpdateReviewDTO): Promise<Review> {
     const existingReview = await this.adapter.findById(data.id);
 
     if (!existingReview)
       throw new NotFoundException(`Review with ID "${data.id}" not found`);
 
-    const reviewRecord = await this.adapter.update(data);
-
-    if (data.score !== undefined) {
-      const allReviews = await this.adapter.findMany(reviewRecord.articleId);
-
-      const scoreAvg =
-        allReviews.reduce((sum, r) => sum + r.score, 0) / allReviews.length;
-
-      const updateDto = new UpdateArticleDTO(
-        reviewRecord.articleId,
-        undefined,
-        undefined,
-        scoreAvg
+    if (existingReview.reviewerId !== requesterId)
+      throw new UnauthorizedException(
+        'You can only update your own reviews.'
       );
 
-      await this.articleAdapter.update(updateDto);
+    if (data.score === undefined) {
+      const reviewRecord = await this.adapter.update(data);
+      return reviewRowToDomain(reviewRecord);
     }
 
-    return Review.factory(
-      reviewRecord.id,
-      reviewRecord.articleId,
-      reviewRecord.reviewerId,
-      reviewRecord.score,
-      reviewRecord.commentary
+    const reviewRecord = await this.adapter.updateAndRecomputeArticleScore(
+      data,
+      existingReview.articleId
     );
+
+    return reviewRowToDomain(reviewRecord);
   }
 }

@@ -13,6 +13,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { PaginationDTO } from '../../shared/dtos/pagination.dto';
 import { CreateUserService } from '../../application/services/user/createUser.service';
 import { CreateUserDTO } from '../../application/dtos/user/createUser.dto';
@@ -24,6 +25,7 @@ import { AuthGuardService } from '../../infrastructure/services/authGuard.servic
 import { UpdateUserDTO } from '../../application/dtos/user/updateUser.dto';
 import { UpdateUserService } from '../../application/services/user/updateUser.service';
 import { DeleteUserService } from '../../application/services/user/deleteUser.service';
+import { UnauthorizedException } from '../../shared/exceptions/app.exception';
 import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @Controller('user')
@@ -38,12 +40,14 @@ export class UserController {
 
   @Post('signIn')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   async signIn(@Body() data: AuthUserDTO) {
     return await this.authService.signIn(data);
   }
 
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
+  @Throttle({ default: { limit: 5, ttl: 60_000 } })
   async create(@Body() data: CreateUserDTO) {
     return await this.createUserService.execute(data);
   }
@@ -51,14 +55,30 @@ export class UserController {
   @Put('update')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async update(@Body() data: UpdateUserDTO) {
+  async update(
+    @Body() data: UpdateUserDTO,
+    @Request() req: AuthenticatedRequest
+  ) {
+    if (data.id !== req.user.id)
+      throw new UnauthorizedException(
+        'You can only update your own account.'
+      );
+
     return await this.updateUserService.execute(data);
   }
 
   @Delete(':id')
   @ApiBearerAuth()
   @UseGuards(AuthGuardService)
-  async delete(@Param('id', ParseUUIDPipe) id: string) {
+  async delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: AuthenticatedRequest
+  ) {
+    if (id !== req.user.id)
+      throw new UnauthorizedException(
+        'You can only delete your own account.'
+      );
+
     return await this.deleteUserService.execute(id);
   }
 

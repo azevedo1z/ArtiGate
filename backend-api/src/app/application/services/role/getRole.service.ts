@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '../../../domain/models/role.model';
+import { roleRowToDomain } from '../../mappers/role.mapper';
 import {
   RoleDatabaseAdapter,
   UserRoleDatabaseAdapter,
@@ -13,21 +14,18 @@ export class GetRoleService {
     private readonly userRoleAdapter: UserRoleDatabaseAdapter
   ) {}
 
-  async getById(id: string): Promise<Role | null> {
+  async getById(id: string): Promise<Role> {
     const existingRole = await this.adapter.findById(id);
 
     if (!existingRole)
       throw new NotFoundException(`There is no role with the ID "${id}".`);
 
-    return Role.factory(existingRole.id, existingRole.name);
+    return roleRowToDomain(existingRole);
   }
 
   async getAll(): Promise<Role[]> {
     const roles = await this.adapter.findAll();
-
-    return roles.map((existingRole) =>
-      Role.factory(existingRole.id, existingRole.name)
-    );
+    return roles.map(roleRowToDomain);
   }
 
   async getRoleByUserId(userId: string): Promise<Role[]> {
@@ -36,8 +34,8 @@ export class GetRoleService {
     if (!userRoles?.length) return [];
 
     const roleIds = userRoles.map((ur) => ur.roleId);
-    const roles = await this.adapter.findByIds?.(roleIds) ?? [];
+    const roles = (await this.adapter.findByIds?.(roleIds)) ?? [];
 
-    return roles.map((role) => Role.factory(role.id, role.name));
+    return roles.map(roleRowToDomain);
   }
 }

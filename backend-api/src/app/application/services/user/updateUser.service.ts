@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { User } from '../../../domain/models/user.model';
+import { userRowToDomain } from '../../mappers/user.mapper';
 import {
   UserDatabaseAdapter,
   AddressDatabaseAdapter,
@@ -19,12 +20,13 @@ export class UpdateUserService {
     private readonly roleAdapter: RoleDatabaseAdapter
   ) {}
 
-  async execute(data: UpdateUserDTO) {
+  async execute(data: UpdateUserDTO): Promise<User> {
     const existingUser = await this.adapter.findById(data.id);
     if (!existingUser)
       throw new NotFoundException(`User with ID "${data.id}" not found`);
 
-    if (data.password) data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
+    if (data.password)
+      data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
 
     const homeAddressId = await this.handleNewAddressCreation(data.homeAddress);
     const jobAddressId = await this.handleNewAddressCreation(data.jobAddress);
@@ -37,21 +39,12 @@ export class UpdateUserService {
       roleChanged
     );
 
-    return User.factory(
-      userRecord.id,
-      userRecord.name,
-      userRecord.email,
-      userRecord.phone,
-      userRecord.homeAddressId,
-      userRecord.jobAddressId,
-      userRecord.badgeUrl,
-      userRecord.passwordHash
-    );
+    return userRowToDomain(userRecord);
   }
 
   private async validateRoles(roleIds: string[]): Promise<boolean> {
     if (roleIds?.length) {
-      const roles = await this.roleAdapter.findByIds?.(roleIds) ?? [];
+      const roles = (await this.roleAdapter.findByIds?.(roleIds)) ?? [];
       if (roles.length !== roleIds.length) {
         const foundIds = new Set(roles.map((r) => r.id));
         const missing = roleIds.filter((id) => !foundIds.has(id));

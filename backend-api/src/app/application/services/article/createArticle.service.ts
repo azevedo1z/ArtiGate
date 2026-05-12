@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 import { Article } from '../../../domain/models/article.model';
+import { articleRowToDomain } from '../../mappers/article.mapper';
 import {
   ArticleDatabaseAdapter,
   UserDatabaseAdapter,
@@ -15,22 +16,26 @@ export class CreateArticleService {
   ) {}
 
   async execute(data: CreateArticleDTO): Promise<Article> {
-    await this.ensureIsUser(data.authorIds);
+    await this.ensureAuthorsExist(data.authorIds);
 
     const articleRecord = await this.adapter.create(data);
 
-    return Article.factory(
-      articleRecord.id,
-      articleRecord.summary,
-      articleRecord.scoreAvg
-    );
+    return articleRowToDomain(articleRecord);
   }
 
-  private async ensureIsUser(authorIds: string[]): Promise<void> {
-    for (const userId of authorIds) {
-      const user = await this.userAdapter.findById(userId);
-      if (!user)
-        throw new ValidationException(`The author "${userId}" is not registered in the system.`);
-    }
+  private async ensureAuthorsExist(authorIds: string[]): Promise<void> {
+    if (!authorIds.length) return;
+
+    const uniqueIds = [...new Set(authorIds)];
+    const users = (await this.userAdapter.findByIds?.(uniqueIds)) ?? [];
+
+    if (users.length === uniqueIds.length) return;
+
+    const foundIds = new Set(users.map((u) => u.id));
+    const missingIds = uniqueIds.filter((id) => !foundIds.has(id));
+
+    throw new ValidationException(
+      `The authors ${missingIds.join(', ')} are not registered in the system.`
+    );
   }
 }

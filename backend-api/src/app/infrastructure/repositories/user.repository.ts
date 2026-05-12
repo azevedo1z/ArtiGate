@@ -10,10 +10,9 @@ import {
 } from '../../shared/dtos/pagination.dto';
 
 @Injectable()
-export class UserRepository implements UserDatabaseAdapter{
+export class UserRepository implements UserDatabaseAdapter {
   constructor(private readonly prisma: PrismaService) {}
 
-  
   async create(
     data: CreateUserDTO,
     homeAddressId: string,
@@ -44,7 +43,7 @@ export class UserRepository implements UserDatabaseAdapter{
       return userRecord;
     });
   }
-  
+
   async update(
     data: UpdateUserDTO,
     homeAddressId: string | undefined,
@@ -76,16 +75,16 @@ export class UserRepository implements UserDatabaseAdapter{
       });
     });
   }
-  
+
   async delete(id: string): Promise<boolean> {
     await this.prisma.user.update({
       where: { id: id },
       data: { deletedOn: new Date() },
     });
-    
+
     return true;
   }
-  
+
   async findById(id: string): Promise<User | null> {
     return await this.prisma.user.findFirst({ where: { id, deletedOn: null } });
   }
@@ -103,7 +102,7 @@ export class UserRepository implements UserDatabaseAdapter{
   async countAll(): Promise<number> {
     return await this.prisma.user.count({ where: { deletedOn: null } });
   }
-  
+
   async findMany(): Promise<User[]> {
     throw new NotImplementedException();
   }
@@ -111,7 +110,14 @@ export class UserRepository implements UserDatabaseAdapter{
   async findByEmail(email: string): Promise<User | null> {
     return this.prisma.user.findFirst({ where: { email, deletedOn: null } });
   }
-  
+
+  async findByIds(ids: string[]): Promise<User[]> {
+    if (!ids.length) return [];
+    return this.prisma.user.findMany({
+      where: { id: { in: ids }, deletedOn: null },
+    });
+  }
+
   async findByAddressId(addressId: string): Promise<User | null> {
     return await this.prisma.user.findFirst({
       where: {

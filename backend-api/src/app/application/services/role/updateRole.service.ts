@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '../../../domain/models/role.model';
+import { roleRowToDomain } from '../../mappers/role.mapper';
 import { UpdateRoleDTO } from '../../dtos/role/updateRole.dto';
 import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
@@ -15,6 +16,6 @@ export class UpdateRoleService {
 
     const roleRecord = await this.adapter.update(data);
 
-    return Role.factory(roleRecord.id, roleRecord.name);
+    return roleRowToDomain(roleRecord);
   }
 }

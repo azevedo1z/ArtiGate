@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../../domain/models/user.model';
+import { userRowToDomain } from '../../mappers/user.mapper';
 import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 import {
@@ -13,22 +14,13 @@ import {
 export class GetUserService {
   constructor(private readonly adapter: UserDatabaseAdapter) {}
 
-  async getById(id: string): Promise<User | null> {
+  async getById(id: string): Promise<User> {
     const existingUser = await this.adapter.findById(id);
 
     if (existingUser == null)
       throw new NotFoundException(`There is no user with the ID "${id}".`);
 
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return userRowToDomain(existingUser);
   }
 
   async getAll(pagination?: PaginationDTO): Promise<PaginatedResult<User>> {
@@ -38,37 +30,13 @@ export class GetUserService {
       this.adapter.countAll?.() ?? Promise.resolve(0),
     ]);
 
-    const data = users.map((existingUser) =>
-      User.factory(
-        existingUser.id,
-        existingUser.name,
-        existingUser.email,
-        existingUser.phone,
-        existingUser.homeAddressId,
-        existingUser.jobAddressId,
-        existingUser.badgeUrl,
-        existingUser.passwordHash
-      )
-    );
-
-    return buildPaginatedResult(data, total, page, limit);
+    return buildPaginatedResult(users.map(userRowToDomain), total, page, limit);
   }
 
   async getByAddressId(addressId: string): Promise<User | null> {
     const existingUser = await this.adapter.findByAddressId?.(addressId);
-
     if (existingUser == null) return null;
-
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return userRowToDomain(existingUser);
   }
 
   async getByReviewId(reviewId: string): Promise<User> {
@@ -79,32 +47,12 @@ export class GetUserService {
         `There is no user with the reviewId "${reviewId}".`
       );
 
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return userRowToDomain(existingUser);
   }
 
   async getByEmail(email: string): Promise<User | null> {
     const existingUser = await this.adapter.findByEmail?.(email);
-
     if (!existingUser) return null;
-
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return userRowToDomain(existingUser);
   }
 }

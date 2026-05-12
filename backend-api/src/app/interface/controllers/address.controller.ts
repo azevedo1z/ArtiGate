@@ -1,59 +1,36 @@
 import {
-  Body,
   Controller,
-  Delete,
   Get,
   Param,
-  Post,
-  Put,
-  UseGuards,
-  HttpCode,
-  HttpStatus,
   ParseUUIDPipe,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
-import { CreateAddressDTO } from '../../application/dtos/address/createAddress.dto';
-import { CreateAddressService } from '../../application/services/address/createAddress.service';
-import { GetAddressService } from '../../application/services/address/getAddress.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { GetAddressService } from '../../application/services/address/getAddress.service';
+import { GetUserService } from '../../application/services/user/getUser.service';
 import { AuthGuardService } from '../../infrastructure/services/authGuard.service';
-import { UpdateAddressDTO } from '../../application/dtos/address/updateAddress.dto';
-import { UpdateAddressService } from '../../application/services/address/updateAddress.service';
-import { DeleteAddressService } from '../../application/services/address/deleteAddress.service';
+import { UnauthorizedException } from '../../shared/exceptions/app.exception';
+import type { AuthenticatedRequest } from '../../shared/types/auth.types';
 
 @Controller('address')
 @ApiBearerAuth()
 @UseGuards(AuthGuardService)
 export class AddressController {
   constructor(
-    private readonly createAddressService: CreateAddressService,
     private readonly getAddressService: GetAddressService,
-    private readonly updateAddressService: UpdateAddressService,
-    private readonly deleteAddressService: DeleteAddressService
+    private readonly getUserService: GetUserService
   ) {}
 
-  @Post('create')
-  @HttpCode(HttpStatus.CREATED)
-  async create(@Body() data: CreateAddressDTO) {
-    return await this.createAddressService.execute(data);
-  }
-
-  @Put('update')
-  async update(@Body() data: UpdateAddressDTO) {
-    return await this.updateAddressService.execute(data);
-  }
-
-  @Delete(':id')
-  async delete(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.deleteAddressService.execute(id);
-  }
-
-  @Get('all')
-  async getAll() {
-    return await this.getAddressService.getAll();
-  }
-
   @Get(':id')
-  async getById(@Param('id', ParseUUIDPipe) id: string) {
+  async getById(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: AuthenticatedRequest
+  ) {
+    const owner = await this.getUserService.getByAddressId(id);
+    if (!owner || owner.id !== req.user.id)
+      throw new UnauthorizedException('You can only read your own addresses.');
+
     return await this.getAddressService.getById(id);
   }
 }

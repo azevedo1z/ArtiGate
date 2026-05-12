@@ -7,6 +7,7 @@ import {
 import {
   NotFoundException,
   ConflictException,
+  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
 
 describe('DeleteArticleService', () => {
@@ -15,12 +16,21 @@ describe('DeleteArticleService', () => {
   let reviewAdapter: jest.Mocked<ReviewDatabaseAdapter>;
   let articleAuthorAdapter: jest.Mocked<ArticleAuthorDatabaseAdapter>;
 
+  const requesterId = 'user-1';
   const articleRecord = {
     id: 'article-1',
     summary: 'A paper',
     scoreAvg: 0,
     createdOn: new Date(),
     updatedOn: new Date(),
+    deletedOn: null,
+  };
+
+  const authorRow = {
+    id: 'aa-1',
+    articleId: 'article-1',
+    userId: requesterId,
+    createdOn: new Date(),
     deletedOn: null,
   };
 
@@ -45,46 +55,40 @@ describe('DeleteArticleService', () => {
     );
   });
 
-  it('should delete an article with no authors or reviews', async () => {
+  it('deletes the article when the requester is an author and no reviews exist', async () => {
     articleAdapter.findById.mockResolvedValue(articleRecord);
-    articleAuthorAdapter.findMany.mockResolvedValue([]);
+    articleAuthorAdapter.findMany.mockResolvedValue([authorRow]);
     reviewAdapter.findMany.mockResolvedValue([]);
     articleAdapter.delete.mockResolvedValue(true);
 
-    const result = await service.execute('article-1');
+    const result = await service.execute(requesterId, 'article-1');
 
     expect(result).toBe(true);
     expect(articleAdapter.delete).toHaveBeenCalledWith('article-1');
   });
 
-  it('should throw NotFoundException if article does not exist', async () => {
+  it('throws NotFoundException if article does not exist', async () => {
     articleAdapter.findById.mockResolvedValue(null);
 
-    await expect(service.execute('nonexistent')).rejects.toThrow(
+    await expect(service.execute(requesterId, 'nonexistent')).rejects.toThrow(
       NotFoundException,
     );
   });
 
-  it('should throw ConflictException if article has authors', async () => {
+  it('throws UnauthorizedException when the requester is not an author', async () => {
     articleAdapter.findById.mockResolvedValue(articleRecord);
     articleAuthorAdapter.findMany.mockResolvedValue([
-      {
-        id: 'aa-1',
-        articleId: 'article-1',
-        userId: 'user-1',
-        createdOn: new Date(),
-        deletedOn: null,
-      },
+      { ...authorRow, userId: 'other-user' },
     ]);
 
-    await expect(service.execute('article-1')).rejects.toThrow(
-      ConflictException,
+    await expect(service.execute(requesterId, 'article-1')).rejects.toThrow(
+      UnauthorizedException,
     );
   });
 
-  it('should throw ConflictException if article has reviews', async () => {
+  it('throws ConflictException if article has reviews', async () => {
     articleAdapter.findById.mockResolvedValue(articleRecord);
-    articleAuthorAdapter.findMany.mockResolvedValue([]);
+    articleAuthorAdapter.findMany.mockResolvedValue([authorRow]);
     reviewAdapter.findMany.mockResolvedValue([
       {
         id: 'review-1',
@@ -98,7 +102,7 @@ describe('DeleteArticleService', () => {
       },
     ]);
 
-    await expect(service.execute('article-1')).rejects.toThrow(
+    await expect(service.execute(requesterId, 'article-1')).rejects.toThrow(
       ConflictException,
     );
   });

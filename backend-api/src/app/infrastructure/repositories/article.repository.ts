@@ -68,7 +68,9 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Article | null> {
-    return await this.prisma.article.findFirst({ where: { id, deletedOn: null } });
+    return await this.prisma.article.findFirst({
+      where: { id, deletedOn: null },
+    });
   }
 
   async findAll(pagination?: PaginationDTO): Promise<Article[]> {
@@ -83,6 +85,14 @@ export class ArticleRepository implements ArticleDatabaseAdapter {
 
   async countAll(): Promise<number> {
     return await this.prisma.article.count({ where: { deletedOn: null } });
+  }
+
+  async findByIds(ids: string[]): Promise<Article[]> {
+    if (!ids.length) return [];
+    return this.prisma.article.findMany({
+      where: { id: { in: ids }, deletedOn: null },
+      orderBy: { createdOn: 'desc' },
+    });
   }
 
   async findMany(_id: string): Promise<Article[]> {

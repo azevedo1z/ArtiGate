@@ -85,13 +85,19 @@ export class ArticleController {
   }
 
   @Put('update')
-  async update(@Body() data: UpdateArticleDTO) {
-    return await this.updateArticleService.execute(data);
+  async update(
+    @Body() data: UpdateArticleDTO,
+    @Req() req: AuthenticatedRequest
+  ) {
+    return await this.updateArticleService.execute(req.user.id, data);
   }
 
   @Delete(':id')
-  async delete(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.deleteArticleService.execute(id);
+  async delete(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Req() req: AuthenticatedRequest
+  ) {
+    return await this.deleteArticleService.execute(req.user.id, id);
   }
 
   @Get('all')
@@ -99,9 +105,14 @@ export class ArticleController {
     return await this.getArticleService.getAll(pagination);
   }
 
-  @Get('author/:authorId')
-  async getByAuthorId(@Param('authorId', ParseUUIDPipe) authorId: string) {
-    return await this.getArticleService.getByAuthorId(authorId);
+  @Get('me')
+  async getMine(@Req() req: AuthenticatedRequest) {
+    return await this.getArticleService.getByAuthorId(req.user.id);
+  }
+
+  @Get('available-to-review')
+  async getAvailableToReview(@Req() req: AuthenticatedRequest) {
+    return await this.getArticleService.getAvailableToReview(req.user.id);
   }
 
   @Get(':id/attachment')

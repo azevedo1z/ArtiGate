@@ -89,7 +89,13 @@ export class ProcessPaymentWebhookService {
   private shouldApply(currentStatus: string, nextStatus: string): boolean {
     const current = STATUS_PRIORITY[currentStatus as PaymentStatus];
     const next = STATUS_PRIORITY[nextStatus as PaymentStatus];
-    if (current == null || next == null) return true;
+
+    if (current == null || next == null) {
+      this.logger.warn(
+        `Payment webhook: refusing unknown status transition (${currentStatus} -> ${nextStatus}).`
+      );
+      return false;
+    }
     return next >= current;
   }
 }

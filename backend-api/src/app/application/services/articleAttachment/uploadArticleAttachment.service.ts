@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ArticleAttachment } from '../../../domain/models/articleAttachment.model';
+import { articleAttachmentRowToDomain } from '../../mappers/articleAttachment.mapper';
 import {
   ArticleAttachmentDatabaseAdapter,
   ArticleDatabaseAdapter,
@@ -64,16 +65,7 @@ export class UploadArticleAttachmentService {
         uploaderId,
       });
 
-      return ArticleAttachment.factory(
-        record.id,
-        record.articleId,
-        record.storedName,
-        record.originalName,
-        record.mimeType,
-        record.size,
-        record.checksum,
-        record.uploaderId
-      );
+      return articleAttachmentRowToDomain(record);
     } catch (error) {
       await this.storage.delete(storedName);
       throw error;

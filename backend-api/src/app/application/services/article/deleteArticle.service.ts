@@ -7,6 +7,7 @@ import {
 import {
   NotFoundException,
   ConflictException,
+  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
@@ -17,15 +18,15 @@ export class DeleteArticleService {
     private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
   ) {}
 
-  async execute(id: string): Promise<boolean> {
+  async execute(requesterId: string, id: string): Promise<boolean> {
     const article = await this.adapter.findById(id);
     if (!article)
       throw new NotFoundException(`Article with ID "${id}" not found`);
 
     const authors = await this.articleAuthorAdapter.findMany(id);
-    if (authors?.length)
-      throw new ConflictException(
-        'The article is associated with one or more authors.'
+    if (!authors.some((a) => a.userId === requesterId))
+      throw new UnauthorizedException(
+        'Only authors of the article can delete it.'
       );
 
     const reviews = await this.reviewAdapter.findMany(id);

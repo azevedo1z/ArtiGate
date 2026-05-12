@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateRoleDTO } from '../../dtos/role/createRole.dto';
 import { Role } from '../../../domain/models/role.model';
+import { roleRowToDomain } from '../../mappers/role.mapper';
 import { RoleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
 import { ConflictException } from '../../../shared/exceptions/app.exception';
 
@@ -18,6 +19,6 @@ export class CreateRoleService {
 
     const roleRecord = await this.adapter.create(data);
 
-    return Role.factory(roleRecord.id, roleRecord.name);
+    return roleRowToDomain(roleRecord);
   }
 }

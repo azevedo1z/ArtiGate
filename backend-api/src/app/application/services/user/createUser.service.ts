@@ -1,5 +1,6 @@
 import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { User } from '../../../domain/models/user.model';
+import { userRowToDomain } from '../../mappers/user.mapper';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
@@ -22,13 +23,13 @@ export class CreateUserService {
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
-    data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
-
     const existingUser = await this.adapter.findByEmail?.(data.email);
     if (existingUser)
       throw new ConflictException('There is already a user with this e-mail.');
 
     await this.validateRoles(data.roleIds);
+
+    data.password = await bcrypt.hash(data.password, BCRYPT_SALT_ROUNDS);
 
     const homeAddress = await this.addressAdapter.create(data.homeAddress);
     const jobAddress = await this.addressAdapter.create(data.jobAddress);
@@ -39,20 +40,11 @@ export class CreateUserService {
       jobAddress.id
     );
 
-    return User.factory(
-      userRecord.id,
-      userRecord.name,
-      userRecord.email,
-      userRecord.phone,
-      userRecord.homeAddressId,
-      userRecord.jobAddressId,
-      userRecord.badgeUrl,
-      userRecord.passwordHash
-    );
+    return userRowToDomain(userRecord);
   }
 
   private async validateRoles(roleIds: string[]): Promise<void> {
-    const roles = await this.roleAdapter.findByIds?.(roleIds) ?? [];
+    const roles = (await this.roleAdapter.findByIds?.(roleIds)) ?? [];
     if (roles.length !== roleIds.length) {
       const foundIds = new Set(roles.map((r) => r.id));
       const missing = roleIds.filter((id) => !foundIds.has(id));

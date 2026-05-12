@@ -22,28 +22,30 @@ describe('CreateArticleService', () => {
 
   beforeEach(() => {
     articleAdapter = { create: jest.fn() } as any;
-    userAdapter = { findById: jest.fn() } as any;
+    userAdapter = { findByIds: jest.fn() } as any;
     service = new CreateArticleService(articleAdapter, userAdapter);
   });
 
-  it('creates the article when all authors exist', async () => {
+  it('creates the article when all authors exist (batched findByIds)', async () => {
     const dto = new CreateArticleDTO('A research paper', ['user-1', 'user-2']);
-    userAdapter.findById.mockResolvedValue({ id: 'user-1' } as any);
+    (userAdapter.findByIds as jest.Mock).mockResolvedValue([
+      { id: 'user-1' },
+      { id: 'user-2' },
+    ] as any);
     articleAdapter.create.mockResolvedValue(articleRecord);
 
     const result = await service.execute(dto);
 
-    expect(userAdapter.findById).toHaveBeenCalledWith('user-1');
-    expect(userAdapter.findById).toHaveBeenCalledWith('user-2');
+    expect(userAdapter.findByIds).toHaveBeenCalledWith(['user-1', 'user-2']);
     expect(articleAdapter.create).toHaveBeenCalledWith(dto);
     expect(result.id).toBe('article-1');
   });
 
   it('throws ValidationException and does not create when an author does not exist', async () => {
     const dto = new CreateArticleDTO('A research paper', ['user-1', 'bad-id']);
-    userAdapter.findById.mockImplementation(async (id: string) =>
-      id === 'user-1' ? ({ id } as any) : null
-    );
+    (userAdapter.findByIds as jest.Mock).mockResolvedValue([
+      { id: 'user-1' },
+    ] as any);
 
     await expect(service.execute(dto)).rejects.toThrow(ValidationException);
     expect(articleAdapter.create).not.toHaveBeenCalled();

@@ -1,48 +1,33 @@
-import { ArticleAttachment } from '@prisma/client';
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import { ArticleAttachment as ArticleAttachmentRow } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
+import { ArticleAttachment } from '../../domain/models/articleAttachment.model';
 import { PrismaService } from '../services/prisma.service';
-import { ArticleAttachmentDatabaseAdapter } from '../../interface/adapter/database.adapter';
-import { ValidationException } from '../../shared/exceptions/app.exception';
 import {
-  PaginationDTO,
-  normalizePagination,
-} from '../../shared/dtos/pagination.dto';
+  ArticleAttachmentRepository,
+  CreateArticleAttachmentInput,
+} from '../../interface/repositories/articleAttachment.repository.port';
+
+const rowToDomain = (row: ArticleAttachmentRow): ArticleAttachment =>
+  ArticleAttachment.factory({
+    id: row.id,
+    articleId: row.articleId,
+    storedName: row.storedName,
+    originalName: row.originalName,
+    mimeType: row.mimeType,
+    size: row.size,
+    checksum: row.checksum,
+    uploaderId: row.uploaderId,
+  });
 
 @Injectable()
-export class ArticleAttachmentRepository
-  implements ArticleAttachmentDatabaseAdapter
+export class PrismaArticleAttachmentRepository
+  implements ArticleAttachmentRepository
 {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Partial<ArticleAttachment>): Promise<ArticleAttachment> {
-    if (
-      !data.articleId ||
-      !data.storedName ||
-      !data.originalName ||
-      !data.mimeType ||
-      data.size == null ||
-      !data.checksum ||
-      !data.uploaderId
-    )
-      throw new ValidationException(
-        'Missing required fields to create an ArticleAttachment.'
-      );
-
-    return await this.prisma.articleAttachment.create({
-      data: {
-        articleId: data.articleId,
-        storedName: data.storedName,
-        originalName: data.originalName,
-        mimeType: data.mimeType,
-        size: data.size,
-        checksum: data.checksum,
-        uploaderId: data.uploaderId,
-      },
-    });
-  }
-
-  async update(_data: Partial<ArticleAttachment>): Promise<ArticleAttachment> {
-    throw new NotImplementedException();
+  async create(data: CreateArticleAttachmentInput): Promise<ArticleAttachment> {
+    const row = await this.prisma.articleAttachment.create({ data });
+    return rowToDomain(row);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -54,26 +39,17 @@ export class ArticleAttachmentRepository
   }
 
   async findById(id: string): Promise<ArticleAttachment | null> {
-    return await this.prisma.articleAttachment.findFirst({ where: { id } });
-  }
-
-  async findAll(pagination?: PaginationDTO): Promise<ArticleAttachment[]> {
-    const { skip, take } = normalizePagination(pagination);
-    return await this.prisma.articleAttachment.findMany({
-      skip,
-      take,
-      orderBy: { createdOn: 'desc' },
+    const row = await this.prisma.articleAttachment.findFirst({
+      where: { id },
     });
-  }
-
-  async countAll(): Promise<number> {
-    return await this.prisma.articleAttachment.count();
+    return row ? rowToDomain(row) : null;
   }
 
   async findMany(articleId: string): Promise<ArticleAttachment[]> {
-    return await this.prisma.articleAttachment.findMany({
+    const rows = await this.prisma.articleAttachment.findMany({
       where: { articleId },
       orderBy: { createdOn: 'desc' },
     });
+    return rows.map(rowToDomain);
   }
 }

@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PaymentController } from '../interface/controllers/payment.controller';
-import { PaymentRepository } from '../infrastructure/repositories/payment.repository';
-import { PaymentDatabaseAdapter } from '../interface/adapter/database.adapter';
-import { PaymentGatewayAdapter } from '../interface/adapter/paymentGateway.adapter';
+import { PrismaPaymentRepository } from '../infrastructure/repositories/payment.repository';
+import { PaymentRepository } from '../interface/repositories/payment.repository.port';
+import { PaymentGatewayAdapter } from '../interface/gateways/paymentGateway.port';
 import { MercadoPagoService } from '../infrastructure/services/mercadoPago.service';
 import { MockPaymentGatewayService } from '../infrastructure/services/mockPaymentGateway.service';
 import { CreatePaymentService } from '../application/services/payment/createPayment.service';
@@ -21,8 +21,8 @@ import { UserModule } from './user.module';
     ProcessPaymentWebhookService,
     AccessFeePaymentGuard,
     {
-      provide: PaymentDatabaseAdapter,
-      useClass: PaymentRepository,
+      provide: PaymentRepository,
+      useClass: PrismaPaymentRepository,
     },
     {
       provide: PaymentGatewayAdapter,
@@ -36,7 +36,7 @@ import { UserModule } from './user.module';
     },
   ],
   exports: [
-    PaymentDatabaseAdapter,
+    PaymentRepository,
     PaymentGatewayAdapter,
     AccessFeePaymentGuard,
     GetPaymentService,

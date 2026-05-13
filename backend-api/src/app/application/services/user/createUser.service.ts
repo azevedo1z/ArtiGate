@@ -2,15 +2,12 @@ import { CreateUserDTO } from '../../dtos/user/createUser.dto';
 import { User } from '../../../domain/models/user.model';
 import { Address } from '../../../domain/models/address.model';
 import { Password } from '../../../domain/values/password.value';
-import { userRowToDomain } from '../../mappers/user.mapper';
 import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { BCRYPT_SALT_ROUNDS } from '../../../shared/constants';
-import {
-  UserDatabaseAdapter,
-  AddressDatabaseAdapter,
-  RoleDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { UserRepository } from '../../../interface/repositories/user.repository.port';
+import { AddressRepository } from '../../../interface/repositories/address.repository.port';
+import { RoleRepository } from '../../../interface/repositories/role.repository.port';
 import {
   ConflictException,
   NotFoundException,
@@ -19,13 +16,13 @@ import {
 @Injectable()
 export class CreateUserService {
   constructor(
-    private readonly adapter: UserDatabaseAdapter,
-    private readonly addressAdapter: AddressDatabaseAdapter,
-    private readonly roleAdapter: RoleDatabaseAdapter
+    private readonly repo: UserRepository,
+    private readonly addressRepo: AddressRepository,
+    private readonly roleRepo: RoleRepository
   ) {}
 
   async execute(data: CreateUserDTO): Promise<User> {
-    const existingUser = await this.adapter.findByEmail?.(data.email);
+    const existingUser = await this.repo.findByEmail(data.email);
     if (existingUser)
       throw new ConflictException('There is already a user with this e-mail.');
 
@@ -47,22 +44,25 @@ export class CreateUserService {
       passwordHash: data.password,
     });
 
-    data.password = await bcrypt.hash(password.value, BCRYPT_SALT_ROUNDS);
+    const passwordHash = await bcrypt.hash(password.value, BCRYPT_SALT_ROUNDS);
 
-    const homeAddress = await this.addressAdapter.create(data.homeAddress);
-    const jobAddress = await this.addressAdapter.create(data.jobAddress);
+    const homeAddress = await this.addressRepo.create(data.homeAddress);
+    const jobAddress = await this.addressRepo.create(data.jobAddress);
 
-    const userRecord = await this.adapter.create(
-      data,
-      homeAddress.id,
-      jobAddress.id
-    );
-
-    return userRowToDomain(userRecord);
+    return this.repo.create({
+      name: data.name,
+      email: data.email,
+      phone: data.phone,
+      badgeUrl: data.badgeUrl,
+      passwordHash,
+      homeAddressId: homeAddress.id,
+      jobAddressId: jobAddress.id,
+      roleIds: data.roleIds,
+    });
   }
 
   private async validateRoles(roleIds: string[]): Promise<void> {
-    const roles = (await this.roleAdapter.findByIds?.(roleIds)) ?? [];
+    const roles = await this.roleRepo.findByIds(roleIds);
     if (roles.length !== roleIds.length) {
       const foundIds = new Set(roles.map((r) => r.id));
       const missing = roleIds.filter((id) => !foundIds.has(id));

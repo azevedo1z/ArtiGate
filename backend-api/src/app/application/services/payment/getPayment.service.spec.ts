@@ -1,10 +1,10 @@
 import { GetPaymentService } from './getPayment.service';
-import { PaymentDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 describe('GetPaymentService', () => {
   let service: GetPaymentService;
-  let adapter: jest.Mocked<PaymentDatabaseAdapter>;
+  let adapter: jest.Mocked<PaymentRepository>;
 
   const ownerId = '11111111-1111-1111-1111-111111111111';
   const otherUserId = '99999999-9999-9999-9999-999999999999';

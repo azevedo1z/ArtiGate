@@ -1,6 +1,6 @@
 import { ProcessPaymentWebhookService } from './processPaymentWebhook.service';
-import { PaymentDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
+import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
+import { PaymentGatewayAdapter } from '../../../interface/gateways/paymentGateway.port';
 import { PaymentGatewayChargeResultDTO } from '../../dtos/payment/paymentGatewayCharge.dto';
 
 const buildHeaders = (): Record<string, string> => ({
@@ -40,7 +40,7 @@ const buildRemote = (
 
 describe('ProcessPaymentWebhookService', () => {
   let service: ProcessPaymentWebhookService;
-  let adapter: jest.Mocked<PaymentDatabaseAdapter>;
+  let adapter: jest.Mocked<PaymentRepository>;
   let gateway: jest.Mocked<PaymentGatewayAdapter>;
 
   beforeEach(() => {

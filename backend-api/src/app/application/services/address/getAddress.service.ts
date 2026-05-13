@@ -1,24 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { Address } from '../../../domain/models/address.model';
-import { addressRowToDomain } from '../../mappers/address.mapper';
-import { AddressDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { AddressRepository } from '../../../interface/repositories/address.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class GetAddressService {
-  constructor(private readonly adapter: AddressDatabaseAdapter) {}
+  constructor(private readonly repo: AddressRepository) {}
 
   async getById(id: string): Promise<Address> {
-    const existingAddress = await this.adapter.findById(id);
+    const existing = await this.repo.findById(id);
 
-    if (existingAddress == null)
+    if (existing == null)
       throw new NotFoundException(`There is no address with the ID "${id}".`);
 
-    return addressRowToDomain(existingAddress);
+    return existing;
   }
 
   async getAll(): Promise<Address[]> {
-    const addresses = await this.adapter.findAll();
-    return addresses.map(addressRowToDomain);
+    return this.repo.findAll();
   }
 }

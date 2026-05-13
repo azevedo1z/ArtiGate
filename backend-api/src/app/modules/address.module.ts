@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { AddressController } from '../interface/controllers/address.controller';
-import { AddressRepository } from '../infrastructure/repositories/address.repository';
-import { AddressDatabaseAdapter } from '../interface/adapter/database.adapter';
+import { PrismaAddressRepository } from '../infrastructure/repositories/address.repository';
+import { AddressRepository } from '../interface/repositories/address.repository.port';
 import { CreateAddressService } from '../application/services/address/createAddress.service';
 import { GetAddressService } from '../application/services/address/getAddress.service';
 import { UpdateAddressService } from '../application/services/address/updateAddress.service';
@@ -17,10 +17,10 @@ import { UserModule } from './user.module';
     UpdateAddressService,
     DeleteAddressService,
     {
-      provide: AddressDatabaseAdapter,
-      useClass: AddressRepository,
+      provide: AddressRepository,
+      useClass: PrismaAddressRepository,
     },
   ],
-  exports: [AddressDatabaseAdapter],
+  exports: [AddressRepository],
 })
 export class AddressModule {}

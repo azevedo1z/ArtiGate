@@ -1,16 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UserRepository } from '../../../interface/repositories/user.repository.port';
 import { ValidationException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class EnsureAuthorsExistService {
-  constructor(private readonly userAdapter: UserDatabaseAdapter) {}
+  constructor(private readonly userRepo: UserRepository) {}
 
   async execute(authorIds: string[] | undefined): Promise<void> {
     if (!authorIds?.length) return;
 
     const uniqueIds = [...new Set(authorIds)];
-    const users = (await this.userAdapter.findByIds?.(uniqueIds)) ?? [];
+    const users = await this.userRepo.findByIds(uniqueIds);
 
     if (users.length === uniqueIds.length) return;
 

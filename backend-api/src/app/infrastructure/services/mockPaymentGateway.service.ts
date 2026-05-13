@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { PaymentGatewayAdapter } from '../../interface/adapter/paymentGateway.adapter';
+import { PaymentGatewayAdapter } from '../../interface/gateways/paymentGateway.port';
 import {
   PaymentGatewayChargeRequestDTO,
   PaymentGatewayChargeResultDTO,

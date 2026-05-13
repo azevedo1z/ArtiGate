@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PaymentWebhookDTO } from '../../dtos/payment/paymentWebhook.dto';
 import { UpdatePaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
 import { Payment } from '../../../domain/models/payment.model';
-import { PaymentDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
+import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
+import { PaymentGatewayAdapter } from '../../../interface/gateways/paymentGateway.port';
 import { PaymentGatewayWebhookHeaders } from '../../dtos/payment/paymentGatewayCharge.dto';
 import { PaymentStatus } from '../../../shared/types/payment.types';
 
@@ -12,7 +12,7 @@ export class ProcessPaymentWebhookService {
   private readonly logger = new Logger(ProcessPaymentWebhookService.name);
 
   constructor(
-    private readonly adapter: PaymentDatabaseAdapter,
+    private readonly repo: PaymentRepository,
     private readonly gateway: PaymentGatewayAdapter
   ) {}
 
@@ -50,7 +50,7 @@ export class ProcessPaymentWebhookService {
       return;
     }
 
-    const existing = await this.adapter.findByGatewayPaymentId?.(resourceId);
+    const existing = await this.repo.findByGatewayPaymentId(resourceId);
     if (!existing) {
       this.logger.warn(
         `Payment webhook for unknown gatewayPaymentId=${resourceId}; ignoring.`
@@ -78,6 +78,6 @@ export class ProcessPaymentWebhookService {
       rawGatewayResponse: remote.rawResponse,
     });
 
-    await this.adapter.update(update);
+    await this.repo.update(update);
   }
 }

@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
-import {
-  ArticleDatabaseAdapter,
-  ReviewDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
+import { ReviewRepository } from '../../../interface/repositories/review.repository.port';
 import {
   NotFoundException,
   ConflictException,
@@ -13,28 +11,30 @@ import {
 @Injectable()
 export class DeleteArticleService {
   constructor(
-    private readonly adapter: ArticleDatabaseAdapter,
-    private readonly reviewAdapter: ReviewDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
+    private readonly repo: ArticleRepository,
+    private readonly reviewRepo: ReviewRepository,
+    private readonly articleAuthorRepo: ArticleAuthorRepository
   ) {}
 
   async execute(requesterId: string, id: string): Promise<boolean> {
-    const article = await this.adapter.findById(id);
+    const article = await this.repo.findById(id);
     if (!article)
       throw new NotFoundException(`Article with ID "${id}" not found`);
 
-    const authors = await this.articleAuthorAdapter.findMany(id);
+    const authors = await this.articleAuthorRepo.findMany(id);
+
     Article.assertAuthoredBy(
       authors.map((a) => a.userId),
       requesterId
     );
 
-    const reviews = await this.reviewAdapter.findMany(id);
-    if (reviews?.length)
+    const reviews = await this.reviewRepo.findMany(id);
+    
+    if (reviews.length)
       throw new ConflictException(
         'The article is associated with one or more reviews.'
       );
 
-    return await this.adapter.delete(id);
+    return await this.repo.delete(id);
   }
 }

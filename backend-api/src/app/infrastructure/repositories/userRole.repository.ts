@@ -1,45 +1,32 @@
-import { UserRole } from '@prisma/client';
-import { UserRoleDatabaseAdapter } from '../../interface/adapter/database.adapter';
+import { UserRole as UserRoleRow } from '@prisma/client';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../services/prisma.service';
-import { Injectable, NotImplementedException } from '@nestjs/common';
+import {
+  UserRoleRecord,
+  UserRoleRepository,
+} from '../../interface/repositories/userRole.repository.port';
+
+const toRecord = (row: UserRoleRow): UserRoleRecord => ({
+  id: row.id,
+  userId: row.userId,
+  roleId: row.roleId,
+});
 
 @Injectable()
-export class UserRoleRepository implements UserRoleDatabaseAdapter {
+export class PrismaUserRoleRepository implements UserRoleRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(_data: Partial<UserRole>): Promise<UserRole> {
-    throw new NotImplementedException();
+  async findAll(): Promise<UserRoleRecord[]> {
+    const rows = await this.prisma.userRole.findMany();
+    return rows.map(toRecord);
   }
 
-  async update(_data: Partial<UserRole>): Promise<UserRole> {
-    throw new NotImplementedException();
-  }
-
-  async delete(_id: string): Promise<boolean> {
-    throw new NotImplementedException();
-  }
-
-  async findById(_id: string): Promise<UserRole | null> {
-    throw new NotImplementedException();
-  }
-
-  async findAll(): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany();
-  }
-
-  async findMany(_id: string): Promise<UserRole[]> {
-    throw new NotImplementedException();
+  async findManyByUserId(userId: string): Promise<UserRoleRecord[]> {
+    const rows = await this.prisma.userRole.findMany({ where: { userId } });
+    return rows.map(toRecord);
   }
 
   async countByField(field: string, value: string): Promise<number> {
-    return await this.prisma.userRole.count({
-      where: { [field]: value },
-    });
-  }
-
-  async findManyByUserId(userId: string): Promise<UserRole[]> {
-    return await this.prisma.userRole.findMany({
-      where: { userId },
-    });
+    return this.prisma.userRole.count({ where: { [field]: value } });
   }
 }

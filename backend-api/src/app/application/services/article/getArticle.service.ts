@@ -1,10 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
-import { articleRowToDomain } from '../../mappers/article.mapper';
-import {
-  ArticleDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 import {
   PaginatedResult,
@@ -16,50 +13,43 @@ import {
 @Injectable()
 export class GetArticleService {
   constructor(
-    private readonly adapter: ArticleDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
+    private readonly repo: ArticleRepository,
+    private readonly articleAuthorRepo: ArticleAuthorRepository
   ) {}
 
   async getById(id: string): Promise<Article> {
-    const existingArticle = await this.adapter.findById(id);
+    const existing = await this.repo.findById(id);
 
-    if (existingArticle == null)
+    if (existing == null)
       throw new NotFoundException(`There is no article with the ID "${id}".`);
 
-    return articleRowToDomain(existingArticle);
+    return existing;
   }
 
   async getAll(pagination?: PaginationDTO): Promise<PaginatedResult<Article>> {
     const { page, limit } = normalizePagination(pagination);
     const [articles, total] = await Promise.all([
-      this.adapter.findAll(pagination),
-      this.adapter.countAll?.() ?? Promise.resolve(0),
+      this.repo.findAll(pagination),
+      this.repo.countAll(),
     ]);
 
-    return buildPaginatedResult(
-      articles.map(articleRowToDomain),
-      total,
-      page,
-      limit
-    );
+    return buildPaginatedResult(articles, total, page, limit);
   }
 
   async getReviewableByUser(userId: string): Promise<Article[]> {
-    const rows = (await this.adapter.findReviewableByUser?.(userId)) ?? [];
-    return rows.map(articleRowToDomain);
+    return this.repo.findReviewableByUser(userId);
   }
 
   async getByAuthorId(authorId: string): Promise<Article[]> {
-    const articleAuthors = await this.articleAuthorAdapter.findManyByUserId?.(
+    const articleAuthors = await this.articleAuthorRepo.findManyByUserId(
       authorId
     );
-    if (!articleAuthors || articleAuthors.length === 0) return [];
+    if (!articleAuthors.length) return [];
 
     const articleIds = Array.from(
       new Set(articleAuthors.map((aa) => aa.articleId))
     );
 
-    const rows = (await this.adapter.findByIds?.(articleIds)) ?? [];
-    return rows.map(articleRowToDomain);
+    return this.repo.findByIds(articleIds);
   }
 }

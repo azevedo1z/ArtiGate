@@ -3,7 +3,7 @@ import { SubmitArticleService } from './submitArticle.service';
 import { CreateArticleService } from './createArticle.service';
 import { UploadArticleAttachmentService } from '../articleAttachment/uploadArticleAttachment.service';
 import { PdfSecurityValidatorService } from '../../../infrastructure/services/pdfSecurityValidator.service';
-import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
 import {
   UnauthorizedException,
   ValidationException,
@@ -15,7 +15,7 @@ describe('SubmitArticleService', () => {
   let validator: jest.Mocked<PdfSecurityValidatorService>;
   let createArticleService: jest.Mocked<CreateArticleService>;
   let uploadAttachmentService: jest.Mocked<UploadArticleAttachmentService>;
-  let articleAdapter: jest.Mocked<ArticleDatabaseAdapter>;
+  let articleRepo: jest.Mocked<ArticleRepository>;
 
   const file = { originalname: 'paper.pdf' } as Express.Multer.File;
   const dto: CreateArticleDTO = {
@@ -27,13 +27,13 @@ describe('SubmitArticleService', () => {
     validator = { execute: jest.fn() } as never;
     createArticleService = { execute: jest.fn() } as never;
     uploadAttachmentService = { execute: jest.fn() } as never;
-    articleAdapter = { delete: jest.fn() } as never;
+    articleRepo = { delete: jest.fn() } as never;
 
     service = new SubmitArticleService(
       validator,
       createArticleService,
       uploadAttachmentService,
-      articleAdapter
+      articleRepo
     );
   });
 
@@ -93,13 +93,13 @@ describe('SubmitArticleService', () => {
       id: 'article-1',
     } as never);
     uploadAttachmentService.execute.mockRejectedValue(new Error('storage down'));
-    articleAdapter.delete.mockResolvedValue(true);
+    articleRepo.delete.mockResolvedValue(true);
 
     await expect(service.execute(dto, 'user-1', file)).rejects.toThrow(
       'storage down'
     );
 
-    expect(articleAdapter.delete).toHaveBeenCalledWith('article-1');
+    expect(articleRepo.delete).toHaveBeenCalledWith('article-1');
   });
 
   it('still throws the original error if rollback also fails', async () => {
@@ -107,7 +107,7 @@ describe('SubmitArticleService', () => {
       id: 'article-1',
     } as never);
     uploadAttachmentService.execute.mockRejectedValue(new Error('storage down'));
-    articleAdapter.delete.mockRejectedValue(new Error('cleanup failed'));
+    articleRepo.delete.mockRejectedValue(new Error('cleanup failed'));
 
     await expect(service.execute(dto, 'user-1', file)).rejects.toThrow(
       'storage down'

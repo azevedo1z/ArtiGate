@@ -1,7 +1,7 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { ReviewController } from '../interface/controllers/review.controller';
-import { ReviewRepository } from '../infrastructure/repositories/review.repository';
-import { ReviewDatabaseAdapter } from '../interface/adapter/database.adapter';
+import { PrismaReviewRepository } from '../infrastructure/repositories/review.repository';
+import { ReviewRepository } from '../interface/repositories/review.repository.port';
 import { CreateReviewService } from '../application/services/review/createReview.service';
 import { GetReviewService } from '../application/services/review/getReview.service';
 import { UpdateReviewService } from '../application/services/review/updateReview.service';
@@ -23,10 +23,10 @@ import { PaymentModule } from './payment.module';
     UpdateReviewService,
     DeleteReviewService,
     {
-      provide: ReviewDatabaseAdapter,
-      useClass: ReviewRepository,
+      provide: ReviewRepository,
+      useClass: PrismaReviewRepository,
     },
   ],
-  exports: [ReviewDatabaseAdapter],
+  exports: [ReviewRepository, GetReviewService],
 })
 export class ReviewModule {}

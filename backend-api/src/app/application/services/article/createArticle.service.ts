@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 import { Article } from '../../../domain/models/article.model';
-import { articleRowToDomain } from '../../mappers/article.mapper';
-import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
 import { EnsureAuthorsExistService } from './ensureAuthorsExist.service';
 
 @Injectable()
 export class CreateArticleService {
   constructor(
-    private readonly adapter: ArticleDatabaseAdapter,
+    private readonly repo: ArticleRepository,
     private readonly ensureAuthorsExistService: EnsureAuthorsExistService
   ) {}
 
@@ -18,8 +17,6 @@ export class CreateArticleService {
 
     await this.ensureAuthorsExistService.execute(data.authorIds);
 
-    const articleRecord = await this.adapter.create(data);
-
-    return articleRowToDomain(articleRecord);
+    return this.repo.create(data);
   }
 }

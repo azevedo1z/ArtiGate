@@ -1,16 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateReviewDTO } from '../../dtos/review/updateReview.dto';
 import { Review } from '../../../domain/models/review.model';
-import { reviewRowToDomain } from '../../mappers/review.mapper';
-import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ReviewRepository } from '../../../interface/repositories/review.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class UpdateReviewService {
-  constructor(private readonly adapter: ReviewDatabaseAdapter) {}
+  constructor(private readonly repo: ReviewRepository) {}
 
   async execute(requesterId: string, data: UpdateReviewDTO): Promise<Review> {
-    const existing = await this.adapter.findById(data.id);
+    const existing = await this.repo.findById(data.id);
 
     if (!existing)
       throw new NotFoundException(`Review with ID "${data.id}" not found`);
@@ -25,16 +24,8 @@ export class UpdateReviewService {
       commentary: data.commentary ?? existing.commentary,
     });
 
-    if (data.score === undefined) {
-      const reviewRecord = await this.adapter.update(data);
-      return reviewRowToDomain(reviewRecord);
-    }
+    if (data.score === undefined) return this.repo.update(data);
 
-    const reviewRecord = await this.adapter.updateAndRecomputeArticleScore(
-      data,
-      existing.articleId
-    );
-
-    return reviewRowToDomain(reviewRecord);
+    return this.repo.updateAndRecomputeArticleScore(data, existing.articleId);
   }
 }

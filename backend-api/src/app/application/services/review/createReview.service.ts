@@ -2,27 +2,24 @@ import { Injectable } from '@nestjs/common';
 import { ConflictException } from '../../../shared/exceptions/app.exception';
 import { CreateReviewDTO } from '../../dtos/review/createReview.dto';
 import { Review } from '../../../domain/models/review.model';
-import { reviewRowToDomain } from '../../mappers/review.mapper';
-import {
-  ArticleAuthorDatabaseAdapter,
-  ReviewDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ReviewRepository } from '../../../interface/repositories/review.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
 
 @Injectable()
 export class CreateReviewService {
   constructor(
-    private readonly adapter: ReviewDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter
+    private readonly repo: ReviewRepository,
+    private readonly articleAuthorRepo: ArticleAuthorRepository
   ) {}
 
   async execute(requesterId: string, data: CreateReviewDTO): Promise<Review> {
-    const authors = await this.articleAuthorAdapter.findMany(data.articleId);
+    const authors = await this.articleAuthorRepo.findMany(data.articleId);
     Review.assertReviewerIsNotAuthor(
       authors.map((a) => a.userId),
       requesterId
     );
 
-    const existingReviews = await this.adapter.findMany(data.articleId);
+    const existingReviews = await this.repo.findMany(data.articleId);
 
     if (existingReviews.some((r) => r.reviewerId === requesterId))
       throw new ConflictException('You have already reviewed this article');
@@ -35,11 +32,9 @@ export class CreateReviewService {
       commentary: data.commentary,
     });
 
-    const reviewRecord = await this.adapter.createAndRecomputeArticleScore(
+    return this.repo.createAndRecomputeArticleScore(
       { ...data, reviewerId: requesterId },
       data.articleId
     );
-
-    return reviewRowToDomain(reviewRecord);
   }
 }

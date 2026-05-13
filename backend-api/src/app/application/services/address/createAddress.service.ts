@@ -1,17 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAddressDTO } from '../../dtos/address/createAddress.dto';
 import { Address } from '../../../domain/models/address.model';
-import { addressRowToDomain } from '../../mappers/address.mapper';
-import { AddressDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { AddressRepository } from '../../../interface/repositories/address.repository.port';
 
 @Injectable()
 export class CreateAddressService {
-  constructor(private readonly adapter: AddressDatabaseAdapter) {}
+  constructor(private readonly repo: AddressRepository) {}
 
   async execute(data: CreateAddressDTO): Promise<Address> {
     Address.ensureInvariants({ id: '', ...data });
-
-    const addressRecord = await this.adapter.create(data);
-    return addressRowToDomain(addressRecord);
+    return this.repo.create(data);
   }
 }

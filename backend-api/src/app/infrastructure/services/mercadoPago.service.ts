@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from 'crypto';
 import { MercadoPagoConfig, Payment as MercadoPagoPayment } from 'mercadopago';
 import { PaymentGatewayException } from '../../shared/exceptions/app.exception';
 import { PaymentStatus } from '../../shared/types/payment.types';
-import { PaymentGatewayAdapter } from '../../interface/adapter/paymentGateway.adapter';
+import { PaymentGatewayAdapter } from '../../interface/gateways/paymentGateway.port';
 import {
   PaymentGatewayChargeRequestDTO,
   PaymentGatewayChargeResultDTO,

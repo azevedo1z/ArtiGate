@@ -3,7 +3,7 @@ import { PaymentWebhookDTO } from '../../dtos/payment/paymentWebhook.dto';
 import { UpdatePaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
 import { Payment } from '../../../domain/models/payment.model';
 import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
-import { PaymentGatewayAdapter } from '../../../interface/gateways/paymentGateway.port';
+import { PaymentGateway } from '../../../interface/gateways/paymentGateway.port';
 import { PaymentGatewayWebhookHeaders } from '../../dtos/payment/paymentGatewayCharge.dto';
 import { PaymentStatus } from '../../../shared/types/payment.types';
 
@@ -13,7 +13,7 @@ export class ProcessPaymentWebhookService {
 
   constructor(
     private readonly repo: PaymentRepository,
-    private readonly gateway: PaymentGatewayAdapter
+    private readonly gateway: PaymentGateway
   ) {}
 
   async execute(

@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from 'crypto';
 import { MercadoPagoConfig, Payment as MercadoPagoPayment } from 'mercadopago';
 import { PaymentGatewayException } from '../../shared/exceptions/app.exception';
 import { PaymentStatus } from '../../shared/types/payment.types';
-import { PaymentGatewayAdapter } from '../../interface/gateways/paymentGateway.port';
+import { PaymentGateway } from '../../interface/gateways/paymentGateway.port';
 import {
   PaymentGatewayChargeRequestDTO,
   PaymentGatewayChargeResultDTO,
@@ -21,7 +21,7 @@ const KNOWN_STATUS_VALUES: ReadonlySet<string> = new Set(
 );
 
 @Injectable()
-export class MercadoPagoService extends PaymentGatewayAdapter {
+export class MercadoPagoService extends PaymentGateway {
   private readonly logger = new Logger(MercadoPagoService.name);
   private readonly client: MercadoPagoConfig;
   private readonly paymentClient: MercadoPagoPayment;

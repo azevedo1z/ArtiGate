@@ -7,7 +7,7 @@ import { PaymentGatewayChargeRequestDTO } from '../../dtos/payment/paymentGatewa
 import { Payment } from '../../../domain/models/payment.model';
 import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
 import { UserRepository } from '../../../interface/repositories/user.repository.port';
-import { PaymentGatewayAdapter } from '../../../interface/gateways/paymentGateway.port';
+import { PaymentGateway } from '../../../interface/gateways/paymentGateway.port';
 import {
   ConflictException,
   NotFoundException,
@@ -22,7 +22,7 @@ export class CreatePaymentService {
   constructor(
     private readonly repo: PaymentRepository,
     private readonly userRepo: UserRepository,
-    private readonly gateway: PaymentGatewayAdapter,
+    private readonly gateway: PaymentGateway,
     private readonly configService: ConfigService
   ) {}
 

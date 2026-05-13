@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { PaymentGatewayAdapter } from '../../interface/gateways/paymentGateway.port';
+import { PaymentGateway } from '../../interface/gateways/paymentGateway.port';
 import {
   PaymentGatewayChargeRequestDTO,
   PaymentGatewayChargeResultDTO,
 } from '../../application/dtos/payment/paymentGatewayCharge.dto';
 
 @Injectable()
-export class MockPaymentGatewayService extends PaymentGatewayAdapter {
+export class MockPaymentGatewayService extends PaymentGateway {
   private readonly logger = new Logger(MockPaymentGatewayService.name);
 
   async createCharge(

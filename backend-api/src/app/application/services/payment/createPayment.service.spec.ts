@@ -4,7 +4,7 @@ import { CreatePaymentService } from './createPayment.service';
 import { CreatePaymentDTO } from '../../dtos/payment/createPayment.dto';
 import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
 import { UserRepository } from '../../../interface/repositories/user.repository.port';
-import { PaymentGatewayAdapter } from '../../../interface/gateways/paymentGateway.port';
+import { PaymentGateway } from '../../../interface/gateways/paymentGateway.port';
 import {
   ConflictException,
   NotFoundException,
@@ -16,7 +16,7 @@ describe('CreatePaymentService', () => {
   let service: CreatePaymentService;
   let paymentRepo: jest.Mocked<PaymentRepository>;
   let userRepo: jest.Mocked<UserRepository>;
-  let gateway: jest.Mocked<PaymentGatewayAdapter>;
+  let gateway: jest.Mocked<PaymentGateway>;
   let configService: jest.Mocked<ConfigService>;
 
   const userId = '11111111-1111-1111-1111-111111111111';

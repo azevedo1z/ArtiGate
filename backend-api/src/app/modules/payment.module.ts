@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PaymentController } from '../interface/controllers/payment.controller';
 import { PrismaPaymentRepository } from '../infrastructure/repositories/payment.repository';
 import { PaymentRepository } from '../interface/repositories/payment.repository.port';
-import { PaymentGatewayAdapter } from '../interface/gateways/paymentGateway.port';
+import { PaymentGateway } from '../interface/gateways/paymentGateway.port';
 import { MercadoPagoService } from '../infrastructure/services/mercadoPago.service';
 import { MockPaymentGatewayService } from '../infrastructure/services/mockPaymentGateway.service';
 import { CreatePaymentService } from '../application/services/payment/createPayment.service';
@@ -25,8 +25,8 @@ import { UserModule } from './user.module';
       useClass: PrismaPaymentRepository,
     },
     {
-      provide: PaymentGatewayAdapter,
-      useFactory: (configService: ConfigService): PaymentGatewayAdapter => {
+      provide: PaymentGateway,
+      useFactory: (configService: ConfigService): PaymentGateway => {
         const mockEnabled = configService.get<boolean>('payment.mockEnabled');
         return mockEnabled
           ? new MockPaymentGatewayService()
@@ -37,7 +37,7 @@ import { UserModule } from './user.module';
   ],
   exports: [
     PaymentRepository,
-    PaymentGatewayAdapter,
+    PaymentGateway,
     AccessFeePaymentGuard,
     GetPaymentService,
   ],

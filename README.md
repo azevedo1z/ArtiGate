@@ -89,6 +89,9 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 ### Login
 ![Login](docs/screenshots/2.png)
 
+### Checkout
+![Checkout](docs/screenshots/7.png)
+
 ### Dashboard
 ![Dashboard](docs/screenshots/3.png)
 

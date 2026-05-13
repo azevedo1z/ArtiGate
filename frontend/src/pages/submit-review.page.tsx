@@ -189,8 +189,8 @@ const SubmitReviewPage: React.FC = () => {
                   className="w-full h-1.5 accent-primary-500 cursor-pointer"
                 />
                 <div className="flex justify-between text-[11px] text-ink-400">
-                  <span>1 — Poor</span>
-                  <span>10 — Excellent</span>
+                  <span>1 - Poor</span>
+                  <span>10 - Excellent</span>
                 </div>
               </div>
 

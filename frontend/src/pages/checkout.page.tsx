@@ -63,7 +63,7 @@ const CheckoutPage: React.FC = () => {
             Pay your access fee
           </h1>
           <p className="text-ink-500 text-sm">
-            Card details are tokenized in your browser by Mercado Pago — they
+            Card details are tokenized in your browser by Mercado Pago; they
             never reach ArtiGate's servers.
           </p>
         </div>

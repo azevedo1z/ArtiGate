@@ -8,7 +8,7 @@ import { PaginationDTO } from '../../shared/dtos/pagination.dto';
  *
  * Convention for all ports under interface/repositories/:
  *  - Methods return Domain entities, not Prisma rows.
- *  - No optional methods — each port declares only what the application uses.
+ *  - No optional methods; each port declares only what the application uses.
  *  - Concrete implementation lives in infrastructure/repositories/.
  */
 export abstract class AddressRepository {

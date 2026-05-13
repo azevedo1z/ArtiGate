@@ -10,7 +10,7 @@ function resolveApiBaseUrl(): string {
       );
 
     console.warn(
-      `[config] VITE_API_BASE_URL not set — falling back to ${DEFAULT_API_BASE_URL}`
+      `[config] VITE_API_BASE_URL not set; falling back to ${DEFAULT_API_BASE_URL}`
     );
     return DEFAULT_API_BASE_URL;
   }

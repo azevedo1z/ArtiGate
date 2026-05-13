@@ -34,9 +34,9 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
   └── src/app/
       ├── application/       # Use cases: services + DTOs
       ├── config/            # App configuration
-      ├── domain/            # Business entities and repository interfaces
-      ├── infrastructure/    # Prisma repositories
-      ├── interface/         # Controllers and abstract adapters
+  ├── domain/            # Business entities and value objects
+  ├── infrastructure/    # Prisma repositories + external services
+  ├── interface/         # Controllers and ports (repository + gateway)
       ├── modules/           # NestJS feature modules
       └── shared/            # Filters, pipes, guards, utilities
 
@@ -74,7 +74,7 @@ ArtiGate was born out of a professor's frustration with the lack of a centralize
 
 | Module | Endpoints |
 |---|---|
-| User | CRUD, find by email/address/review |
+| User | CRUD, find by email/address |
 | Role | CRUD, find by name |
 | Address | CRUD |
 | Article | CRUD, find by author, upload/download PDF attachment |

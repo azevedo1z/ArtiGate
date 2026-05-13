@@ -1,46 +1,41 @@
-import { ArticleAuthor } from '@prisma/client';
-import { ArticleAuthorDatabaseAdapter } from '../../interface/adapter/database.adapter';
-import { PrismaService } from '../services/prisma.service';
+import { ArticleAuthor as ArticleAuthorRow } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../services/prisma.service';
 import {
-  ValidationException,
-  NotFoundException,
-} from '../../shared/exceptions/app.exception';
+  ArticleAuthorRecord,
+  ArticleAuthorRepository,
+  ArticleAuthorWriteData,
+} from '../../interface/repositories/articleAuthor.repository.port';
+import { NotFoundException } from '../../shared/exceptions/app.exception';
+
+const toRecord = (row: ArticleAuthorRow): ArticleAuthorRecord => ({
+  id: row.id,
+  articleId: row.articleId,
+  userId: row.userId,
+});
 
 @Injectable()
-export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
+export class PrismaArticleAuthorRepository implements ArticleAuthorRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: Partial<ArticleAuthor>): Promise<ArticleAuthor> {
-    if (!data.articleId || !data.userId) {
-      throw new ValidationException(
-        'Both articleId and userId are required to create an ArticleAuthor'
-      );
-    }
-    return await this.prisma.articleAuthor.create({
-      data: {
-        articleId: data.articleId,
-        userId: data.userId,
-      },
-    });
+  async create(data: ArticleAuthorWriteData): Promise<ArticleAuthorRecord> {
+    const row = await this.prisma.articleAuthor.create({ data });
+    return toRecord(row);
   }
 
-  async update(data: Partial<ArticleAuthor>): Promise<ArticleAuthor> {
-    if (!data.articleId || !data.userId) {
-      throw new ValidationException(
-        'Both articleId and userId are required to update an ArticleAuthor'
-      );
-    }
+  async update(data: ArticleAuthorWriteData): Promise<ArticleAuthorRecord> {
     const articleAuthor = await this.prisma.articleAuthor.findFirst({
       where: { userId: data.userId, articleId: data.articleId },
     });
 
-    if (articleAuthor == null) throw new NotFoundException('ArticleAuthor not found');
+    if (articleAuthor == null)
+      throw new NotFoundException('ArticleAuthor not found');
 
-    return await this.prisma.articleAuthor.update({
+    const row = await this.prisma.articleAuthor.update({
       where: { id: articleAuthor.id },
       data,
     });
+    return toRecord(row);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -51,19 +46,27 @@ export class ArticleAuthorRepository implements ArticleAuthorDatabaseAdapter {
     return true;
   }
 
-  async findById(id: string): Promise<ArticleAuthor | null> {
-    return await this.prisma.articleAuthor.findFirst({ where: { id, deletedOn: null } });
+  async findById(id: string): Promise<ArticleAuthorRecord | null> {
+    const row = await this.prisma.articleAuthor.findFirst({ where: { id } });
+    return row ? toRecord(row) : null;
   }
 
-  async findAll(): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { deletedOn: null } });
+  async findAll(): Promise<ArticleAuthorRecord[]> {
+    const rows = await this.prisma.articleAuthor.findMany();
+    return rows.map(toRecord);
   }
 
-  async findMany(articleId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { articleId, deletedOn: null } });
+  async findMany(articleId: string): Promise<ArticleAuthorRecord[]> {
+    const rows = await this.prisma.articleAuthor.findMany({
+      where: { articleId },
+    });
+    return rows.map(toRecord);
   }
 
-  async findManyByUserId(userId: string): Promise<ArticleAuthor[]> {
-    return await this.prisma.articleAuthor.findMany({ where: { userId, deletedOn: null } });
+  async findManyByUserId(userId: string): Promise<ArticleAuthorRecord[]> {
+    const rows = await this.prisma.articleAuthor.findMany({
+      where: { userId },
+    });
+    return rows.map(toRecord);
   }
 }

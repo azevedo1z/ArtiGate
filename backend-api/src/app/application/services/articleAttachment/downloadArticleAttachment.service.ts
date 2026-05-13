@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Readable } from 'stream';
-import {
-  ArticleAttachmentDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-  UserRoleDatabaseAdapter,
-  RoleDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleAttachmentRepository } from '../../../interface/repositories/articleAttachment.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
+import { UserRoleRepository } from '../../../interface/repositories/userRole.repository.port';
+import { RoleRepository } from '../../../interface/repositories/role.repository.port';
 import { PdfStorageService } from '../../../infrastructure/services/pdfStorage.service';
 import {
   NotFoundException,
@@ -24,10 +22,10 @@ export interface AttachmentDownload {
 @Injectable()
 export class DownloadArticleAttachmentService {
   constructor(
-    private readonly attachmentAdapter: ArticleAttachmentDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter,
-    private readonly userRoleAdapter: UserRoleDatabaseAdapter,
-    private readonly roleAdapter: RoleDatabaseAdapter,
+    private readonly attachmentRepo: ArticleAttachmentRepository,
+    private readonly articleAuthorRepo: ArticleAuthorRepository,
+    private readonly userRoleRepo: UserRoleRepository,
+    private readonly roleRepo: RoleRepository,
     private readonly storage: PdfStorageService
   ) {}
 
@@ -37,7 +35,7 @@ export class DownloadArticleAttachmentService {
   ): Promise<AttachmentDownload> {
     await this.ensureAccessRights(articleId, requesterId);
 
-    const attachments = await this.attachmentAdapter.findMany(articleId);
+    const attachments = await this.attachmentRepo.findMany(articleId);
     if (!attachments.length)
       throw new NotFoundException(
         'No attachment is registered for this article.'
@@ -60,7 +58,7 @@ export class DownloadArticleAttachmentService {
     articleId: string,
     requesterId: string
   ): Promise<void> {
-    const authors = await this.articleAuthorAdapter.findMany(articleId);
+    const authors = await this.articleAuthorRepo.findMany(articleId);
     if (authors.some((a) => a.userId === requesterId)) return;
 
     const isReviewer = await this.requesterHasReviewerRole(requesterId);
@@ -74,12 +72,10 @@ export class DownloadArticleAttachmentService {
   private async requesterHasReviewerRole(
     requesterId: string
   ): Promise<boolean> {
-    const userRoles = await this.userRoleAdapter.findManyByUserId?.(
-      requesterId
-    );
-    if (!userRoles?.length) return false;
+    const userRoles = await this.userRoleRepo.findManyByUserId(requesterId);
+    if (!userRoles.length) return false;
 
-    const reviewerRole = await this.roleAdapter.findByName?.(ROLES.REVIEWER);
+    const reviewerRole = await this.roleRepo.findByName(ROLES.REVIEWER);
 
     if (!reviewerRole) return false;
 

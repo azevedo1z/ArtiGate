@@ -81,3 +81,5 @@ export const PAYMENT_STATUS_OPTIONS = [
 ] as const;
 
 export const PAYMENT_ACCESS_FEE = 49.9;
+
+export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

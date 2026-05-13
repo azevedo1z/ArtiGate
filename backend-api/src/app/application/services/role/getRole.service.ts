@@ -1,43 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { Role } from '../../../domain/models/role.model';
-import {
-  RoleDatabaseAdapter,
-  UserRoleDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { RoleRepository } from '../../../interface/repositories/role.repository.port';
+import { UserRoleRepository } from '../../../interface/repositories/userRole.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class GetRoleService {
   constructor(
-    private readonly adapter: RoleDatabaseAdapter,
-    private readonly userRoleAdapter: UserRoleDatabaseAdapter
+    private readonly repo: RoleRepository,
+    private readonly userRoleRepo: UserRoleRepository
   ) {}
 
-  async getById(id: string): Promise<Role | null> {
-    const existingRole = await this.adapter.findById(id);
+  async getById(id: string): Promise<Role> {
+    const existing = await this.repo.findById(id);
 
-    if (!existingRole)
+    if (!existing)
       throw new NotFoundException(`There is no role with the ID "${id}".`);
 
-    return Role.factory(existingRole.id, existingRole.name);
+    return existing;
   }
 
   async getAll(): Promise<Role[]> {
-    const roles = await this.adapter.findAll();
-
-    return roles.map((existingRole) =>
-      Role.factory(existingRole.id, existingRole.name)
-    );
+    return this.repo.findAll();
   }
 
   async getRoleByUserId(userId: string): Promise<Role[]> {
-    const userRoles = await this.userRoleAdapter.findManyByUserId?.(userId);
+    const userRoles = await this.userRoleRepo.findManyByUserId(userId);
 
-    if (!userRoles?.length) return [];
+    if (!userRoles.length) return [];
 
     const roleIds = userRoles.map((ur) => ur.roleId);
-    const roles = await this.adapter.findByIds?.(roleIds) ?? [];
-
-    return roles.map((role) => Role.factory(role.id, role.name));
+    return this.repo.findByIds(roleIds);
   }
 }

@@ -1,5 +1,19 @@
+import { ValidationException } from '../../shared/exceptions/app.exception';
+
+export interface AddressProps {
+  id: string;
+  zipCode: string;
+  street: string;
+  neighborhood: string;
+  city: string;
+  state: string;
+  country?: string;
+  complement?: string | null;
+}
+
 export class Address {
   static readonly COUNTRY = 'Brazil';
+  static readonly ZIP_CODE_REGEX = /^\d{5}-?\d{3}$/;
 
   private _id: string;
   private _zipCode: string;
@@ -10,46 +24,39 @@ export class Address {
   private _state: string;
   private _country: string;
 
-  private constructor(
-    id: string,
-    zipCode: string,
-    street: string,
-    neighborhood: string,
-    city: string,
-    state: string,
-    country: string = Address.COUNTRY,
-    complement?: string
-  ) {
-    this._id = id;
-    this._zipCode = zipCode;
-    this._street = street;
-    this._neighborhood = neighborhood;
-    this._city = city;
-    this._state = state;
-    this._country = country;
-    this._complement = complement;
+  private constructor(props: AddressProps) {
+    Address.ensureInvariants(props);
+
+    this._id = props.id;
+    this._zipCode = props.zipCode;
+    this._street = props.street;
+    this._neighborhood = props.neighborhood;
+    this._city = props.city;
+    this._state = props.state;
+    this._country = props.country ?? Address.COUNTRY;
+    this._complement = props.complement ?? undefined;
   }
 
-  static factory(
-    id: string,
-    zipCode: string,
-    street: string,
-    neighborhood: string,
-    city: string,
-    state: string,
-    country: string = Address.COUNTRY,
-    complement?: string
-  ): Address {
-    return new Address(
-      id,
-      zipCode,
-      street,
-      neighborhood,
-      city,
-      state,
-      country,
-      complement
-    );
+  static factory(props: AddressProps): Address {
+    return new Address(props);
+  }
+
+  static ensureInvariants(props: AddressProps): void {
+    const errors: string[] = [];
+
+    if (!Address.ZIP_CODE_REGEX.test(props.zipCode ?? ''))
+      errors.push('Address zip code must be 8 digits (with optional hyphen).');
+
+    if (!props.street?.trim()) errors.push('Address street is required.');
+
+    if (!props.neighborhood?.trim())
+      errors.push('Address neighborhood is required.');
+
+    if (!props.city?.trim()) errors.push('Address city is required.');
+
+    if (!props.state?.trim()) errors.push('Address state is required.');
+
+    if (errors.length) throw new ValidationException(errors.join(' '));
   }
 
   get id(): string {
@@ -59,43 +66,25 @@ export class Address {
   get zipCode(): string {
     return this._zipCode;
   }
-  private set zipCode(value: string) {
-    this._zipCode = value;
-  }
 
   get street(): string {
     return this._street;
-  }
-  private set street(value: string) {
-    this._street = value;
   }
 
   get complement(): string | undefined {
     return this._complement;
   }
-  private set complement(value: string | undefined) {
-    this._complement = value;
-  }
 
   get neighborhood(): string {
     return this._neighborhood;
-  }
-  private set neighborhood(value: string) {
-    this._neighborhood = value;
   }
 
   get city(): string {
     return this._city;
   }
-  private set city(value: string) {
-    this._city = value;
-  }
 
   get state(): string {
     return this._state;
-  }
-  private set state(value: string) {
-    this._state = value;
   }
 
   get country(): string {

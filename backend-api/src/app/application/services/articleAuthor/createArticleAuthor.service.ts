@@ -1,19 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { ArticleAuthorDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
 import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 
 @Injectable()
 export class CreateArticleAuthorService {
-  constructor(private readonly adapter: ArticleAuthorDatabaseAdapter) {}
+  constructor(private readonly repo: ArticleAuthorRepository) {}
 
   async execute(data: CreateArticleDTO, articleId: string) {
     for (const userId of data.authorIds) {
-      const articleAuthorData = {
-        articleId,
-        userId,
-      };
-
-      await this.adapter.create(articleAuthorData);
+      await this.repo.create({ articleId, userId });
     }
   }
 }

@@ -1,10 +1,8 @@
 /// <reference types="multer" />
 import { UploadArticleAttachmentService } from './uploadArticleAttachment.service';
-import {
-  ArticleAttachmentDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-  ArticleDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
+import { ArticleAttachmentRepository } from '../../../interface/repositories/articleAttachment.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
 import { PdfSecurityValidatorService } from '../../../infrastructure/services/pdfSecurityValidator.service';
 import { PdfStorageService } from '../../../infrastructure/services/pdfStorage.service';
 import {
@@ -15,21 +13,21 @@ import {
 
 describe('UploadArticleAttachmentService', () => {
   let service: UploadArticleAttachmentService;
-  let attachmentAdapter: jest.Mocked<ArticleAttachmentDatabaseAdapter>;
-  let articleAdapter: jest.Mocked<ArticleDatabaseAdapter>;
-  let articleAuthorAdapter: jest.Mocked<ArticleAuthorDatabaseAdapter>;
+  let attachmentRepo: jest.Mocked<ArticleAttachmentRepository>;
+  let articleRepo: jest.Mocked<ArticleRepository>;
+  let articleAuthorRepo: jest.Mocked<ArticleAuthorRepository>;
   let storage: jest.Mocked<PdfStorageService>;
   let validator: jest.Mocked<PdfSecurityValidatorService>;
 
   const file = { originalname: 'paper.pdf' } as Express.Multer.File;
 
   beforeEach(() => {
-    attachmentAdapter = {
+    attachmentRepo = {
       create: jest.fn(),
       findMany: jest.fn().mockResolvedValue([]),
     } as never;
-    articleAdapter = { findById: jest.fn() } as never;
-    articleAuthorAdapter = { findMany: jest.fn() } as never;
+    articleRepo = { findById: jest.fn() } as never;
+    articleAuthorRepo = { findMany: jest.fn() } as never;
     storage = {
       generateStoredName: jest.fn().mockReturnValue('stored-uuid.pdf'),
       write: jest.fn().mockResolvedValue(undefined),
@@ -45,16 +43,16 @@ describe('UploadArticleAttachmentService', () => {
     } as never;
 
     service = new UploadArticleAttachmentService(
-      attachmentAdapter,
-      articleAdapter,
-      articleAuthorAdapter,
+      attachmentRepo,
+      articleRepo,
+      articleAuthorRepo,
       storage,
       validator
     );
   });
 
   it('throws NotFoundException when the article does not exist', async () => {
-    articleAdapter.findById.mockResolvedValue(null);
+    articleRepo.findById.mockResolvedValue(null);
 
     await expect(
       service.execute('article-1', 'user-1', file)
@@ -64,8 +62,8 @@ describe('UploadArticleAttachmentService', () => {
   });
 
   it('throws UnauthorizedException when the requester is not an author', async () => {
-    articleAdapter.findById.mockResolvedValue({ id: 'article-1' } as never);
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleRepo.findById.mockResolvedValue({ id: 'article-1' } as never);
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'someone-else' } as never,
     ]);
 
@@ -77,11 +75,11 @@ describe('UploadArticleAttachmentService', () => {
   });
 
   it('throws ConflictException when an attachment already exists for the article', async () => {
-    articleAdapter.findById.mockResolvedValue({ id: 'article-1' } as never);
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleRepo.findById.mockResolvedValue({ id: 'article-1' } as never);
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'user-1' } as never,
     ]);
-    attachmentAdapter.findMany.mockResolvedValue([
+    attachmentRepo.findMany.mockResolvedValue([
       { id: 'existing' } as never,
     ]);
 
@@ -93,11 +91,11 @@ describe('UploadArticleAttachmentService', () => {
   });
 
   it('writes the file and persists the metadata when the requester is an author', async () => {
-    articleAdapter.findById.mockResolvedValue({ id: 'article-1' } as never);
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleRepo.findById.mockResolvedValue({ id: 'article-1' } as never);
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'user-1' } as never,
     ]);
-    attachmentAdapter.create.mockResolvedValue({
+    attachmentRepo.create.mockResolvedValue({
       id: 'att-1',
       articleId: 'article-1',
       storedName: 'stored-uuid.pdf',
@@ -115,7 +113,7 @@ describe('UploadArticleAttachmentService', () => {
       'stored-uuid.pdf',
       expect.any(Buffer)
     );
-    expect(attachmentAdapter.create).toHaveBeenCalledWith(
+    expect(attachmentRepo.create).toHaveBeenCalledWith(
       expect.objectContaining({
         articleId: 'article-1',
         storedName: 'stored-uuid.pdf',
@@ -128,11 +126,11 @@ describe('UploadArticleAttachmentService', () => {
   });
 
   it('rolls back the file write when database insert fails', async () => {
-    articleAdapter.findById.mockResolvedValue({ id: 'article-1' } as never);
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleRepo.findById.mockResolvedValue({ id: 'article-1' } as never);
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'user-1' } as never,
     ]);
-    attachmentAdapter.create.mockRejectedValue(new Error('db down'));
+    attachmentRepo.create.mockRejectedValue(new Error('db down'));
 
     await expect(
       service.execute('article-1', 'user-1', file)

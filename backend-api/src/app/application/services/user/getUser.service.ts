@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../../domain/models/user.model';
-import { UserDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { UserRepository } from '../../../interface/repositories/user.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 import {
   PaginatedResult,
@@ -11,100 +11,32 @@ import {
 
 @Injectable()
 export class GetUserService {
-  constructor(private readonly adapter: UserDatabaseAdapter) {}
+  constructor(private readonly repo: UserRepository) {}
 
-  async getById(id: string): Promise<User | null> {
-    const existingUser = await this.adapter.findById(id);
+  async getById(id: string): Promise<User> {
+    const existing = await this.repo.findById(id);
 
-    if (existingUser == null)
+    if (existing == null)
       throw new NotFoundException(`There is no user with the ID "${id}".`);
 
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return existing;
   }
 
   async getAll(pagination?: PaginationDTO): Promise<PaginatedResult<User>> {
     const { page, limit } = normalizePagination(pagination);
     const [users, total] = await Promise.all([
-      this.adapter.findAll(pagination),
-      this.adapter.countAll?.() ?? Promise.resolve(0),
+      this.repo.findAll(pagination),
+      this.repo.countAll(),
     ]);
 
-    const data = users.map((existingUser) =>
-      User.factory(
-        existingUser.id,
-        existingUser.name,
-        existingUser.email,
-        existingUser.phone,
-        existingUser.homeAddressId,
-        existingUser.jobAddressId,
-        existingUser.badgeUrl,
-        existingUser.passwordHash
-      )
-    );
-
-    return buildPaginatedResult(data, total, page, limit);
+    return buildPaginatedResult(users, total, page, limit);
   }
 
   async getByAddressId(addressId: string): Promise<User | null> {
-    const existingUser = await this.adapter.findByAddressId?.(addressId);
-
-    if (existingUser == null) return null;
-
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
-  }
-
-  async getByReviewId(reviewId: string): Promise<User> {
-    const existingUser = await this.adapter.findByReviewId?.(reviewId);
-
-    if (existingUser == null)
-      throw new NotFoundException(
-        `There is no user with the reviewId "${reviewId}".`
-      );
-
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return this.repo.findByAddressId(addressId);
   }
 
   async getByEmail(email: string): Promise<User | null> {
-    const existingUser = await this.adapter.findByEmail?.(email);
-
-    if (!existingUser) return null;
-
-    return User.factory(
-      existingUser.id,
-      existingUser.name,
-      existingUser.email,
-      existingUser.phone,
-      existingUser.homeAddressId,
-      existingUser.jobAddressId,
-      existingUser.badgeUrl,
-      existingUser.passwordHash
-    );
+    return this.repo.findByEmail(email);
   }
 }

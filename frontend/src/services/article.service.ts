@@ -28,8 +28,13 @@ class ArticleService {
     return response.data;
   }
 
-  async getMyArticles(authorId: string): Promise<Article[]> {
-    const response = await apiClient.get(`/article/author/${authorId}`);
+  async getMyArticles(): Promise<Article[]> {
+    const response = await apiClient.get('/article/me');
+    return response.data;
+  }
+
+  async getReviewable(): Promise<Article[]> {
+    const response = await apiClient.get('/article/reviewable');
     return response.data;
   }
 

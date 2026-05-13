@@ -1,32 +1,72 @@
+import {
+  UnauthorizedException,
+  ValidationException,
+} from '../../shared/exceptions/app.exception';
+
+export interface ReviewProps {
+  id: string;
+  articleId: string;
+  reviewerId: string;
+  score: number;
+  commentary: string;
+}
+
 export class Review {
+  static readonly MIN_SCORE = 1;
+  static readonly MAX_SCORE = 10;
+
   private _id: string;
   private _articleId: string;
   private _reviewerId: string;
   private _score: number;
   private _commentary: string;
 
-  private constructor(
-    id: string,
-    articleId: string,
-    reviewerId: string,
-    score: number,
-    commentary: string
-  ) {
-    this._id = id;
-    this._articleId = articleId;
-    this._reviewerId = reviewerId;
-    this._score = score;
-    this._commentary = commentary;
+  private constructor(props: ReviewProps) {
+    Review.ensureInvariants(props);
+
+    this._id = props.id;
+    this._articleId = props.articleId;
+    this._reviewerId = props.reviewerId;
+    this._score = props.score;
+    this._commentary = props.commentary;
   }
 
-  static factory(
-    id: string,
-    articleId: string,
-    reviewerId: string,
-    score: number,
-    commentary: string
-  ): Review {
-    return new Review(id, articleId, reviewerId, score, commentary);
+  static factory(props: ReviewProps): Review {
+    return new Review(props);
+  }
+
+  static ensureInvariants(props: ReviewProps): void {
+    const errors: string[] = [];
+
+    if (
+      Number.isNaN(props.score) ||
+      props.score < Review.MIN_SCORE ||
+      props.score > Review.MAX_SCORE
+    )
+      errors.push(
+        `Review score must be between ${Review.MIN_SCORE} and ${Review.MAX_SCORE}.`
+      );
+
+    const commentary = props.commentary?.trim() ?? '';
+
+    if (!commentary) errors.push('Review commentary is required.');
+
+    if (errors.length) throw new ValidationException(errors.join(' '));
+  }
+
+  static assertOwnedBy(reviewerId: string, requesterId: string): void {
+    if (reviewerId !== requesterId)
+      throw new UnauthorizedException('You can only act on your own reviews.');
+  }
+
+  static assertReviewerIsNotAuthor(
+    authorIds: string[],
+    reviewerId: string
+  ): void {
+    if (authorIds.includes(reviewerId))
+      throw new ValidationException(
+        'Authors cannot review their own articles.'
+      );
   }
 
   get id(): string {
@@ -37,31 +77,15 @@ export class Review {
     return this._articleId;
   }
 
-  private set articleId(value: string) {
-    this._articleId = value;
-  }
-
   get reviewerId(): string {
     return this._reviewerId;
-  }
-
-  private set reviewerId(value: string) {
-    this._reviewerId = value;
   }
 
   get score(): number {
     return this._score;
   }
 
-  private set score(value: number) {
-    this._score = value;
-  }
-
   get commentary(): string {
     return this._commentary;
-  }
-
-  private set commentary(value: string) {
-    this._commentary = value;
   }
 }

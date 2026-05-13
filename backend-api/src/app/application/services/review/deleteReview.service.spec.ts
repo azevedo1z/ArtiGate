@@ -1,46 +1,63 @@
 import { DeleteReviewService } from './deleteReview.service';
-import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
-import { NotFoundException } from '../../../shared/exceptions/app.exception';
+import { Review } from '../../../domain/models/review.model';
+import { ReviewRepository } from '../../../interface/repositories/review.repository.port';
+import {
+  NotFoundException,
+  UnauthorizedException,
+} from '../../../shared/exceptions/app.exception';
 
 describe('DeleteReviewService', () => {
   let service: DeleteReviewService;
-  let reviewAdapter: jest.Mocked<ReviewDatabaseAdapter>;
+  let reviewRepo: jest.Mocked<ReviewRepository>;
 
-  const reviewRecord = {
+  const reviewerId = 'reviewer-1';
+  const reviewRecord = Review.factory({
     id: 'review-1',
     articleId: 'article-1',
-    reviewerId: 'reviewer-1',
+    reviewerId,
     score: 8,
     commentary: 'Good',
-    createdOn: new Date(),
-    updatedOn: new Date(),
-    deletedOn: null,
-  };
+  });
 
   beforeEach(() => {
-    reviewAdapter = {
+    reviewRepo = {
       findById: jest.fn(),
-      delete: jest.fn(),
+      deleteAndRecomputeArticleScore: jest.fn(),
     } as any;
 
-    service = new DeleteReviewService(reviewAdapter);
+    service = new DeleteReviewService(reviewRepo);
   });
 
-  it('should delete a review successfully', async () => {
-    reviewAdapter.findById.mockResolvedValue(reviewRecord);
-    reviewAdapter.delete.mockResolvedValue(true);
+  it('delegates the soft-delete + score recompute to the review adapter', async () => {
+    reviewRepo.findById.mockResolvedValue(reviewRecord);
+    (reviewRepo.deleteAndRecomputeArticleScore as jest.Mock).mockResolvedValue(
+      true,
+    );
 
-    const result = await service.execute('review-1');
+    const result = await service.execute(reviewerId, 'review-1');
 
     expect(result).toBe(true);
-    expect(reviewAdapter.delete).toHaveBeenCalledWith('review-1');
+    expect(reviewRepo.deleteAndRecomputeArticleScore).toHaveBeenCalledWith(
+      'review-1',
+      'article-1',
+    );
   });
 
-  it('should throw NotFoundException if review does not exist', async () => {
-    reviewAdapter.findById.mockResolvedValue(null);
+  it('throws NotFoundException if review does not exist', async () => {
+    reviewRepo.findById.mockResolvedValue(null);
 
-    await expect(service.execute('nonexistent')).rejects.toThrow(
+    await expect(service.execute(reviewerId, 'nonexistent')).rejects.toThrow(
       NotFoundException,
     );
+    expect(reviewRepo.deleteAndRecomputeArticleScore).not.toHaveBeenCalled();
+  });
+
+  it('throws UnauthorizedException when a non-owner tries to delete', async () => {
+    reviewRepo.findById.mockResolvedValue(reviewRecord);
+
+    await expect(service.execute('someone-else', 'review-1')).rejects.toThrow(
+      UnauthorizedException,
+    );
+    expect(reviewRepo.deleteAndRecomputeArticleScore).not.toHaveBeenCalled();
   });
 });

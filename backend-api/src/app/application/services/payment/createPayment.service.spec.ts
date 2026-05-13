@@ -2,11 +2,9 @@ import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@prisma/client';
 import { CreatePaymentService } from './createPayment.service';
 import { CreatePaymentDTO } from '../../dtos/payment/createPayment.dto';
-import {
-  PaymentDatabaseAdapter,
-  UserDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
-import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
+import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
+import { UserRepository } from '../../../interface/repositories/user.repository.port';
+import { PaymentGateway } from '../../../interface/gateways/paymentGateway.port';
 import {
   ConflictException,
   NotFoundException,
@@ -16,9 +14,9 @@ import { PAYMENT_ACCESS_FEE } from '../../../shared/constants';
 
 describe('CreatePaymentService', () => {
   let service: CreatePaymentService;
-  let paymentAdapter: jest.Mocked<PaymentDatabaseAdapter>;
-  let userAdapter: jest.Mocked<UserDatabaseAdapter>;
-  let gateway: jest.Mocked<PaymentGatewayAdapter>;
+  let paymentRepo: jest.Mocked<PaymentRepository>;
+  let userRepo: jest.Mocked<UserRepository>;
+  let gateway: jest.Mocked<PaymentGateway>;
   let configService: jest.Mocked<ConfigService>;
 
   const userId = '11111111-1111-1111-1111-111111111111';
@@ -48,13 +46,13 @@ describe('CreatePaymentService', () => {
   };
 
   beforeEach(() => {
-    paymentAdapter = {
+    paymentRepo = {
       findByIdempotencyKey: jest.fn(),
       hasApprovedFeeByUserId: jest.fn().mockResolvedValue(false),
       create: jest.fn(),
     } as never;
 
-    userAdapter = {
+    userRepo = {
       findById: jest.fn(),
     } as never;
 
@@ -67,15 +65,15 @@ describe('CreatePaymentService', () => {
     } as never;
 
     service = new CreatePaymentService(
-      paymentAdapter,
-      userAdapter,
+      paymentRepo,
+      userRepo,
       gateway,
       configService
     );
   });
 
   it('throws NotFoundException when the user does not exist', async () => {
-    userAdapter.findById.mockResolvedValue(null);
+    userRepo.findById.mockResolvedValue(null);
     await expect(service.execute(userId, baseDto)).rejects.toThrow(
       NotFoundException
     );
@@ -83,8 +81,8 @@ describe('CreatePaymentService', () => {
   });
 
   it('returns the cached payment when the idempotency key was already used', async () => {
-    userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue({
+    userRepo.findById.mockResolvedValue({ id: userId } as never);
+    (paymentRepo.findByIdempotencyKey as jest.Mock).mockResolvedValue({
       ...persistedRow,
       id: 'p-1',
       paymentMethodId: 'master',
@@ -94,13 +92,13 @@ describe('CreatePaymentService', () => {
 
     expect(result.id).toBe('p-1');
     expect(gateway.createCharge).not.toHaveBeenCalled();
-    expect(paymentAdapter.create).not.toHaveBeenCalled();
+    expect(paymentRepo.create).not.toHaveBeenCalled();
   });
 
   it('throws ConflictException when the user already paid the access fee', async () => {
-    userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
-    (paymentAdapter.hasApprovedFeeByUserId as jest.Mock).mockResolvedValue(
+    userRepo.findById.mockResolvedValue({ id: userId } as never);
+    (paymentRepo.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
+    (paymentRepo.hasApprovedFeeByUserId as jest.Mock).mockResolvedValue(
       true
     );
 
@@ -108,12 +106,12 @@ describe('CreatePaymentService', () => {
       ConflictException
     );
     expect(gateway.createCharge).not.toHaveBeenCalled();
-    expect(paymentAdapter.create).not.toHaveBeenCalled();
+    expect(paymentRepo.create).not.toHaveBeenCalled();
   });
 
   it('charges the gateway with the backend-defined amount and persists the payment row', async () => {
-    userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
+    userRepo.findById.mockResolvedValue({ id: userId } as never);
+    (paymentRepo.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
     gateway.createCharge.mockResolvedValue({
       gatewayPaymentId: 'mp-42',
       status: 'approved',
@@ -121,7 +119,7 @@ describe('CreatePaymentService', () => {
       failureReason: null,
       rawResponse: '{}',
     });
-    paymentAdapter.create.mockResolvedValue(persistedRow as never);
+    paymentRepo.create.mockResolvedValue(persistedRow as never);
 
     const result = await service.execute(userId, baseDto);
 
@@ -136,7 +134,7 @@ describe('CreatePaymentService', () => {
         idempotencyKey: baseDto.idempotencyKey,
       })
     );
-    const persistedCall = paymentAdapter.create.mock.calls[0][0];
+    const persistedCall = paymentRepo.create.mock.calls[0][0];
     expect(persistedCall).toEqual(
       expect.objectContaining({
         userId,
@@ -151,8 +149,8 @@ describe('CreatePaymentService', () => {
   });
 
   it('returns the existing row when the persist call hits a unique-constraint violation', async () => {
-    userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    const findByKey = paymentAdapter.findByIdempotencyKey as jest.Mock;
+    userRepo.findById.mockResolvedValue({ id: userId } as never);
+    const findByKey = paymentRepo.findByIdempotencyKey as jest.Mock;
     findByKey.mockResolvedValueOnce(null).mockResolvedValueOnce({
       ...persistedRow,
       id: 'p-recovered',
@@ -168,7 +166,7 @@ describe('CreatePaymentService', () => {
       'duplicate',
       { code: 'P2002', clientVersion: 'test' }
     );
-    paymentAdapter.create.mockRejectedValue(uniqueViolation);
+    paymentRepo.create.mockRejectedValue(uniqueViolation);
 
     const result = await service.execute(userId, baseDto);
 
@@ -177,8 +175,8 @@ describe('CreatePaymentService', () => {
   });
 
   it('throws PaymentGatewayException when persist fails for a non-unique reason', async () => {
-    userAdapter.findById.mockResolvedValue({ id: userId } as never);
-    (paymentAdapter.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
+    userRepo.findById.mockResolvedValue({ id: userId } as never);
+    (paymentRepo.findByIdempotencyKey as jest.Mock).mockResolvedValue(null);
     gateway.createCharge.mockResolvedValue({
       gatewayPaymentId: 'mp-42',
       status: 'approved',
@@ -186,7 +184,7 @@ describe('CreatePaymentService', () => {
       failureReason: null,
       rawResponse: '{}',
     });
-    paymentAdapter.create.mockRejectedValue(new Error('database is down'));
+    paymentRepo.create.mockRejectedValue(new Error('database is down'));
 
     await expect(service.execute(userId, baseDto)).rejects.toThrow(
       PaymentGatewayException

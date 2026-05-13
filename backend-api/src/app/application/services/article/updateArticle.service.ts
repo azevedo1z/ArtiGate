@@ -1,45 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { Article } from '../../../domain/models/article.model';
 import { UpdateArticleDTO } from '../../dtos/article/updateArticle.dto';
-import {
-  ArticleDatabaseAdapter,
-  UserDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
-import {
-  NotFoundException,
-  ValidationException,
-} from '../../../shared/exceptions/app.exception';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
+import { EnsureAuthorsExistService } from './ensureAuthorsExist.service';
 
 @Injectable()
 export class UpdateArticleService {
   constructor(
-    private readonly adapter: ArticleDatabaseAdapter,
-    private readonly userAdapter: UserDatabaseAdapter
+    private readonly repo: ArticleRepository,
+    private readonly articleAuthorRepo: ArticleAuthorRepository,
+    private readonly ensureAuthorsExistService: EnsureAuthorsExistService
   ) {}
 
-  async execute(data: UpdateArticleDTO): Promise<Article> {
-    const existingArticle = await this.adapter.findById(data.id);
-    if (!existingArticle)
+  async execute(requesterId: string, data: UpdateArticleDTO): Promise<Article> {
+    const existing = await this.repo.findById(data.id);
+    if (!existing)
       throw new NotFoundException(`Article with ID "${data.id}" not found`);
 
-    await this.ensureIsUser(data.authorIds);
-
-    const articleRecord = await this.adapter.update(data);
-
-    return Article.factory(
-      articleRecord.id,
-      articleRecord.summary,
-      articleRecord.scoreAvg
+    const authors = await this.articleAuthorRepo.findMany(data.id);
+    Article.assertAuthoredBy(
+      authors.map((a) => a.userId),
+      requesterId
     );
-  }
 
-  private async ensureIsUser(authorIds: string[] | undefined): Promise<void> {
-    if (!authorIds) return;
-
-    for (const userId of authorIds) {
-      const user = await this.userAdapter.findById(userId);
-      if (!user)
-        throw new ValidationException(`The author "${userId}" is not registered in the system.`);
+    if (data.authorIds !== undefined) {
+      Article.assertAuthorCount(data.authorIds);
+      await this.ensureAuthorsExistService.execute(data.authorIds);
     }
+
+    Article.ensureInvariants({
+      id: existing.id,
+      summary: data.summary ?? existing.summary,
+      scoreAvg: data.scoreAvg ?? existing.scoreAvg,
+    });
+
+    return this.repo.update(data);
   }
 }

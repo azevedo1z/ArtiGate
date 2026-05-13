@@ -46,8 +46,8 @@ const SubmitReviewPage: React.FC = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await articleService.getAll({ limit: 100 });
-        setArticles(response.data);
+        const data = await articleService.getReviewable();
+        setArticles(data);
       } catch (error) {
         toast.error(extractErrorMessage(error, 'Failed to load articles.'));
       } finally {
@@ -80,7 +80,6 @@ const SubmitReviewPage: React.FC = () => {
     try {
       await reviewService.createReview({
         articleId,
-        reviewerId: userData._id,
         score,
         commentary,
       });
@@ -190,8 +189,8 @@ const SubmitReviewPage: React.FC = () => {
                   className="w-full h-1.5 accent-primary-500 cursor-pointer"
                 />
                 <div className="flex justify-between text-[11px] text-ink-400">
-                  <span>1 — Poor</span>
-                  <span>10 — Excellent</span>
+                  <span>1 - Poor</span>
+                  <span>10 - Excellent</span>
                 </div>
               </div>
 

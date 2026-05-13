@@ -1,25 +1,23 @@
 import { Injectable } from '@nestjs/common';
+import { Article } from '../../../domain/models/article.model';
 import { ArticleAttachment } from '../../../domain/models/articleAttachment.model';
-import {
-  ArticleAttachmentDatabaseAdapter,
-  ArticleDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
+import { ArticleAttachmentRepository } from '../../../interface/repositories/articleAttachment.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
 import { PdfSecurityValidatorService } from '../../../infrastructure/services/pdfSecurityValidator.service';
 import { PdfStorageService } from '../../../infrastructure/services/pdfStorage.service';
 import {
   ConflictException,
   NotFoundException,
-  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
 import { PDF_ATTACHMENT } from '../../../shared/constants';
 
 @Injectable()
 export class UploadArticleAttachmentService {
   constructor(
-    private readonly attachmentAdapter: ArticleAttachmentDatabaseAdapter,
-    private readonly articleAdapter: ArticleDatabaseAdapter,
-    private readonly articleAuthorAdapter: ArticleAuthorDatabaseAdapter,
+    private readonly attachmentRepo: ArticleAttachmentRepository,
+    private readonly articleRepo: ArticleRepository,
+    private readonly articleAuthorRepo: ArticleAuthorRepository,
     private readonly storage: PdfStorageService,
     private readonly validator: PdfSecurityValidatorService
   ) {}
@@ -31,19 +29,19 @@ export class UploadArticleAttachmentService {
   ): Promise<ArticleAttachment> {
     const validated = this.validator.execute(file);
 
-    const article = await this.articleAdapter.findById(articleId);
+    const article = await this.articleRepo.findById(articleId);
     if (!article)
       throw new NotFoundException(
         `Article with ID "${articleId}" was not found.`
       );
 
-    const authors = await this.articleAuthorAdapter.findMany(articleId);
-    if (!authors.some((a) => a.userId === uploaderId))
-      throw new UnauthorizedException(
-        'Only authors of the article can upload its attachment.'
-      );
+    const authors = await this.articleAuthorRepo.findMany(articleId);
+    Article.assertAuthoredBy(
+      authors.map((a) => a.userId),
+      uploaderId
+    );
 
-    const existing = await this.attachmentAdapter.findMany(articleId);
+    const existing = await this.attachmentRepo.findMany(articleId);
     if (existing.length > 0)
       throw new ConflictException(
         'This article already has an attachment. Delete it before uploading a new one.'
@@ -51,10 +49,21 @@ export class UploadArticleAttachmentService {
 
     const storedName = this.storage.generateStoredName();
 
+    ArticleAttachment.ensureInvariants({
+      id: '',
+      articleId,
+      storedName,
+      originalName: validated.sanitizedName,
+      mimeType: PDF_ATTACHMENT.MIME_TYPE,
+      size: validated.size,
+      checksum: validated.checksum,
+      uploaderId,
+    });
+
     await this.storage.write(storedName, validated.buffer);
 
     try {
-      const record = await this.attachmentAdapter.create({
+      return await this.attachmentRepo.create({
         articleId,
         storedName,
         originalName: validated.sanitizedName,
@@ -63,17 +72,6 @@ export class UploadArticleAttachmentService {
         checksum: validated.checksum,
         uploaderId,
       });
-
-      return ArticleAttachment.factory(
-        record.id,
-        record.articleId,
-        record.storedName,
-        record.originalName,
-        record.mimeType,
-        record.size,
-        record.checksum,
-        record.uploaderId
-      );
     } catch (error) {
       await this.storage.delete(storedName);
       throw error;

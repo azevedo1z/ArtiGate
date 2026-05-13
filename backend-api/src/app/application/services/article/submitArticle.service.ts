@@ -5,7 +5,7 @@ import { CreateArticleDTO } from '../../dtos/article/createArticle.dto';
 import { CreateArticleService } from './createArticle.service';
 import { UploadArticleAttachmentService } from '../articleAttachment/uploadArticleAttachment.service';
 import { PdfSecurityValidatorService } from '../../../infrastructure/services/pdfSecurityValidator.service';
-import { ArticleDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
 import { ValidationException } from '../../../shared/exceptions/app.exception';
 
 export interface SubmitArticleResult {
@@ -21,7 +21,7 @@ export class SubmitArticleService {
     private readonly validator: PdfSecurityValidatorService,
     private readonly createArticleService: CreateArticleService,
     private readonly uploadAttachmentService: UploadArticleAttachmentService,
-    private readonly articleAdapter: ArticleDatabaseAdapter
+    private readonly articleRepo: ArticleRepository
   ) {}
 
   async execute(
@@ -31,10 +31,7 @@ export class SubmitArticleService {
   ): Promise<SubmitArticleResult> {
     if (!file) throw new ValidationException('A PDF attachment is required.');
 
-    if (!data.authorIds.includes(requesterId))
-      throw new ValidationException(
-        'The current user must be listed as an author of the article.'
-      );
+    Article.assertAuthoredBy(data.authorIds, requesterId);
 
     this.validator.execute(file);
 
@@ -55,7 +52,7 @@ export class SubmitArticleService {
 
   private async rollbackCreation(articleId: string): Promise<void> {
     try {
-      await this.articleAdapter.delete(articleId);
+      await this.articleRepo.delete(articleId);
     } catch (rollbackError) {
       this.logger.error(
         `Failed to roll back article "${articleId}" after attachment failure.`,

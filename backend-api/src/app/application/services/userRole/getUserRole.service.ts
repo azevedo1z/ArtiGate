@@ -1,42 +1,34 @@
-import { UserRole } from '@prisma/client';
 import {
-  UserRoleDatabaseAdapter,
-  UserDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+  UserRoleRecord,
+  UserRoleRepository,
+} from '../../../interface/repositories/userRole.repository.port';
+import { UserRepository } from '../../../interface/repositories/user.repository.port';
 import { Injectable } from '@nestjs/common';
-import {
-  ValidationException,
-  NotFoundException,
-} from '../../../shared/exceptions/app.exception';
+import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class GetUserRoleService {
   constructor(
-    private readonly adapter: UserRoleDatabaseAdapter,
-    private readonly userAdapter: UserDatabaseAdapter
+    private readonly repo: UserRoleRepository,
+    private readonly userRepo: UserRepository
   ) {}
 
-  async getAll(): Promise<UserRole[]> {
-    const userRoles = await this.adapter.findAll();
-
-    return userRoles;
+  async getAll(): Promise<UserRoleRecord[]> {
+    return this.repo.findAll();
   }
 
-  async getByUserId(userId: string): Promise<UserRole[]> {
-    if (!this.adapter.findManyByUserId)
-      throw new ValidationException('Database adapter is not available.');
-
-    const user = await this.userAdapter.findById(userId);
+  async getByUserId(userId: string): Promise<UserRoleRecord[]> {
+    const user = await this.userRepo.findById(userId);
     if (!user)
       throw new NotFoundException(`User with ID "${userId}" not found`);
 
-    const existingUserRoles = await this.adapter.findManyByUserId(userId);
+    const existing = await this.repo.findManyByUserId(userId);
 
-    if (existingUserRoles.length === 0)
+    if (existing.length === 0)
       throw new NotFoundException(
         'There is no role associated with this user.'
       );
 
-    return existingUserRoles;
+    return existing;
   }
 }

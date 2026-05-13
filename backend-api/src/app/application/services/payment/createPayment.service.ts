@@ -5,12 +5,9 @@ import { CreatePaymentDTO } from '../../dtos/payment/createPayment.dto';
 import { CreatePaymentPersistDTO } from '../../dtos/payment/paymentPersist.dto';
 import { PaymentGatewayChargeRequestDTO } from '../../dtos/payment/paymentGatewayCharge.dto';
 import { Payment } from '../../../domain/models/payment.model';
-import { paymentRowToDomain } from '../../mappers/payment.mapper';
-import {
-  PaymentDatabaseAdapter,
-  UserDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
-import { PaymentGatewayAdapter } from '../../../interface/adapter/paymentGateway.adapter';
+import { PaymentRepository } from '../../../interface/repositories/payment.repository.port';
+import { UserRepository } from '../../../interface/repositories/user.repository.port';
+import { PaymentGateway } from '../../../interface/gateways/paymentGateway.port';
 import {
   ConflictException,
   NotFoundException,
@@ -23,24 +20,21 @@ export class CreatePaymentService {
   private readonly logger = new Logger(CreatePaymentService.name);
 
   constructor(
-    private readonly adapter: PaymentDatabaseAdapter,
-    private readonly userAdapter: UserDatabaseAdapter,
-    private readonly gateway: PaymentGatewayAdapter,
+    private readonly repo: PaymentRepository,
+    private readonly userRepo: UserRepository,
+    private readonly gateway: PaymentGateway,
     private readonly configService: ConfigService
   ) {}
 
   async execute(userId: string, dto: CreatePaymentDTO): Promise<Payment> {
-    const existingUser = await this.userAdapter.findById(userId);
+    const existingUser = await this.userRepo.findById(userId);
     if (existingUser == null)
       throw new NotFoundException(`There is no user with the ID "${userId}".`);
 
-    const cached = await this.adapter.findByIdempotencyKey?.(
-      dto.idempotencyKey
-    );
-    if (cached) return paymentRowToDomain(cached);
+    const cached = await this.repo.findByIdempotencyKey(dto.idempotencyKey);
+    if (cached) return cached;
 
-    const alreadyPaid =
-      (await this.adapter.hasApprovedFeeByUserId?.(userId)) ?? false;
+    const alreadyPaid = await this.repo.hasApprovedFeeByUserId(userId);
 
     if (alreadyPaid)
       throw new ConflictException('The access fee has already been paid.');
@@ -51,6 +45,20 @@ export class CreatePaymentService {
       this.configService.get<string>('payment.defaultCurrency') ??
       'BRL'
     ).toUpperCase();
+
+    Payment.ensureInvariants({
+      id: '',
+      userId,
+      amount,
+      currency,
+      status: 'pending',
+      description: dto.description ?? null,
+      paymentMethodId: dto.paymentMethodId,
+      payerEmail: dto.payerEmail,
+      gatewayPaymentId: null,
+      idempotencyKey: dto.idempotencyKey,
+      failureReason: null,
+    });
 
     const chargeRequest = new PaymentGatewayChargeRequestDTO({
       token: dto.token ?? null,
@@ -81,14 +89,13 @@ export class CreatePaymentService {
     });
 
     try {
-      const persisted = await this.adapter.create(persistData);
-      return paymentRowToDomain(persisted);
+      return await this.repo.create(persistData);
     } catch (error) {
       if (this.isUniqueViolation(error)) {
-        const fallback = await this.adapter.findByIdempotencyKey?.(
+        const fallback = await this.repo.findByIdempotencyKey(
           dto.idempotencyKey
         );
-        if (fallback) return paymentRowToDomain(fallback);
+        if (fallback) return fallback;
       }
 
       this.logger.error(

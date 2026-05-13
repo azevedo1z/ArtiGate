@@ -1,17 +1,20 @@
 import { Injectable } from '@nestjs/common';
-import { ReviewDatabaseAdapter } from '../../../interface/adapter/database.adapter';
+import { Review } from '../../../domain/models/review.model';
+import { ReviewRepository } from '../../../interface/repositories/review.repository.port';
 import { NotFoundException } from '../../../shared/exceptions/app.exception';
 
 @Injectable()
 export class DeleteReviewService {
-  constructor(private readonly adapter: ReviewDatabaseAdapter) {}
+  constructor(private readonly repo: ReviewRepository) {}
 
-  async execute(id: string): Promise<boolean> {
-    const review = await this.adapter.findById(id);
+  async execute(requesterId: string, id: string): Promise<boolean> {
+    const review = await this.repo.findById(id);
 
     if (!review)
       throw new NotFoundException(`Review with ID "${id}" not found`);
 
-    return await this.adapter.delete(id);
+    Review.assertOwnedBy(review.reviewerId, requesterId);
+
+    return this.repo.deleteAndRecomputeArticleScore(id, review.articleId);
   }
 }

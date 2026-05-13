@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from 'crypto';
 import { MercadoPagoConfig, Payment as MercadoPagoPayment } from 'mercadopago';
 import { PaymentGatewayException } from '../../shared/exceptions/app.exception';
 import { PaymentStatus } from '../../shared/types/payment.types';
-import { PaymentGatewayAdapter } from '../../interface/adapter/paymentGateway.adapter';
+import { PaymentGateway } from '../../interface/gateways/paymentGateway.port';
 import {
   PaymentGatewayChargeRequestDTO,
   PaymentGatewayChargeResultDTO,
@@ -14,12 +14,14 @@ import { PAYMENT_STATUS_OPTIONS } from '../../shared/constants';
 
 const REQUEST_TIMEOUT_MS = 10_000;
 
+const WEBHOOK_REPLAY_WINDOW_MS = 5 * 60 * 1000;
+
 const KNOWN_STATUS_VALUES: ReadonlySet<string> = new Set(
   PAYMENT_STATUS_OPTIONS.map((option) => option.value)
 );
 
 @Injectable()
-export class MercadoPagoService extends PaymentGatewayAdapter {
+export class MercadoPagoService extends PaymentGateway {
   private readonly logger = new Logger(MercadoPagoService.name);
   private readonly client: MercadoPagoConfig;
   private readonly paymentClient: MercadoPagoPayment;
@@ -115,6 +117,8 @@ export class MercadoPagoService extends PaymentGatewayAdapter {
 
     if (!ts || !v1) return false;
 
+    if (!this.isFreshTimestamp(ts)) return false;
+
     const manifest = `id:${resourceId};request-id:${requestId};ts:${ts};`;
     const expected = createHmac('sha256', this.webhookSecret)
       .update(manifest)
@@ -155,6 +159,20 @@ export class MercadoPagoService extends PaymentGatewayAdapter {
       );
       return null;
     }
+  }
+
+  private isFreshTimestamp(rawTs: string): boolean {
+    const tsMillis = this.parseTimestampToMillis(rawTs);
+    if (tsMillis == null) return false;
+    const skew = Math.abs(Date.now() - tsMillis);
+    return skew <= WEBHOOK_REPLAY_WINDOW_MS;
+  }
+
+  private parseTimestampToMillis(rawTs: string): number | null {
+    if (!/^\d+$/.test(rawTs)) return null;
+    const numeric = Number(rawTs);
+    if (!Number.isFinite(numeric)) return null;
+    return numeric < 1e12 ? numeric * 1000 : numeric;
   }
 
   private mapStatus(status?: string): PaymentStatus {

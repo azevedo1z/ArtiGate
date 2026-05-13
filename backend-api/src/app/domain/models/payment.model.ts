@@ -1,4 +1,31 @@
-import { PaymentProps, PaymentStatus } from '../../shared/types/payment.types';
+import { EMAIL_REGEX } from '../../shared/constants';
+import { ValidationException } from '../../shared/exceptions/app.exception';
+import { PaymentStatus } from '../../shared/types/payment.types';
+
+export interface PaymentProps {
+  id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  status: PaymentStatus;
+  description: string | null;
+  paymentMethodId: string | null;
+  payerEmail: string;
+  gatewayPaymentId: string | null;
+  idempotencyKey: string;
+  failureReason: string | null;
+}
+
+const STATUS_PRIORITY: Record<PaymentStatus, number> = {
+  pending: 0,
+  in_process: 1,
+  authorized: 2,
+  approved: 3,
+  cancelled: 4,
+  rejected: 4,
+  refunded: 5,
+  charged_back: 5,
+};
 
 export class Payment {
   private _id: string;
@@ -14,6 +41,8 @@ export class Payment {
   private _failureReason: string | null;
 
   private constructor(props: PaymentProps) {
+    Payment.ensureInvariants(props);
+
     this._id = props.id;
     this._userId = props.userId;
     this._amount = props.amount;
@@ -29,6 +58,25 @@ export class Payment {
 
   static factory(props: PaymentProps): Payment {
     return new Payment(props);
+  }
+
+  static ensureInvariants(props: PaymentProps): void {
+    const errors: string[] = [];
+
+    if (Number.isNaN(props.amount) || props.amount <= 0)
+      errors.push('Payment amount must be greater than zero.');
+
+    if (!EMAIL_REGEX.test(props.payerEmail ?? ''))
+      errors.push('Payment payerEmail is invalid.');
+
+    if (errors.length) throw new ValidationException(errors.join(' '));
+  }
+
+  static canTransitionTo(current: PaymentStatus, next: PaymentStatus): boolean {
+    const c = STATUS_PRIORITY[current];
+    const n = STATUS_PRIORITY[next];
+    if (c == null || n == null) return false;
+    return n >= c;
   }
 
   get id(): string {

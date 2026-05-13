@@ -1,11 +1,9 @@
 import { Readable } from 'stream';
 import { DownloadArticleAttachmentService } from './downloadArticleAttachment.service';
-import {
-  ArticleAttachmentDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-  RoleDatabaseAdapter,
-  UserRoleDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { ArticleAttachmentRepository } from '../../../interface/repositories/articleAttachment.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
+import { UserRoleRepository } from '../../../interface/repositories/userRole.repository.port';
+import { RoleRepository } from '../../../interface/repositories/role.repository.port';
 import { PdfStorageService } from '../../../infrastructure/services/pdfStorage.service';
 import {
   NotFoundException,
@@ -14,23 +12,23 @@ import {
 
 describe('DownloadArticleAttachmentService', () => {
   let service: DownloadArticleAttachmentService;
-  let attachmentAdapter: jest.Mocked<ArticleAttachmentDatabaseAdapter>;
-  let articleAuthorAdapter: jest.Mocked<ArticleAuthorDatabaseAdapter>;
-  let userRoleAdapter: jest.Mocked<UserRoleDatabaseAdapter>;
-  let roleAdapter: jest.Mocked<RoleDatabaseAdapter>;
+  let attachmentRepo: jest.Mocked<ArticleAttachmentRepository>;
+  let articleAuthorRepo: jest.Mocked<ArticleAuthorRepository>;
+  let userRoleRepo: jest.Mocked<UserRoleRepository>;
+  let roleRepo: jest.Mocked<RoleRepository>;
   let storage: jest.Mocked<PdfStorageService>;
 
   beforeEach(() => {
-    attachmentAdapter = {
+    attachmentRepo = {
       findMany: jest.fn(),
     } as never;
-    articleAuthorAdapter = {
+    articleAuthorRepo = {
       findMany: jest.fn(),
     } as never;
-    userRoleAdapter = {
+    userRoleRepo = {
       findManyByUserId: jest.fn(),
     } as never;
-    roleAdapter = {
+    roleRepo = {
       findByName: jest.fn(),
     } as never;
     storage = {
@@ -39,19 +37,19 @@ describe('DownloadArticleAttachmentService', () => {
     } as never;
 
     service = new DownloadArticleAttachmentService(
-      attachmentAdapter,
-      articleAuthorAdapter,
-      userRoleAdapter,
-      roleAdapter,
+      attachmentRepo,
+      articleAuthorRepo,
+      userRoleRepo,
+      roleRepo,
       storage
     );
   });
 
   it('returns the stream when requester is an author', async () => {
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'user-1' } as never,
     ]);
-    attachmentAdapter.findMany.mockResolvedValue([
+    attachmentRepo.findMany.mockResolvedValue([
       {
         id: 'att-1',
         storedName: 'stored.pdf',
@@ -69,16 +67,16 @@ describe('DownloadArticleAttachmentService', () => {
   });
 
   it('returns the stream when requester is a reviewer', async () => {
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'someone-else' } as never,
     ]);
     (
-      userRoleAdapter.findManyByUserId as unknown as jest.Mock
+      userRoleRepo.findManyByUserId as unknown as jest.Mock
     ).mockResolvedValue([{ roleId: 'reviewer-role' } as never]);
-    (roleAdapter.findByName as unknown as jest.Mock).mockResolvedValue({
+    (roleRepo.findByName as unknown as jest.Mock).mockResolvedValue({
       id: 'reviewer-role',
     } as never);
-    attachmentAdapter.findMany.mockResolvedValue([
+    attachmentRepo.findMany.mockResolvedValue([
       {
         id: 'att-1',
         storedName: 'stored.pdf',
@@ -95,11 +93,11 @@ describe('DownloadArticleAttachmentService', () => {
   });
 
   it('throws UnauthorizedException when not author or reviewer', async () => {
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'someone-else' } as never,
     ]);
     (
-      userRoleAdapter.findManyByUserId as unknown as jest.Mock
+      userRoleRepo.findManyByUserId as unknown as jest.Mock
     ).mockResolvedValue([]);
 
     await expect(service.execute('article-1', 'user-1')).rejects.toThrow(
@@ -108,10 +106,10 @@ describe('DownloadArticleAttachmentService', () => {
   });
 
   it('throws NotFoundException when the attachment does not exist', async () => {
-    articleAuthorAdapter.findMany.mockResolvedValue([
+    articleAuthorRepo.findMany.mockResolvedValue([
       { userId: 'user-1' } as never,
     ]);
-    attachmentAdapter.findMany.mockResolvedValue([]);
+    attachmentRepo.findMany.mockResolvedValue([]);
 
     await expect(service.execute('article-1', 'user-1')).rejects.toThrow(
       NotFoundException

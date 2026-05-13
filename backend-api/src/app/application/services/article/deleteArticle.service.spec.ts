@@ -1,104 +1,102 @@
 import { DeleteArticleService } from './deleteArticle.service';
-import {
-  ArticleDatabaseAdapter,
-  ReviewDatabaseAdapter,
-  ArticleAuthorDatabaseAdapter,
-} from '../../../interface/adapter/database.adapter';
+import { Article } from '../../../domain/models/article.model';
+import { Review } from '../../../domain/models/review.model';
+import { ArticleRepository } from '../../../interface/repositories/article.repository.port';
+import { ArticleAuthorRepository } from '../../../interface/repositories/articleAuthor.repository.port';
+import { ReviewRepository } from '../../../interface/repositories/review.repository.port';
 import {
   NotFoundException,
   ConflictException,
+  UnauthorizedException,
 } from '../../../shared/exceptions/app.exception';
 
 describe('DeleteArticleService', () => {
   let service: DeleteArticleService;
-  let articleAdapter: jest.Mocked<ArticleDatabaseAdapter>;
-  let reviewAdapter: jest.Mocked<ReviewDatabaseAdapter>;
-  let articleAuthorAdapter: jest.Mocked<ArticleAuthorDatabaseAdapter>;
+  let articleRepo: jest.Mocked<ArticleRepository>;
+  let reviewRepo: jest.Mocked<ReviewRepository>;
+  let articleAuthorRepo: jest.Mocked<ArticleAuthorRepository>;
 
-  const articleRecord = {
+  const requesterId = 'user-1';
+  const articleRecord = Article.factory({
     id: 'article-1',
-    summary: 'A paper',
+    summary: 'A research paper',
     scoreAvg: 0,
+  });
+
+  const authorRow = {
+    id: 'aa-1',
+    articleId: 'article-1',
+    userId: requesterId,
     createdOn: new Date(),
-    updatedOn: new Date(),
     deletedOn: null,
   };
 
   beforeEach(() => {
-    articleAdapter = {
+    articleRepo = {
       findById: jest.fn(),
       delete: jest.fn(),
     } as any;
 
-    reviewAdapter = {
+    reviewRepo = {
       findMany: jest.fn(),
     } as any;
 
-    articleAuthorAdapter = {
+    articleAuthorRepo = {
       findMany: jest.fn(),
     } as any;
 
     service = new DeleteArticleService(
-      articleAdapter,
-      reviewAdapter,
-      articleAuthorAdapter,
+      articleRepo,
+      reviewRepo,
+      articleAuthorRepo,
     );
   });
 
-  it('should delete an article with no authors or reviews', async () => {
-    articleAdapter.findById.mockResolvedValue(articleRecord);
-    articleAuthorAdapter.findMany.mockResolvedValue([]);
-    reviewAdapter.findMany.mockResolvedValue([]);
-    articleAdapter.delete.mockResolvedValue(true);
+  it('deletes the article when the requester is an author and no reviews exist', async () => {
+    articleRepo.findById.mockResolvedValue(articleRecord);
+    articleAuthorRepo.findMany.mockResolvedValue([authorRow]);
+    reviewRepo.findMany.mockResolvedValue([]);
+    articleRepo.delete.mockResolvedValue(true);
 
-    const result = await service.execute('article-1');
+    const result = await service.execute(requesterId, 'article-1');
 
     expect(result).toBe(true);
-    expect(articleAdapter.delete).toHaveBeenCalledWith('article-1');
+    expect(articleRepo.delete).toHaveBeenCalledWith('article-1');
   });
 
-  it('should throw NotFoundException if article does not exist', async () => {
-    articleAdapter.findById.mockResolvedValue(null);
+  it('throws NotFoundException if article does not exist', async () => {
+    articleRepo.findById.mockResolvedValue(null);
 
-    await expect(service.execute('nonexistent')).rejects.toThrow(
+    await expect(service.execute(requesterId, 'nonexistent')).rejects.toThrow(
       NotFoundException,
     );
   });
 
-  it('should throw ConflictException if article has authors', async () => {
-    articleAdapter.findById.mockResolvedValue(articleRecord);
-    articleAuthorAdapter.findMany.mockResolvedValue([
-      {
-        id: 'aa-1',
-        articleId: 'article-1',
-        userId: 'user-1',
-        createdOn: new Date(),
-        deletedOn: null,
-      },
+  it('throws UnauthorizedException when the requester is not an author', async () => {
+    articleRepo.findById.mockResolvedValue(articleRecord);
+    articleAuthorRepo.findMany.mockResolvedValue([
+      { ...authorRow, userId: 'other-user' },
     ]);
 
-    await expect(service.execute('article-1')).rejects.toThrow(
-      ConflictException,
+    await expect(service.execute(requesterId, 'article-1')).rejects.toThrow(
+      UnauthorizedException,
     );
   });
 
-  it('should throw ConflictException if article has reviews', async () => {
-    articleAdapter.findById.mockResolvedValue(articleRecord);
-    articleAuthorAdapter.findMany.mockResolvedValue([]);
-    reviewAdapter.findMany.mockResolvedValue([
-      {
+  it('throws ConflictException if article has reviews', async () => {
+    articleRepo.findById.mockResolvedValue(articleRecord);
+    articleAuthorRepo.findMany.mockResolvedValue([authorRow]);
+    reviewRepo.findMany.mockResolvedValue([
+      Review.factory({
         id: 'review-1',
         articleId: 'article-1',
         reviewerId: 'reviewer-1',
         score: 8,
         commentary: 'Good',
-        createdOn: new Date(),
-        updatedOn: new Date(),
-        deletedOn: null,
-      },
+      }),
     ]);
 
-    await expect(service.execute('article-1')).rejects.toThrow(
+    await expect(service.execute(requesterId, 'article-1')).rejects.toThrow(
       ConflictException,
     );
   });

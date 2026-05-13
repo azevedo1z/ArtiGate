@@ -1,3 +1,17 @@
+import { EMAIL_REGEX } from '../../shared/constants';
+import { ValidationException } from '../../shared/exceptions/app.exception';
+
+export interface UserProps {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  homeAddressId: string;
+  jobAddressId: string;
+  badgeUrl: string;
+  passwordHash: string;
+}
+
 export class User {
   private _id: string;
   private _name: string;
@@ -8,46 +22,34 @@ export class User {
   private _badgeUrl: string;
   private _passwordHash: string;
 
-  private constructor(
-    id: string,
-    name: string,
-    email: string,
-    phone: string,
-    homeAddressId: string,
-    jobAddressId: string,
-    badgeUrl: string,
-    passwordHash: string
-  ) {
-    this._id = id;
-    this._name = name;
-    this._email = email;
-    this._phone = phone;
-    this._homeAddressId = homeAddressId;
-    this._jobAddressId = jobAddressId;
-    this._badgeUrl = badgeUrl;
-    this._passwordHash = passwordHash;
+  private constructor(props: UserProps) {
+    User.ensureInvariants(props);
+
+    this._id = props.id;
+    this._name = props.name;
+    this._email = props.email;
+    this._phone = props.phone;
+    this._homeAddressId = props.homeAddressId;
+    this._jobAddressId = props.jobAddressId;
+    this._badgeUrl = props.badgeUrl;
+    this._passwordHash = props.passwordHash;
   }
 
-  static factory(
-    id: string,
-    name: string,
-    email: string,
-    phone: string,
-    homeAddressId: string,
-    jobAddressId: string,
-    badgeUrl: string,
-    passwordHash: string
-  ): User {
-    return new User(
-      id,
-      name,
-      email,
-      phone,
-      homeAddressId,
-      jobAddressId,
-      badgeUrl,
-      passwordHash
-    );
+  static factory(props: UserProps): User {
+    return new User(props);
+  }
+
+  static ensureInvariants(props: UserProps): void {
+    const errors: string[] = [];
+
+    if (!props.name?.trim()) errors.push('User name is required.');
+
+    if (!EMAIL_REGEX.test(props.email ?? ''))
+      errors.push('User email is invalid.');
+
+    if (!props.phone?.trim()) errors.push('User phone is required.');
+
+    if (errors.length) throw new ValidationException(errors.join(' '));
   }
 
   get id(): string {
@@ -58,55 +60,27 @@ export class User {
     return this._name;
   }
 
-  private set name(value: string) {
-    this._name = value;
-  }
-
   get email(): string {
     return this._email;
-  }
-
-  private set email(value: string) {
-    this._email = value;
   }
 
   get phone(): string {
     return this._phone;
   }
 
-  private set phone(value: string) {
-    this._phone = value;
-  }
-
   get homeAddressId(): string {
     return this._homeAddressId;
-  }
-
-  private set homeAddressId(value: string) {
-    this._homeAddressId = value;
   }
 
   get jobAddressId(): string {
     return this._jobAddressId;
   }
 
-  private set jobAddressId(value: string) {
-    this._jobAddressId = value;
-  }
-
   get badgeUrl(): string {
     return this._badgeUrl;
   }
 
-  private set badgeUrl(value: string) {
-    this._badgeUrl = value;
-  }
-
   get passwordHash(): string {
     return this._passwordHash;
-  }
-
-  private set passwordHash(value: string) {
-    this._passwordHash = value;
   }
 }

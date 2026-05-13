@@ -1,7 +1,7 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { UserController } from '../interface/controllers/user.controller';
-import { UserRepository } from '../infrastructure/repositories/user.repository';
-import { UserDatabaseAdapter } from '../interface/adapter/database.adapter';
+import { PrismaUserRepository } from '../infrastructure/repositories/user.repository';
+import { UserRepository } from '../interface/repositories/user.repository.port';
 import { CreateUserService } from '../application/services/user/createUser.service';
 import { GetUserService } from '../application/services/user/getUser.service';
 import { UpdateUserService } from '../application/services/user/updateUser.service';
@@ -15,7 +15,12 @@ import { ReviewModule } from './review.module';
 import { ArticleModule } from './article.module';
 
 @Module({
-  imports: [AddressModule, RoleModule, forwardRef(() => ReviewModule), forwardRef(() => ArticleModule)],
+  imports: [
+    AddressModule,
+    RoleModule,
+    forwardRef(() => ReviewModule),
+    forwardRef(() => ArticleModule),
+  ],
   controllers: [UserController],
   providers: [
     AuthService,
@@ -26,15 +31,10 @@ import { ArticleModule } from './article.module';
     DeleteUserService,
     GetUserRoleService,
     {
-      provide: UserDatabaseAdapter,
-      useClass: UserRepository,
+      provide: UserRepository,
+      useClass: PrismaUserRepository,
     },
   ],
-  exports: [
-    UserDatabaseAdapter,
-    GetUserService,
-    AuthService,
-    AuthGuardService,
-  ],
+  exports: [UserRepository, GetUserService, AuthService, AuthGuardService],
 })
 export class UserModule {}

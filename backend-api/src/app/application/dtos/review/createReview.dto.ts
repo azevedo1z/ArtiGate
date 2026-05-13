@@ -1,15 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNumber, Min, Max } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsUUID,
+  Min,
+  Max,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreateReviewDTO {
   @ApiProperty()
-  @IsString()
+  @IsUUID('4')
   articleId: string;
-
-  @ApiProperty()
-  @IsString()
-  reviewerId: string;
 
   @ApiProperty({ minimum: 1, maximum: 10 })
   @IsNumber()
@@ -19,17 +23,13 @@ export class CreateReviewDTO {
 
   @ApiProperty()
   @IsString()
+  @MinLength(1)
+  @MaxLength(5000)
   @Transform(({ value }) => value?.trim())
   commentary: string;
 
-  constructor(
-    articleId: string,
-    reviewerId: string,
-    score: number,
-    commentary: string
-  ) {
+  constructor(articleId: string, score: number, commentary: string) {
     this.articleId = articleId;
-    this.reviewerId = reviewerId;
     this.score = score;
     this.commentary = commentary;
   }

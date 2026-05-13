@@ -6,7 +6,7 @@ import Container from '../components/container.component';
 import Wrapper from '../components/wrapper.component';
 import Button from '../components/button.component';
 import { reviewService } from '../services/review.service';
-import { Review } from '../shared/types/types.shared';
+import { ReviewWithArticleSummary } from '../shared/types/types.shared';
 import { useUser } from '../hooks/useUser';
 import { ROUTES } from '../config/routes.config';
 import { scoreColor } from '../utils/score.util';
@@ -16,7 +16,7 @@ const MyReviewsPage: React.FC = () => {
   const navigate = useNavigate();
   const userData = useUser();
 
-  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviews, setReviews] = useState<ReviewWithArticleSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const MyReviewsPage: React.FC = () => {
       if (!userData?._id) return;
 
       try {
-        const data = await reviewService.getMyReviews(userData._id);
+        const data = await reviewService.getMyReviews();
         setReviews(data);
       } catch (error) {
         toast.error(
@@ -93,7 +93,7 @@ const MyReviewsPage: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {reviews.map((review) => (
               <div
-                key={review._id}
+                key={review.id}
                 className="bg-snow rounded-lg border border-ink-100 hover:border-primary-200 transition-colors duration-150 flex flex-col"
               >
                 <div className="p-5 flex-1 space-y-3">
@@ -103,33 +103,49 @@ const MyReviewsPage: React.FC = () => {
                     </div>
                     <div
                       className={`inline-flex items-center gap-1 border rounded-full px-2.5 py-0.5 ${scoreColor(
-                        review._score
+                        review.score
                       )}`}
                     >
                       <Star className="h-3.5 w-3.5 fill-current" />
                       <span className="text-xs font-semibold">
-                        {review._score}/10
+                        {review.score}/10
                       </span>
                     </div>
                   </div>
 
-                  {review._commentary && (
-                    <p className="text-ink-700 text-sm leading-relaxed line-clamp-3">
-                      {review._commentary}
-                    </p>
+                  {review.article?.summary && (
+                    <div className="space-y-1">
+                      <p className="text-[11px] font-semibold text-ink-500 uppercase tracking-wide">
+                        Article
+                      </p>
+                      <p className="text-ink-700 text-sm leading-relaxed line-clamp-3">
+                        {review.article.summary}
+                      </p>
+                    </div>
+                  )}
+
+                  {review.commentary && (
+                    <div className="space-y-1">
+                      <p className="text-[11px] font-semibold text-ink-500 uppercase tracking-wide">
+                        Your commentary
+                      </p>
+                      <p className="text-ink-700 text-sm leading-relaxed line-clamp-3">
+                        {review.commentary}
+                      </p>
+                    </div>
                   )}
 
                   <div className="flex items-center gap-1.5 text-[11px] text-ink-400">
                     <FileText className="h-3.5 w-3.5 flex-shrink-0" />
                     <span className="font-mono truncate">
-                      {review._articleId}
+                      {review.articleId}
                     </span>
                   </div>
                 </div>
 
                 <div className="px-5 py-2.5 border-t border-ink-100">
                   <p className="text-[11px] text-ink-300 font-mono truncate">
-                    {review._id}
+                    {review.id}
                   </p>
                 </div>
               </div>

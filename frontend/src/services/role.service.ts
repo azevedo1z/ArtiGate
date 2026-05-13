@@ -7,8 +7,8 @@ class RoleService {
     return response.data;
   }
 
-  async getRolesByUserId(userId: string): Promise<Role[]> {
-    const response = await apiClient.get(`/role/user/${userId}`);
+  async getMyRoles(): Promise<Role[]> {
+    const response = await apiClient.get('/role/me');
     return response.data;
   }
 }

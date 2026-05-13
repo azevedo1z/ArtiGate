@@ -1,5 +1,9 @@
 import apiClient from './api.service';
-import { Review, CreateReviewData } from '../shared/types/types.shared';
+import {
+  CreateReviewData,
+  Review,
+  ReviewWithArticleSummary,
+} from '../shared/types/types.shared';
 
 class ReviewService {
   async createReview(data: CreateReviewData): Promise<Review> {
@@ -12,8 +16,8 @@ class ReviewService {
     return response.data;
   }
 
-  async getMyReviews(userId: string): Promise<Review[]> {
-    const response = await apiClient.get(`/review/reviewer/${userId}`);
+  async getMyReviews(): Promise<ReviewWithArticleSummary[]> {
+    const response = await apiClient.get('/review/me');
     return response.data;
   }
 }

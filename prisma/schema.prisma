@@ -130,6 +130,7 @@ model Review {
   reviewer User @relation(fields: [reviewerId], references: [id], onDelete: Cascade)
   article Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
 
+  @@unique([articleId, reviewerId])
   @@index([articleId])
   @@index([reviewerId])
 }

@@ -7,5 +7,5 @@ export const useRoles = () =>
 
 export const useIsReviewer = (): boolean => {
   const rolesData = useRoles();
-  return rolesData?.some((role) => role._name?.includes(ROLES.REVIEWER)) ?? false;
+  return rolesData?.some((role) => role._name === ROLES.REVIEWER) ?? false;
 };

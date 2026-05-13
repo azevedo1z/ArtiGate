@@ -1,9 +1,9 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PaymentController } from '../interface/controllers/payment.controller';
-import { PaymentRepository } from '../infrastructure/repositories/payment.repository';
-import { PaymentDatabaseAdapter } from '../interface/adapter/database.adapter';
-import { PaymentGatewayAdapter } from '../interface/adapter/paymentGateway.adapter';
+import { PrismaPaymentRepository } from '../infrastructure/repositories/payment.repository';
+import { PaymentRepository } from '../interface/repositories/payment.repository.port';
+import { PaymentGateway } from '../interface/gateways/paymentGateway.port';
 import { MercadoPagoService } from '../infrastructure/services/mercadoPago.service';
 import { MockPaymentGatewayService } from '../infrastructure/services/mockPaymentGateway.service';
 import { CreatePaymentService } from '../application/services/payment/createPayment.service';
@@ -21,12 +21,12 @@ import { UserModule } from './user.module';
     ProcessPaymentWebhookService,
     AccessFeePaymentGuard,
     {
-      provide: PaymentDatabaseAdapter,
-      useClass: PaymentRepository,
+      provide: PaymentRepository,
+      useClass: PrismaPaymentRepository,
     },
     {
-      provide: PaymentGatewayAdapter,
-      useFactory: (configService: ConfigService): PaymentGatewayAdapter => {
+      provide: PaymentGateway,
+      useFactory: (configService: ConfigService): PaymentGateway => {
         const mockEnabled = configService.get<boolean>('payment.mockEnabled');
         return mockEnabled
           ? new MockPaymentGatewayService()
@@ -36,8 +36,8 @@ import { UserModule } from './user.module';
     },
   ],
   exports: [
-    PaymentDatabaseAdapter,
-    PaymentGatewayAdapter,
+    PaymentRepository,
+    PaymentGateway,
     AccessFeePaymentGuard,
     GetPaymentService,
   ],

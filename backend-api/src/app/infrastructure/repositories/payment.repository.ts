@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { Payment } from '@prisma/client';
+import { Payment as PaymentRow } from '@prisma/client';
+import { Payment } from '../../domain/models/payment.model';
+import { PaymentStatus } from '../../shared/types/payment.types';
 import { PrismaService } from '../services/prisma.service';
-import { PaymentDatabaseAdapter } from '../../interface/adapter/database.adapter';
 import {
   CreatePaymentPersistDTO,
   UpdatePaymentPersistDTO,
@@ -10,21 +11,39 @@ import {
   PaginationDTO,
   normalizePagination,
 } from '../../shared/dtos/pagination.dto';
+import { PaymentRepository } from '../../interface/repositories/payment.repository.port';
+
+const rowToDomain = (row: PaymentRow): Payment =>
+  Payment.factory({
+    id: row.id,
+    userId: row.userId,
+    amount: Number(row.amount),
+    currency: row.currency,
+    status: row.status as PaymentStatus,
+    description: row.description,
+    paymentMethodId: row.paymentMethodId,
+    payerEmail: row.payerEmail,
+    gatewayPaymentId: row.gatewayPaymentId,
+    idempotencyKey: row.idempotencyKey,
+    failureReason: row.failureReason,
+  });
 
 @Injectable()
-export class PaymentRepository implements PaymentDatabaseAdapter {
+export class PrismaPaymentRepository implements PaymentRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreatePaymentPersistDTO): Promise<Payment> {
-    return this.prisma.payment.create({ data });
+    const row = await this.prisma.payment.create({ data });
+    return rowToDomain(row);
   }
 
   async update(data: UpdatePaymentPersistDTO): Promise<Payment> {
     const { id, ...rest } = data;
-    return this.prisma.payment.update({
+    const row = await this.prisma.payment.update({
       where: { id },
       data: rest,
     });
+    return rowToDomain(row);
   }
 
   async delete(id: string): Promise<boolean> {
@@ -36,51 +55,49 @@ export class PaymentRepository implements PaymentDatabaseAdapter {
   }
 
   async findById(id: string): Promise<Payment | null> {
-    return this.prisma.payment.findFirst({
-      where: { id, deletedOn: null },
-    });
+    const row = await this.prisma.payment.findFirst({ where: { id } });
+    return row ? rowToDomain(row) : null;
   }
 
   async findAll(pagination?: PaginationDTO): Promise<Payment[]> {
     const { skip, take } = normalizePagination(pagination);
-    return this.prisma.payment.findMany({
-      where: { deletedOn: null },
+    const rows = await this.prisma.payment.findMany({
       skip,
       take,
       orderBy: { createdOn: 'desc' },
     });
+    return rows.map(rowToDomain);
   }
 
   async countAll(): Promise<number> {
-    return this.prisma.payment.count({ where: { deletedOn: null } });
-  }
-
-  async findMany(userId: string): Promise<Payment[]> {
-    return this.findManyByUserId(userId);
+    return this.prisma.payment.count();
   }
 
   async findManyByUserId(userId: string): Promise<Payment[]> {
-    return this.prisma.payment.findMany({
-      where: { userId, deletedOn: null },
+    const rows = await this.prisma.payment.findMany({
+      where: { userId },
       orderBy: { createdOn: 'desc' },
     });
+    return rows.map(rowToDomain);
   }
 
   async findByIdempotencyKey(key: string): Promise<Payment | null> {
-    return this.prisma.payment.findFirst({
-      where: { idempotencyKey: key, deletedOn: null },
+    const row = await this.prisma.payment.findFirst({
+      where: { idempotencyKey: key },
     });
+    return row ? rowToDomain(row) : null;
   }
 
   async findByGatewayPaymentId(id: string): Promise<Payment | null> {
-    return this.prisma.payment.findFirst({
-      where: { gatewayPaymentId: id, deletedOn: null },
+    const row = await this.prisma.payment.findFirst({
+      where: { gatewayPaymentId: id },
     });
+    return row ? rowToDomain(row) : null;
   }
 
   async hasApprovedFeeByUserId(userId: string): Promise<boolean> {
     const count = await this.prisma.payment.count({
-      where: { userId, status: 'approved', deletedOn: null },
+      where: { userId, status: 'approved' },
     });
     return count > 0;
   }

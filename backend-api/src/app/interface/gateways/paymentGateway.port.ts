@@ -4,7 +4,7 @@ import {
   PaymentGatewayWebhookHeaders,
 } from '../../application/dtos/payment/paymentGatewayCharge.dto';
 
-export abstract class PaymentGatewayAdapter {
+export abstract class PaymentGateway {
   abstract createCharge(
     request: PaymentGatewayChargeRequestDTO
   ): Promise<PaymentGatewayChargeResultDTO>;

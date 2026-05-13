@@ -32,7 +32,7 @@ export class CreateArticleDTO {
   @ApiProperty({ type: [String] })
   @IsArray()
   @ArrayMinSize(1)
-  @ArrayMaxSize(20)
+  @ArrayMaxSize(3)
   @IsString({ each: true })
   @Transform(({ value }) => parseAuthorIds(value))
   authorIds: string[];

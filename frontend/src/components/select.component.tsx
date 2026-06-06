@@ -1,4 +1,5 @@
 import { forwardRef, SelectHTMLAttributes } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 type Option = {
   label: string;
@@ -12,9 +13,11 @@ interface SelectProps extends SelectHTMLAttributes<HTMLSelectElement> {
 
 const Select = forwardRef<HTMLSelectElement, SelectProps>(
   ({ placeholder, options, id, className = '', ...props }, ref) => {
-    const parentDivClassName = 'w-full';
+    const parentDivClassName = 'relative w-full';
     const selectClassName =
-      'block w-full px-3.5 py-2.5 text-sm bg-snow text-ink-800 border border-ink-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors duration-150 disabled:bg-ink-50 disabled:text-ink-400';
+      'block w-full appearance-none px-3.5 py-2.5 pr-10 text-sm bg-snow text-ink-800 border border-ink-200 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500/30 focus:border-primary-500 transition-colors duration-150 disabled:bg-ink-50 disabled:text-ink-400';
+    const chevronClassName =
+      'pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-400';
 
     return (
       <div className={parentDivClassName}>
@@ -33,6 +36,7 @@ const Select = forwardRef<HTMLSelectElement, SelectProps>(
             </option>
           ))}
         </select>
+        <ChevronDown className={chevronClassName} aria-hidden="true" />
       </div>
     );
   }

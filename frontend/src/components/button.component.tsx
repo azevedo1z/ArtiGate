@@ -45,7 +45,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseClassName =
-    'inline-flex items-center justify-center gap-2 rounded-md font-medium tracking-tight transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-snow';
+    'inline-flex items-center justify-center gap-2 rounded-md font-medium tracking-tight cursor-pointer [touch-action:manipulation] transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-offset-snow';
   const fullWidthClassName = 'w-full';
   const disabledClassName = 'opacity-50 cursor-not-allowed';
   const loadingSpinnerClassName =

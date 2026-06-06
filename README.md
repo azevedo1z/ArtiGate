@@ -1,6 +1,8 @@
 <p align="center">
-  <img src="docs/artigate-logo.png" alt="ArtiGate" width="25%"/>
+  <img src="frontend/src/assets/book-open.ico" alt="ArtiGate" width="120"/>
 </p>
+
+<h1 align="center">ArtiGate</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white" alt="React 18"/>

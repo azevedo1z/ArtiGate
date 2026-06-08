@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="frontend/src/assets/book-open.ico" alt="ArtiGate" width="120"/>
-</p>
-
 <h1 align="center">ArtiGate</h1>
 
 <p align="center">

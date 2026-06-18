@@ -1,4 +1,6 @@
-<h1 align="center">ArtiGate</h1>
+<h1 align="center">
+  <img src="/docs/logo.svg" width="25%" alt="ArtiGate">
+</h1>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-18.3-61DAFB?logo=react&logoColor=white" alt="React 18"/>

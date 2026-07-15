@@ -179,5 +179,5 @@ MIT.
   <br/>
   <sub>Made with NestJS, React, and a firm belief that every paper deserves a fair gate.</sub>
   <br/><br/>
-  <sub>by <a href="https://github.com/azevedo1x/">Gabriel Azevedo</a></sub>
+  <sub>by <a href="https://github.com/azevedo1z/">Gabriel Azevedo</a></sub>
 </p>

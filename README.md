@@ -76,7 +76,7 @@ Plus the quieter business rules baked into the domain: no self-reviews, no dupli
 
 **2. Install.**
 ```bash
-git clone https://github.com/azevedo1x/ArtiGate.git
+git clone https://github.com/azevedo1z/ArtiGate.git
 cd ArtiGate
 npm install
 ```

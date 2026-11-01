@@ -119,7 +119,7 @@ if (-not (Test-Path -LiteralPath $PROFILE)) {
 }
 
 $profileContent = [System.IO.File]::ReadAllText($PROFILE)
-$functionPattern = '(?ms)^function\s+artigate\s*\{.*?^\}'
+$functionPattern = '(?m)^function\s+artigate\s*\{(?:[^\r\n]*\}|(?s:.*?^\}))'
 if ([regex]::IsMatch($profileContent, $functionPattern)) {
     $profileContent = [regex]::Replace(
         $profileContent,
@@ -162,6 +162,19 @@ $sqlPassword = Get-DotEnvValue -Path $envFile -Name 'SQLSERVER_SA_PASSWORD'
 $jwtSecret = Get-DotEnvValue -Path $envFile -Name 'JWT_SECRET'
 if ([string]::IsNullOrWhiteSpace($sqlPassword) -or $sqlPassword.Contains('<')) {
     Write-Failure 'Set a real SQLSERVER_SA_PASSWORD in .env before starting the stack.'
+    exit 1
+}
+$passwordCategories = 0
+if ($sqlPassword -cmatch '[A-Z]') { $passwordCategories++ }
+if ($sqlPassword -cmatch '[a-z]') { $passwordCategories++ }
+if ($sqlPassword -match '\d') { $passwordCategories++ }
+if ($sqlPassword -match '[^a-zA-Z0-9]') { $passwordCategories++ }
+if ($sqlPassword.Length -lt 8 -or $passwordCategories -lt 3) {
+    Write-Failure 'SQLSERVER_SA_PASSWORD must be at least 8 characters and include 3 of these 4 groups: uppercase, lowercase, digits, symbols.'
+    exit 1
+}
+if ($sqlPassword.Contains(';')) {
+    Write-Failure 'SQLSERVER_SA_PASSWORD cannot contain semicolons because Compose places it in a semicolon-delimited SQL Server URL.'
     exit 1
 }
 if ([string]::IsNullOrWhiteSpace($jwtSecret) -or $jwtSecret.Contains('<') -or $jwtSecret.Length -lt 32) {

@@ -27,6 +27,7 @@ services:
     volumes:
       - .:/app
       - node-modules:/app/node_modules
+      - ./.env.example:/app/.env:ro
     restart: "no"
 
   migrations:
@@ -38,6 +39,7 @@ services:
     volumes:
       - .:/app
       - node-modules:/app/node_modules
+      - ./.env.example:/app/.env:ro
     depends_on:
       sqlserver:
         condition: service_healthy
@@ -63,6 +65,7 @@ services:
       - .:/app
       - node-modules:/app/node_modules
       - ./uploads:/app/uploads
+      - ./.env.example:/app/.env:ro
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -78,6 +81,7 @@ services:
     volumes:
       - .:/app
       - node-modules:/app/node_modules
+      - ./.env.example:/app/.env:ro
     depends_on:
       dependencies:
         condition: service_completed_successfully

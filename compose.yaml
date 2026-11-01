@@ -1,0 +1,91 @@
+name: artigate
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${SQLSERVER_SA_PASSWORD:?Set SQLSERVER_SA_PASSWORD in .env}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$${MSSQL_SA_PASSWORD}" -Q "SELECT 1" -C
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+
+  dependencies:
+    image: node:22.12.0-alpine
+    working_dir: /app
+    command: sh -c "cmp -s package-lock.json node_modules/.installed-lock || (npm ci && cp package-lock.json node_modules/.installed-lock)"
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - ./.env.example:/app/.env:ro
+    restart: "no"
+
+  migrations:
+    image: node:22.12.0-alpine
+    working_dir: /app
+    command: sh -c "npx prisma migrate deploy && npx prisma db seed"
+    environment:
+      DATABASE_URL: "sqlserver://sqlserver:1433;database=ArtiGate;user=sa;password=${SQLSERVER_SA_PASSWORD};encrypt=true;trustServerCertificate=true"
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - ./.env.example:/app/.env:ro
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      dependencies:
+        condition: service_completed_successfully
+    restart: "no"
+
+  api:
+    image: node:22.12.0-alpine
+    working_dir: /app
+    command: npx nx serve backend-api --configuration=development
+    environment:
+      DATABASE_URL: "sqlserver://sqlserver:1433;database=ArtiGate;user=sa;password=${SQLSERVER_SA_PASSWORD};encrypt=true;trustServerCertificate=true"
+      JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1d}
+      CORS_ORIGIN: http://localhost:3001
+      PORT: 3000
+      ENABLE_PAYMENT_MOCK: "true"
+      UPLOAD_DIR: uploads/articles
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - ./uploads:/app/uploads
+      - ./.env.example:/app/.env:ro
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+  frontend:
+    image: node:22.12.0-alpine
+    working_dir: /app
+    command: npx nx serve frontend --host 0.0.0.0 --port 3001
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/app
+      - node-modules:/app/node_modules
+      - ./.env.example:/app/.env:ro
+    depends_on:
+      dependencies:
+        condition: service_completed_successfully
+
+volumes:
+  node-modules:
+  sqlserver-data:

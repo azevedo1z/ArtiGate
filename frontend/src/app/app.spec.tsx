@@ -5,6 +5,10 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from '../store/slices/user.slice';
 import rolesReducer from '../store/slices/roles.slice';
 
+jest.mock('../config/api.config', () => ({
+  API_BASE_URL: 'http://localhost:3000',
+}));
+
 import App from './app';
 
 const createTestStore = () =>

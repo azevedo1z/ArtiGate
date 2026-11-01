@@ -92,8 +92,13 @@ sign up  →  pay the access fee  →  submit an article (summary + authors + PD
 ```bash
 git clone https://github.com/azevedo1z/ArtiGate.git
 cd ArtiGate
-npm install
+npm ci
 ```
+
+The dependency toolchain uses Nx `23.1.1` and Vite `8.3.x`; `package.json` and
+`package-lock.json` are the source of truth for exact package versions. The
+lockfile supports reproducible installs with `npm ci` and does not require
+`legacy-peer-deps`.
 
 ### 2. Configure the backend
 
@@ -269,7 +274,7 @@ These points reflect the current implementation and are good candidates for cont
 - **SQL Server only.** The Prisma schema targets SQL Server.
 - **Local file storage.** PDFs are stored on the server's file system (`UPLOAD_DIR`), which requires a persistent volume in containerized or multi-instance deployments.
 - **End-to-end tests.** The `backend-api-e2e` project contains only the initial Nx scaffold and does not exercise the API yet.
-- **No deployment tooling.** The repository does not include Dockerfiles or CI pipelines.
+- **Limited deployment tooling.** The repository includes Dockerfiles and a Docker Compose setup, but no CI pipeline.
 
 ## Project status
 

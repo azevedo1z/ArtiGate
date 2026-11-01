@@ -13,7 +13,7 @@ COPY backend-api/package.json backend-api/package.json
 COPY frontend/package.json frontend/package.json
 COPY backend-api-e2e/package.json backend-api-e2e/package.json
 COPY packages/ packages/
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 
 COPY . .
 RUN npx nx build frontend --configuration=production

@@ -9,13 +9,13 @@ COPY backend-api/package.json backend-api/package.json
 COPY frontend/package.json frontend/package.json
 COPY backend-api-e2e/package.json backend-api-e2e/package.json
 COPY packages/ packages/
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 
 COPY . .
 RUN npx prisma generate
 RUN npx nx build backend-api --configuration=production
 RUN cp -a node_modules/.prisma /tmp/prisma-client \
-    && npm prune --omit=dev --legacy-peer-deps \
+    && npm prune --omit=dev \
     && mkdir -p node_modules/.prisma \
     && cp -a /tmp/prisma-client/. node_modules/.prisma/
 
